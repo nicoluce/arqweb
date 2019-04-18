@@ -1,2 +1,23 @@
-# arqweb
-Repository for Web Architecture projects. One branch per project.
+# TP 1
+
+#Requirements
+1. Go language
+2. Angular Framework
+
+## How to run
+
+1. Run Go backend application (port 8080)
+
+```bash
+#Current dir: src/api
+go run main.go
+
+```
+
+2. Run Angular frontend application (port 4200)
+
+```bash
+#Current dir: src/ui
+ng serve
+
+```
