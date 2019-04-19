@@ -1,8 +1,8 @@
 package app
 
 import (
+	"github.com/fernetbalboa/arqweb/src/api/config"
 	"github.com/gin-gonic/gin"
-	"github.com/mercadolibre/cx-emails/src/api/config"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
