@@ -11,6 +11,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MaterialModule} from "./material/material.module";
 import {FlexLayoutModule} from "@angular/flex-layout";
 import { AddMarkerFormComponent } from './add-marker-form/add-marker-form.component';
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { AddMarkerFormComponent } from './add-marker-form/add-marker-form.compon
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
+    HttpClientModule,
     LeafletModule.forRoot(),
     MaterialModule,
     FlexLayoutModule
