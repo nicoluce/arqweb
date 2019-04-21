@@ -38,6 +38,7 @@ export class AddMarkerFormComponent implements OnInit {
 
     let latLng = this.marker.getLatLng();
     this.addPOIForm = this.defaultForm(latLng.lat, latLng.lng);
+
   }
 
   defaultForm(lat: number, long: number): FormGroup {

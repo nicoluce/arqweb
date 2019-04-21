@@ -1,20 +1,7 @@
-import {ChangeDetectorRef, Component, EventEmitter, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import {
-  control,
-  icon,
-  LatLng,
-  latLng,
-  Layer, LeafletEvent,
-  LeafletMouseEvent,
-  marker,
-  Marker,
-  MarkerOptions,
-  tileLayer
-} from "leaflet";
-import layers = control.layers;
+import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import * as L from "leaflet";
+import {icon, LatLng, latLng, Layer, LeafletMouseEvent, Map, marker, Marker, tileLayer} from "leaflet";
 import {PointOfInterest} from "../domain/point-of-interest";
-import {FormBuilder, FormControl, FormGroup, NgForm, Validators} from "@angular/forms";
-import {PoiServiceService} from "../service/poi-service.service";
 import {AddMarkerFormComponent} from "../add-marker-form/add-marker-form.component";
 
 @Component({
@@ -45,28 +32,16 @@ export class MapComponent implements OnInit {
 
   newMarker: Marker;
 
-  //Use @ViewChildren instead of @ViewChild because of the *ngIf in the html template
-  //@ViewChild("addMarkerComponent")
-  //addMarkerComponent: AddMarkerFormComponent;
+  //Use @ViewChild to inject child component. Using setter
+  //because of the *ngIf in the html template.
   private addMarkerComponent: AddMarkerFormComponent;
+  private map: Map;
 
   @ViewChild('addMarkerComponent') set markerComponent(addMarkerComponent: AddMarkerFormComponent) {
     this.addMarkerComponent = addMarkerComponent;
     this.cdRef.detectChanges();
   }
 
-/*
-  @ViewChildren("addMarkerComponent")
-  public addMarkerComponents: QueryList<AddMarkerFormComponent>;
-
-  public ngAfterViewInit(): void {
-    this.addMarkerComponents.changes.subscribe((comps: QueryList <AddMarkerFormComponent>) => {
-      this.addMarkerComponent = comps.first;
-    });
-
-    console.log(this.addMarkerComponent);
-  }
-*/
   constructor(private cdRef:ChangeDetectorRef) {
   }
 
@@ -90,6 +65,10 @@ export class MapComponent implements OnInit {
     this.layers = [];
   }
 
+  onMapReady(map: Map) {
+    this.map = map;
+  }
+
   showSavePOIPopup(latLong: LatLng) {
     if (this.addingNewPOI) {
       //Remove last marker
@@ -100,14 +79,21 @@ export class MapComponent implements OnInit {
       icon: icon({
         iconSize: [ 25, 41 ],
         iconAnchor: [ 13, 41 ],
-        iconUrl: 'leaflet/marker-icon.png',
-        shadowUrl: 'leaflet/marker-shadow.png'
+        iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
       }),
       clickable: true,
       draggable: true,
     });
 
     this.newMarker = newMarker;
+
+    //Zoom on marker when clicked
+    this.newMarker.on("click", function (me: LeafletMouseEvent) {
+      let latLng = [me.latlng];
+      // noinspection JSPotentiallyInvalidUsageOfClassThis
+      this.map.fitBounds(L.latLngBounds(latLng), {maxZoom: 15})
+    },{map: this.map});
 
     this.addingNewPOI = true;
     //Subscribes add-marker component to the new marker to track coordinates
@@ -128,12 +114,17 @@ export class MapComponent implements OnInit {
 
   onPOIAdd(savedPOI: PointOfInterest) {
     this.hideNewPOIForm(false);
-    this.newMarker.bindPopup(this.markerHtml(savedPOI.title, savedPOI.category,
+    this.newMarker.bindPopup(this.markerPopupHtml(savedPOI.title, savedPOI.category,
       savedPOI.description, savedPOI.type));
     this.newMarker.dragging.disable();
+    let newIcon = icon({
+      iconUrl: 'leaflet/marker-icon.png',
+      shadowUrl: 'leaflet/marker-shadow.png'
+    });
+    this.newMarker.setIcon(newIcon);
   }
 
-  markerHtml(title: string, category: string, description: string, type: string) {
+  markerPopupHtml(title: string, category: string, description: string, type: string) {
     return `<h2>${title}</h2> <h3>${category}</h3> <h3>${type}</h3> <p>${description}</p>`;
   }
 
