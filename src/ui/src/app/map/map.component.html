@@ -4,7 +4,7 @@
      leaflet
      [leafletOptions]="initialSetup"
      [leafletLayersControl]="layersControl"
-     (leafletClick)="showSaveLocationPopup($event.latlng)">
+     (leafletClick)="showSavePOIPopup($event.latlng)">
 
   <div *ngFor="let l of layers" [leafletLayer]="l"></div>
 
@@ -24,6 +24,10 @@
         </mat-form-field>
 
         <mat-form-field>
+          <input matInput type="text" placeholder="Category" required formControlName="category">
+        </mat-form-field>
+
+        <mat-form-field>
           <textarea matInput placeholder="Description" formControlName="description"></textarea>
         </mat-form-field>
 
@@ -35,6 +39,17 @@
             <mat-option value="Object">Object</mat-option>
           </mat-select>
         </mat-form-field>
+
+        <mat-card-content fxLayoutAlign="space-between center" fxLayoutGap="20px">
+          <mat-form-field>
+            <input matInput type="text" required formControlName="lat">
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput type="text" required formControlName="long">
+          </mat-form-field>
+
+        </mat-card-content>
 
       </mat-card-content>
 

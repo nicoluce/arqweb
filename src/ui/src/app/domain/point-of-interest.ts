@@ -7,5 +7,7 @@ export class PointOfInterest {
   ownerId: number;
   description: string;
   type: string;
+  lat: number;
+  long: number;
 
 }

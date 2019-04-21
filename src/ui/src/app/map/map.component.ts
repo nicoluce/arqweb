@@ -4,7 +4,7 @@ import {
   icon,
   LatLng,
   latLng,
-  Layer,
+  Layer, LeafletEvent,
   LeafletMouseEvent,
   marker,
   Marker,
@@ -14,6 +14,7 @@ import {
 import layers = control.layers;
 import {PointOfInterest} from "../domain/point-of-interest";
 import {FormBuilder, FormControl, FormGroup, NgForm, Validators} from "@angular/forms";
+import {PoiServiceService} from "../service/poi-service.service";
 
 @Component({
   selector: 'app-map',
@@ -43,8 +44,10 @@ export class MapComponent implements OnInit {
   addPOIForm: FormGroup;
   newPOI: PointOfInterest;
   newMarker: Marker;
+  private poiService: PoiServiceService;
 
-  constructor() {
+  constructor(poiService: PoiServiceService) {
+    this.poiService = poiService;
   }
 
   ngOnInit() {
@@ -71,19 +74,27 @@ export class MapComponent implements OnInit {
   }
 
   resetPOIForm() {
+    let latLng;
+    if (this.newMarker != null) {
+      latLng = this.newMarker.getLatLng();
+    } else {
+      latLng = new LatLng(0, 0);
+    }
     this.addPOIForm = new FormGroup({
       title: new FormControl('', [Validators.required, Validators.maxLength(60)]),
+      category: new FormControl('', [Validators.required, Validators.maxLength(60)]),
       description: new FormControl(''),
-      type: new FormControl('', [Validators.required, Validators.maxLength(30)])
+      type: new FormControl('', [Validators.required, Validators.maxLength(30)]),
+      lat: new FormControl(latLng.lat),
+      long: new FormControl(latLng.lng)
     });
   }
 
-  showSaveLocationPopup(latLong: LatLng) {
+  showSavePOIPopup(latLong: LatLng) {
     if (this.addingNewPOI) {
       this.cancelNewPOI();
     }
 
-    this.addingNewPOI = true;
     let newMarker = marker(latLong, {
       icon: icon({
         iconSize: [ 25, 41 ],
@@ -95,7 +106,16 @@ export class MapComponent implements OnInit {
       draggable: true,
     });
 
+    newMarker.on('add move drag dragEnd', function (e) {
+      let latLng = newMarker.getLatLng();
+      this.mapComponent.addPOIForm.setControl("lat", new FormControl(latLng.lat));
+      this.mapComponent.addPOIForm.setControl("long", new FormControl(latLng.lng));
+    }, {mapComponent: this});
+
     this.newMarker = newMarker;
+
+    this.addingNewPOI = true;
+
     this.layers.push(newMarker);
 
   }
@@ -104,11 +124,15 @@ export class MapComponent implements OnInit {
     this.newMarker.dragging.disable();
     console.log(newPoiForm);
     this.addingNewPOI = false;
-    this.newMarker.bindPopup(this.markerHtml(newPoiForm.title, newPoiForm.description, newPoiForm.type));
+    this.newMarker.bindPopup(this.markerHtml(newPoiForm.title, newPoiForm.category,
+      newPoiForm.description, newPoiForm.type));
+    
+    this.saveNewPOI(newPoiForm.title, newPoiForm.category,
+      newPoiForm.description, newPoiForm.type);
   }
 
-  private markerHtml(title: string, description: string, type: string) {
-    return `<h2>${title}</h2> <h3>${type}</h3> <p>${description}</p>`;
+  private markerHtml(title: string, category: string, description: string, type: string) {
+    return `<h2>${title}</h2> <h3>${category}</h3> <h3>${type}</h3> <p>${description}</p>`;
   }
 
   cancelNewPOI() {
@@ -116,5 +140,21 @@ export class MapComponent implements OnInit {
     this.layers.pop();
     this.resetPOIForm();
   }
+
+  saveNewPOI(title: string, category: string, description: string, type: string){
+    this.buildPOI(title, category, description, type);
+    this.poiService.savePOI(this.newPOI);
+  }
+
+  buildPOI(title: string, category: string, description: string, type: string) {
+    let newPOI = new PointOfInterest();
+    newPOI.title = title;
+    newPOI.category = category;
+    newPOI.description = description;
+    newPOI.type = type;
+
+    this.newPOI = newPOI;
+  }
+
 
 }
