@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {
   control,
   icon,
@@ -15,6 +15,7 @@ import layers = control.layers;
 import {PointOfInterest} from "../domain/point-of-interest";
 import {FormBuilder, FormControl, FormGroup, NgForm, Validators} from "@angular/forms";
 import {PoiServiceService} from "../service/poi-service.service";
+import {AddMarkerFormComponent} from "../add-marker-form/add-marker-form.component";
 
 @Component({
   selector: 'app-map',
@@ -41,13 +42,32 @@ export class MapComponent implements OnInit {
   layers: Layer[];
 
   addingNewPOI = false;
-  addPOIForm: FormGroup;
-  newPOI: PointOfInterest;
-  newMarker: Marker;
-  private poiService: PoiServiceService;
 
-  constructor(poiService: PoiServiceService) {
-    this.poiService = poiService;
+  newMarker: Marker;
+
+  //Use @ViewChildren instead of @ViewChild because of the *ngIf in the html template
+  //@ViewChild("addMarkerComponent")
+  //addMarkerComponent: AddMarkerFormComponent;
+  private addMarkerComponent: AddMarkerFormComponent;
+
+  @ViewChild('addMarkerComponent') set markerComponent(addMarkerComponent: AddMarkerFormComponent) {
+    this.addMarkerComponent = addMarkerComponent;
+    this.cdRef.detectChanges();
+  }
+
+/*
+  @ViewChildren("addMarkerComponent")
+  public addMarkerComponents: QueryList<AddMarkerFormComponent>;
+
+  public ngAfterViewInit(): void {
+    this.addMarkerComponents.changes.subscribe((comps: QueryList <AddMarkerFormComponent>) => {
+      this.addMarkerComponent = comps.first;
+    });
+
+    console.log(this.addMarkerComponent);
+  }
+*/
+  constructor(private cdRef:ChangeDetectorRef) {
   }
 
   ngOnInit() {
@@ -68,31 +88,12 @@ export class MapComponent implements OnInit {
     };
 
     this.layers = [];
-
-    this.resetPOIForm();
-
-  }
-
-  resetPOIForm() {
-    let latLng;
-    if (this.newMarker != null) {
-      latLng = this.newMarker.getLatLng();
-    } else {
-      latLng = new LatLng(0, 0);
-    }
-    this.addPOIForm = new FormGroup({
-      title: new FormControl('', [Validators.required, Validators.maxLength(60)]),
-      category: new FormControl('', [Validators.required, Validators.maxLength(60)]),
-      description: new FormControl(''),
-      type: new FormControl('', [Validators.required, Validators.maxLength(30)]),
-      lat: new FormControl(latLng.lat),
-      long: new FormControl(latLng.lng)
-    });
   }
 
   showSavePOIPopup(latLong: LatLng) {
     if (this.addingNewPOI) {
-      this.cancelNewPOI();
+      //Remove last marker
+      this.layers.pop();
     }
 
     let newMarker = marker(latLong, {
@@ -106,55 +107,37 @@ export class MapComponent implements OnInit {
       draggable: true,
     });
 
-    newMarker.on('add move drag dragEnd', function (e) {
-      let latLng = newMarker.getLatLng();
-      this.mapComponent.addPOIForm.setControl("lat", new FormControl(latLng.lat));
-      this.mapComponent.addPOIForm.setControl("long", new FormControl(latLng.lng));
-    }, {mapComponent: this});
-
     this.newMarker = newMarker;
 
     this.addingNewPOI = true;
+    //Subscribes add-marker component to the new marker to track coordinates
+    //SetTimeout is used to give time for the @ViewChild to set the component
+    //after the *ngIf activation
+    setTimeout(() => this.addMarkerComponent.resetPOIForm(), 1);
 
     this.layers.push(newMarker);
 
   }
 
-  addPOI(newPoiForm) {
-    this.newMarker.dragging.disable();
-    console.log(newPoiForm);
+  hideNewPOIForm(removeLastLayer = true) {
     this.addingNewPOI = false;
-    this.newMarker.bindPopup(this.markerHtml(newPoiForm.title, newPoiForm.category,
-      newPoiForm.description, newPoiForm.type));
-    
-    this.saveNewPOI(newPoiForm.title, newPoiForm.category,
-      newPoiForm.description, newPoiForm.type);
+    if (removeLastLayer) {
+      this.layers.pop();
+    }
   }
 
-  private markerHtml(title: string, category: string, description: string, type: string) {
+  onPOIAdd(savedPOI: PointOfInterest) {
+    this.hideNewPOIForm(false);
+    this.newMarker.bindPopup(this.markerHtml(savedPOI.title, savedPOI.category,
+      savedPOI.description, savedPOI.type));
+    this.newMarker.dragging.disable();
+  }
+
+  markerHtml(title: string, category: string, description: string, type: string) {
     return `<h2>${title}</h2> <h3>${category}</h3> <h3>${type}</h3> <p>${description}</p>`;
   }
 
-  cancelNewPOI() {
-    this.addingNewPOI = false;
-    this.layers.pop();
-    this.resetPOIForm();
-  }
 
-  saveNewPOI(title: string, category: string, description: string, type: string){
-    this.buildPOI(title, category, description, type);
-    this.poiService.savePOI(this.newPOI);
-  }
-
-  buildPOI(title: string, category: string, description: string, type: string) {
-    let newPOI = new PointOfInterest();
-    newPOI.title = title;
-    newPOI.category = category;
-    newPOI.description = description;
-    newPOI.type = type;
-
-    this.newPOI = newPOI;
-  }
 
 
 }

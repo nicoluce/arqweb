@@ -10,11 +10,13 @@ import {MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule, MatS
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MaterialModule} from "./material/material.module";
 import {FlexLayoutModule} from "@angular/flex-layout";
+import { AddMarkerFormComponent } from './add-marker-form/add-marker-form.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    MapComponent
+    MapComponent,
+    AddMarkerFormComponent
   ],
   imports: [
     BrowserModule,
