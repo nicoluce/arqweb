@@ -29,7 +29,7 @@ func (pc *POIController) AddPOI(c *gin.Context) {
 
 	log.Infof("Adding new POI: %+v", geoJsonFeature)
 
-	savedPOI, err := pc.POIStorage.SaveFeature(geoJsonFeature)
+	savedPOI, err := pc.POIStorage.SaveFeature(&geoJsonFeature)
 
 	if err != nil {
 		_ = c.Error(err)
