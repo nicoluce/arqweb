@@ -6,11 +6,23 @@
 
 ## How to run
 
-1. Run Go backend application (port 8080)
+Running locally requires MongoDB.
+
+1. [Install MongoDB](https://docs.mongodb.com/manual/administration/install-community/) and start server.
+
+2. Install project dependencies:
 
 ```bash
 #Current dir: src/api
-go run main.go
+$ dep ensure
+
+```
+
+3. Run Go backend application (port 8080):
+
+```bash
+#Current dir: src/api
+$ go run main.go
 
 ```
 
@@ -18,6 +30,6 @@ go run main.go
 
 ```bash
 #Current dir: src/ui
-ng serve
+$ ng serve
 
 ```

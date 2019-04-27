@@ -13,10 +13,19 @@ type POIController struct {
 	POIStorage storage.POIStorage
 }
 
-func NewPOIController() *POIController {
+func CreatePOIController(POIStorage storage.POIStorage) *POIController{
 	return &POIController{
-		POIStorage: storage.NewPOIStorage(),
+		POIStorage:POIStorage,
 	}
+}
+
+func NewPOIController() (*POIController, error) {
+	POIStorage, err := storage.NewPOIStorage()
+	if err != nil {
+		return nil, apierror.Wrapf(err, "Could not create POI controller")
+	}
+
+	return CreatePOIController(POIStorage), nil
 }
 
 func (pc *POIController) AddPOI(c *gin.Context) {

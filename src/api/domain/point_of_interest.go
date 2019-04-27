@@ -1,6 +1,9 @@
 package domain
 
+import "go.mongodb.org/mongo-driver/bson/primitive"
+
 type PointOfInterest struct {
+	Id          primitive.ObjectID
 	Title       string
 	Category    string
 	OwnerId     int64
