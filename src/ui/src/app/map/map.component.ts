@@ -32,11 +32,11 @@ export class MapComponent implements OnInit {
 
   newMarker: Marker;
 
-  //Use @ViewChild to inject child component. Using setter
-  //because of the *ngIf in the html template.
   private addMarkerComponent: AddMarkerFormComponent;
   private map: Map;
 
+  //Use @ViewChild to inject child component. Using setter
+  //because of the *ngIf in the html template.
   @ViewChild('addMarkerComponent') set markerComponent(addMarkerComponent: AddMarkerFormComponent) {
     this.addMarkerComponent = addMarkerComponent;
     this.cdRef.detectChanges();

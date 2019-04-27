@@ -76,6 +76,14 @@
   version = "1.0.1"
 
 [[projects]]
+  digest = "1:36cfc0b6facbc68c92a4d55f32eff22b872a899ab75c384ac24a08dd33bc1380"
+  name = "github.com/paulmach/go.geojson"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "a5c451da2d9c67c590ae6be92565b67698286a1a"
+  version = "v1.4"
+
+[[projects]]
   digest = "1:cf31692c14422fa27c83a05292eb5cbe0fb2775972e8f1f8446a71549bd8980b"
   name = "github.com/pkg/errors"
   packages = ["."]
@@ -142,6 +150,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/gin-gonic/gin",
+    "github.com/paulmach/go.geojson",
     "github.com/pkg/errors",
     "github.com/sirupsen/logrus",
     "github.com/stretchr/testify/assert",
