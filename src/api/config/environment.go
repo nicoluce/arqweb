@@ -34,7 +34,6 @@ func GetScope() string {
 
 }
 
-
 func InDevelopment() bool {
 	return GetScope() == DevelopmentScope
 }

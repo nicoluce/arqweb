@@ -15,6 +15,6 @@ func DefaultGeoJsonFeature() *geojson.Feature {
 	return geoJsonPoint
 }
 
-func NewDocumentId() primitive.ObjectID{
+func NewDocumentId() primitive.ObjectID {
 	return primitive.NewObjectID()
 }

@@ -20,8 +20,8 @@ type POIStorage interface {
 	SearchByCategory(category string, limit int64) ([]*domain.PointOfInterest, error)
 }
 
-const(
-	Database = "arqweb"
+const (
+	Database      = "arqweb"
 	POICollection = "poi"
 )
 
@@ -52,14 +52,14 @@ func NewPOIStorage() (POIStorage, error) {
 }
 
 func getMongoDBClient() (*mongo.Client, error) {
-	ctx, _ := context.WithTimeout(context.Background(), 5 * time.Second)
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
 
 	if err != nil {
 		return nil, apierror.Wrap(err, "Could not connect to MongoDB")
 	}
 
-	ctx, _ = context.WithTimeout(context.Background(), 5 * time.Second)
+	ctx, _ = context.WithTimeout(context.Background(), 5*time.Second)
 	err = client.Ping(ctx, readpref.Primary())
 
 	if err != nil {
@@ -72,7 +72,7 @@ func getMongoDBClient() (*mongo.Client, error) {
 func (ps *POIStorageImpl) SavePOI(POI *domain.PointOfInterest) (*domain.PointOfInterest, error) {
 
 	POI.Id = primitive.NewObjectID()
-	ctx, _ := context.WithTimeout(context.Background(), 1 * time.Second)
+	ctx, _ := context.WithTimeout(context.Background(), 1*time.Second)
 	res, err := ps.poiCollection.InsertOne(ctx, POI)
 
 	if err != nil {
@@ -121,12 +121,12 @@ func (ps *POIStorageImpl) featureToPOI(feature *geojson.Feature) (*domain.PointO
 		long := feature.Geometry.Point[1]
 		//long
 		POI := &domain.PointOfInterest{
-			Title:title,
-			Category:category,
-			Description:description,
-			Type:POIType,
-			Lat:lat,
-			Long:long,
+			Title:       title,
+			Category:    category,
+			Description: description,
+			Type:        POIType,
+			Lat:         lat,
+			Long:        long,
 		}
 		return POI, nil
 	}
@@ -141,7 +141,7 @@ func resetPoiCollection() {
 	if err != nil {
 		return
 	}
-	ctx, _ := context.WithTimeout(context.Background(), 5 * time.Second)
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 
 	err = client.Database(Database).Collection(POICollection).Drop(ctx)
 
@@ -151,7 +151,7 @@ func resetPoiCollection() {
 }
 
 func (ps *POIStorageImpl) SearchByCategory(category string, limit int64) ([]*domain.PointOfInterest, error) {
-	ctx, _ := context.WithTimeout(context.Background(), 3 * time.Second)
+	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
 
 	findOptions := options.Find()
 	findOptions.SetLimit(limit)
@@ -177,4 +177,3 @@ func (ps *POIStorageImpl) SearchByCategory(category string, limit int64) ([]*dom
 	return results, nil
 
 }
-

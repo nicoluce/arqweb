@@ -16,9 +16,9 @@ type POIController struct {
 	POIStorage storage.POIStorage
 }
 
-func CreatePOIController(POIStorage storage.POIStorage) *POIController{
+func CreatePOIController(POIStorage storage.POIStorage) *POIController {
 	return &POIController{
-		POIStorage:POIStorage,
+		POIStorage: POIStorage,
 	}
 }
 
@@ -78,5 +78,3 @@ func (pc *POIController) SearchPOI(c *gin.Context) {
 	c.JSON(http.StatusOK, POIs)
 
 }
-
-

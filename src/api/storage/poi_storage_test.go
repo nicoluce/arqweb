@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-func init()  {
+func init() {
 	config.Scope = config.TestScope
 }
 
@@ -21,7 +21,6 @@ func TestSaveGeoJsonFeature(t *testing.T) {
 	poiCollectionMock := mock.NewMockICollection(ctrl)
 	POIStorage, _ := storage.CreatePOIStorage(poiCollectionMock)
 	pointFeature := test.DefaultGeoJsonFeature()
-
 
 	documentId := test.NewDocumentId()
 	poiCollectionMock.EXPECT().InsertOne(gomock.Any(), gomock.Any()).Return(&mongo.InsertOneResult{
@@ -51,7 +50,6 @@ func TestSearchByCategory(t *testing.T) {
 
 
 	documentId := test.NewDocumentId()*/
-
 
 	//When
 
