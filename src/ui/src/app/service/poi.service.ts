@@ -17,8 +17,8 @@ export class PoiService {
   //Saves the POI in the backend
   savePOI(POI: PointOfInterest) {
     let POIGeoJSON = PoiService.POIToGeoJSON(POI);
-    this.http.post(environment.baseUrl + "/poi", POIGeoJSON).subscribe(
-      (next) => console.log(`Saved POI: ${next}`)
+    this.http.post<PointOfInterest>(environment.baseUrl + "/poi", POIGeoJSON).subscribe(
+      (next: PointOfInterest) => console.log(`Saved POI with id: ${next.id}`)
     );
   }
 

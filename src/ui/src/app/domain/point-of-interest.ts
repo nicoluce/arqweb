@@ -2,6 +2,7 @@ import {Feature} from "geojson";
 
 export class PointOfInterest {
 
+  id: string
   title: string;
   category: string;
   ownerId: number;
