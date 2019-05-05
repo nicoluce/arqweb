@@ -51,7 +51,7 @@ func TestSaveGeoJsonFeature(t *testing.T) {
 }
 
 //Integration test using local MongoDB
-func TestSearchByCategory(t *testing.T) {
+func TestSearch(t *testing.T) {
 	//Given
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	client, _ := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
