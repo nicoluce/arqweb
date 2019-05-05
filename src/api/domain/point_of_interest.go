@@ -3,7 +3,7 @@ package domain
 import "go.mongodb.org/mongo-driver/bson/primitive"
 
 type PointOfInterest struct {
-	Id          primitive.ObjectID `json:"_id" bson:"_id" required:"false"`
+	Id          primitive.ObjectID `json:"id" bson:"_id" required:"false"`
 	Title       string             `json:"title" bson:"title" required:"true"`
 	Category    string             `json:"category" bson:"category" required:"true"`
 	OwnerId     int64              `json:"ownerId" bson:"ownerId" required:"false"`
