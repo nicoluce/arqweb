@@ -41,12 +41,7 @@ func TestAddPOI(t *testing.T) {
 
 		//Then
 		assert.Equal(t, http.StatusBadRequest, w.Code)
-		assert.Equal(t, `{
-  "message":"There was a problem with the request",
-  "error":"bad_request",
-  "status":400,
-  "cause":["Error parsing POI. It should be a GeoJson feature"],
-}`,
+		assert.Equal(t, `{"message":"There was a problem with the request","error":"bad_request","status":400,"cause":["Error parsing POI. It should be a GeoJson feature"]}`,
 			w.Body.String())
 
 	})
