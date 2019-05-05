@@ -12,12 +12,14 @@ import {MaterialModule} from "./material/material.module";
 import {FlexLayoutModule} from "@angular/flex-layout";
 import { AddMarkerFormComponent } from './add-marker-form/add-marker-form.component';
 import {HttpClientModule} from "@angular/common/http";
+import {POIFilterComponent} from "./poi-filter/poi-filter.component";
 
 @NgModule({
   declarations: [
     AppComponent,
     MapComponent,
-    AddMarkerFormComponent
+    AddMarkerFormComponent,
+    POIFilterComponent
   ],
   imports: [
     BrowserModule,

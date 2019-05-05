@@ -52,7 +52,8 @@ export class AddMarkerFormComponent implements OnInit {
     })
   }
 
-  addPOI(newPoiForm) {
+  //Argument has same fields as control group
+  addPOI(newPoiForm: any) {
     let latLng = this.marker.getLatLng();
 
     this.buildPOI(newPoiForm.title, newPoiForm.category,

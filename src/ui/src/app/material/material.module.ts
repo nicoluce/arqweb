@@ -1,7 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule, MatSelectModule} from "@angular/material";
+import {
+  MatAutocompleteModule,
+  MatButtonModule,
+  MatCardModule,
+  MatFormFieldModule,
+  MatInputModule,
+  MatSelectModule
+} from "@angular/material";
 
 @NgModule({
   declarations: [],
@@ -13,7 +20,8 @@ import {MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule, MatS
     MatButtonModule,
     MatInputModule,
     MatCardModule,
-    MatButtonModule
+    MatButtonModule,
+    MatAutocompleteModule
   ],
   exports: [
     BrowserAnimationsModule,
@@ -22,7 +30,8 @@ import {MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule, MatS
     MatButtonModule,
     MatInputModule,
     MatCardModule,
-    MatButtonModule
+    MatButtonModule,
+    MatAutocompleteModule
   ]
 })
 export class MaterialModule { }

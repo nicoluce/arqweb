@@ -3,6 +3,7 @@ import * as L from "leaflet";
 import {icon, LatLng, latLng, Layer, LeafletMouseEvent, Map, marker, Marker, tileLayer} from "leaflet";
 import {PointOfInterest} from "../domain/point-of-interest";
 import {AddMarkerFormComponent} from "../add-marker-form/add-marker-form.component";
+import {PoiService} from "../service/poi.service";
 
 @Component({
   selector: 'app-map',
@@ -34,6 +35,9 @@ export class MapComponent implements OnInit {
 
   private addMarkerComponent: AddMarkerFormComponent;
   private map: Map;
+  private static setMarkerIconUrl = 'leaflet/marker-icon.png';
+  private static setMarkerShadowUrl = 'leaflet/marker-shadow.png';
+
 
   //Use @ViewChild to inject child component. Using setter
   //because of the *ngIf in the html template.
@@ -42,7 +46,7 @@ export class MapComponent implements OnInit {
     this.cdRef.detectChanges();
   }
 
-  constructor(private cdRef:ChangeDetectorRef) {
+  constructor(private cdRef:ChangeDetectorRef, private poiService: PoiService) {
   }
 
   ngOnInit() {
@@ -84,6 +88,7 @@ export class MapComponent implements OnInit {
       }),
       clickable: true,
       draggable: true,
+      riseOnHover: true
     });
 
     this.newMarker = newMarker;
@@ -112,23 +117,58 @@ export class MapComponent implements OnInit {
     }
   }
 
+
+
   onPOIAdd(savedPOI: PointOfInterest) {
     this.hideNewPOIForm(false);
-    this.newMarker.bindPopup(this.markerPopupHtml(savedPOI.title, savedPOI.category,
+    this.newMarker.bindPopup(MapComponent.markerPopupHtml(savedPOI.title, savedPOI.category,
       savedPOI.description, savedPOI.type));
     this.newMarker.dragging.disable();
     let newIcon = icon({
-      iconUrl: 'leaflet/marker-icon.png',
-      shadowUrl: 'leaflet/marker-shadow.png'
+      iconUrl: MapComponent.setMarkerIconUrl,
+      shadowUrl: MapComponent.setMarkerShadowUrl
     });
     this.newMarker.setIcon(newIcon);
   }
 
-  markerPopupHtml(title: string, category: string, description: string, type: string) {
+  //TODO: improve
+  static markerPopupHtml(title: string, category: string, description: string, type: string) {
     return `<h2>${title}</h2> <h3>${category}</h3> <h3>${type}</h3> <p>${description}</p>`;
   }
 
+  //Only filters by category, but could be extended
+  private filterPOIs(category: string) {
+    let markerLimit = 20; //Arbitrary marker limit
+    let bounds = this.map.getBounds();
+
+    let POIs = this.poiService.Search(category, markerLimit, bounds);
+    this.layers = [];
+    POIs.forEach(
+      (POI: PointOfInterest) => {
+        this.layers.push(MapComponent.POIToMarker(POI))
+      }, this
+    )
+  }
 
 
+  public static POIToMarker(POI: PointOfInterest): Marker {
+    let marker = new Marker([POI.lat, POI.long],
+      {
+        draggable: false,
+        clickable: true,
+        riseOnHover: true,
+        icon: icon({
+          iconSize: [ 25, 41 ],
+          iconAnchor: [ 13, 41 ],
+          iconUrl: this.setMarkerIconUrl,
+          shadowUrl: this.setMarkerShadowUrl,
+        }),
+        title: POI.title
+      });
+
+    marker.bindPopup(MapComponent.markerPopupHtml(POI.title, POI.category, POI.description, POI.type));
+
+    return marker
+  }
 
 }

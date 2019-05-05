@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import {PointOfInterest} from "../domain/point-of-interest";
 import {HttpClient} from "@angular/common/http";
-import {Feature, GeoJsonObject} from "geojson";
+import {Feature} from "geojson";
 import {environment} from "../../environments/environment";
+import {LatLngBounds} from "leaflet";
 
 @Injectable({
   providedIn: 'root'
@@ -38,5 +39,10 @@ export class PoiService {
       }
     };
 
+  }
+
+  Search(category: string, markerLimit: number, bounds: LatLngBounds) {
+    //TODO
+    return [];
   }
 }
