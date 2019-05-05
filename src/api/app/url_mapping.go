@@ -19,7 +19,9 @@ func init() {
 func LoadEndpoints() {
 	Router.GET("/ping", controller.Ping)
 
-	Router.POST("/poi", poiController.AddPOI)
-	Router.GET("/poi/search", poiController.SearchPOI)
+	poiGroup := Router.Group("/poi")
+
+	poiGroup.POST("", poiController.AddPOI)
+	poiGroup.GET("/search", poiController.SearchPOI)
 
 }
