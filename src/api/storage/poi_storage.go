@@ -6,6 +6,7 @@ import (
 	"github.com/fernetbalboa/arqweb/src/api/domain"
 	"github.com/paulmach/go.geojson"
 	log "github.com/sirupsen/logrus"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -16,6 +17,7 @@ import (
 type POIStorage interface {
 	SavePOI(POI *domain.PointOfInterest) (*domain.PointOfInterest, error)
 	SaveFeature(feature *geojson.Feature) (*domain.PointOfInterest, error)
+	SearchByCategory(category string, limit int64) ([]*domain.PointOfInterest, error)
 }
 
 const(
@@ -28,12 +30,12 @@ func init() {
 }
 
 type POIStorageImpl struct {
-	mongoClient *mongo.Client
+	poiCollection ICollection
 }
 
-func CreatePOIStorage(client *mongo.Client) (POIStorage, error) {
+func CreatePOIStorage(POIcollection ICollection) (POIStorage, error) {
 	storage := &POIStorageImpl{
-		mongoClient:client,
+		poiCollection: POIcollection,
 	}
 
 	return storage, nil
@@ -41,23 +43,23 @@ func CreatePOIStorage(client *mongo.Client) (POIStorage, error) {
 
 func NewPOIStorage() (POIStorage, error) {
 	client, err := getMongoDBClient()
-
+	poiCollection := client.Database(Database).Collection(POICollection)
 	if err != nil {
 		return nil, err
 	}
 
-	return CreatePOIStorage(client)
+	return CreatePOIStorage(poiCollection)
 }
 
 func getMongoDBClient() (*mongo.Client, error) {
-	ctx, _ := context.WithTimeout(context.Background(), 10 * time.Second)
+	ctx, _ := context.WithTimeout(context.Background(), 5 * time.Second)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
 
 	if err != nil {
 		return nil, apierror.Wrap(err, "Could not connect to MongoDB")
 	}
 
-	ctx, _ = context.WithTimeout(context.Background(), 10 * time.Second)
+	ctx, _ = context.WithTimeout(context.Background(), 5 * time.Second)
 	err = client.Ping(ctx, readpref.Primary())
 
 	if err != nil {
@@ -69,10 +71,9 @@ func getMongoDBClient() (*mongo.Client, error) {
 
 func (ps *POIStorageImpl) SavePOI(POI *domain.PointOfInterest) (*domain.PointOfInterest, error) {
 
-	POICollection := ps.mongoClient.Database(Database).Collection(POICollection)
-
+	POI.Id = primitive.NewObjectID()
 	ctx, _ := context.WithTimeout(context.Background(), 1 * time.Second)
-	res, err := POICollection.InsertOne(ctx, POI)
+	res, err := ps.poiCollection.InsertOne(ctx, POI)
 
 	if err != nil {
 		return nil, apierror.Wrapf(err, "Could not insert new POI into MongoDB. POI: %+v", POI)
@@ -147,5 +148,33 @@ func resetPoiCollection() {
 	if err != nil {
 		log.Error("Could not reset POI MongoDB collection")
 	}
+}
+
+func (ps *POIStorageImpl) SearchByCategory(category string, limit int64) ([]*domain.PointOfInterest, error) {
+	ctx, _ := context.WithTimeout(context.Background(), 3 * time.Second)
+
+	findOptions := options.Find()
+	findOptions.SetLimit(limit)
+
+	resCursor, err := ps.poiCollection.Find(ctx, bson.M{"category": category}, findOptions)
+
+	if err != nil {
+		return []*domain.PointOfInterest{}, apierror.Wrapf(err, "Could not find POIs by category '%s", category)
+	}
+
+	//noinspection GoPreferNilSlice
+	results := []*domain.PointOfInterest{}
+	for resCursor.Next(ctx) {
+		var POI domain.PointOfInterest
+		err = resCursor.Decode(&POI)
+		if err != nil {
+			log.Errorf("Error while decoding POI in find by category. Cause: %v", err)
+		} else {
+			results = append(results, &POI)
+		}
+	}
+
+	return results, nil
+
 }
 

@@ -7,7 +7,10 @@ import (
 	"github.com/paulmach/go.geojson"
 	log "github.com/sirupsen/logrus"
 	"net/http"
+	"strconv"
 )
+
+const DefaultSearchLimit int64 = 20
 
 type POIController struct {
 	POIStorage storage.POIStorage
@@ -48,3 +51,32 @@ func (pc *POIController) AddPOI(c *gin.Context) {
 	c.JSON(http.StatusCreated, savedPOI)
 
 }
+
+func (pc *POIController) SearchPOI(c *gin.Context) {
+	category := c.Query("category")
+	limit, err := strconv.ParseInt(c.Query("limit"), 10, 64)
+
+	if err != nil {
+		limit = DefaultSearchLimit
+	}
+
+	if category == "" {
+		err := apierror.BadRequest.Newf("POI search is only available by category. No category was provided")
+		_ = c.Error(err)
+		return
+	}
+
+	log.Infof("Searching POIs for request: %s", c.Request.URL)
+
+	POIs, err := pc.POIStorage.SearchByCategory(category, limit)
+
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	c.JSON(http.StatusOK, POIs)
+
+}
+
+

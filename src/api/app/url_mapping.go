@@ -20,5 +20,6 @@ func LoadEndpoints() {
 	Router.GET("/ping", controller.Ping)
 
 	Router.POST("/poi", poiController.AddPOI)
+	Router.GET("/poi/search", poiController.SearchPOI)
 
 }
