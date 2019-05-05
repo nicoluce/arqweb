@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { PoiServiceService } from './poi-service.service';
+import { PoiService } from './poi.service';
 
-describe('PoiServiceService', () => {
+describe('PoiService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: PoiServiceService = TestBed.get(PoiServiceService);
+    const service: PoiService = TestBed.get(PoiService);
     expect(service).toBeTruthy();
   });
 });

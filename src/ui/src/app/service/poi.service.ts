@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import {PointOfInterest} from "../domain/point-of-interest";
 import {HttpClient} from "@angular/common/http";
+import {Feature, GeoJsonObject} from "geojson";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
-export class PoiServiceService {
+export class PoiService {
   private http: HttpClient;
-  private baseUrl: "localhost:8080";
 
   constructor(http: HttpClient) {
     this.http = http;
@@ -15,13 +16,14 @@ export class PoiServiceService {
 
   //Saves the POI in the backend
   savePOI(POI: PointOfInterest) {
-    let POIGeoJSON = this.POIToGeoJSON(POI);
-    //TODO
-    //this.http.post(this.baseUrl + "/poi", POIGeoJSON);
+    let POIGeoJSON = PoiService.POIToGeoJSON(POI);
+    this.http.post(environment.baseUrl + "/poi", POIGeoJSON).subscribe(
+      (next) => console.log(`Saved POI: ${next}`)
+    );
   }
 
   //Converts a POI to a GeoJSON
-  private POIToGeoJSON(POI: PointOfInterest) {
+  private static POIToGeoJSON(POI: PointOfInterest): Feature {
     return {
       type: "Feature",
       geometry: {

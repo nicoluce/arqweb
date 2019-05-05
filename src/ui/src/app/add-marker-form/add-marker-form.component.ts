@@ -3,7 +3,7 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {PointOfInterest} from "../domain/point-of-interest";
 import {LatLng, LeafletEvent, Marker} from "leaflet";
 import {MapComponent} from "../map/map.component";
-import {PoiServiceService} from "../service/poi-service.service";
+import {PoiService} from "../service/poi.service";
 
 @Component({
   selector: 'app-add-marker-form',
@@ -17,9 +17,9 @@ export class AddMarkerFormComponent implements OnInit {
   newPOI: PointOfInterest;
   @Output() addedPOI: EventEmitter<any> = new EventEmitter();
   @Output() cancelPOI: EventEmitter<any> = new EventEmitter();
-  private poiService: PoiServiceService;
+  private poiService: PoiService;
 
-  constructor(poiService: PoiServiceService) {
+  constructor(poiService: PoiService) {
     this.poiService = poiService;
   }
 
@@ -53,30 +53,36 @@ export class AddMarkerFormComponent implements OnInit {
   }
 
   addPOI(newPoiForm) {
-    this.saveNewPOI(newPoiForm.title, newPoiForm.category,
-      newPoiForm.description, newPoiForm.type);
+    let latLng = this.marker.getLatLng();
+
+    this.buildPOI(newPoiForm.title, newPoiForm.category,
+      newPoiForm.description, newPoiForm.type, latLng.lat, latLng.lng);
+
+    this.saveNewPOI();
+
+    //Inform map of save event
+    this.addedPOI.emit(this.newPOI);
+
+  }
+
+  buildPOI(title: string, category: string, description: string, type: string, lat: number, long: number) {
+    let newPOI = new PointOfInterest();
+    newPOI.title = title;
+    newPOI.category = category;
+    newPOI.description = description;
+    newPOI.type = type;
+    newPOI.lat = lat;
+    newPOI.long = long;
+
+    this.newPOI = newPOI;
   }
 
   cancelNewPOI() {
     this.cancelPOI.emit(null);
   }
 
-  saveNewPOI(title: string, category: string, description: string, type: string){
-    this.buildPOI(title, category, description, type);
+  saveNewPOI(){
     this.poiService.savePOI(this.newPOI);
-    //Inform map of save event
-    this.addedPOI.emit(this.newPOI);
-
-  }
-
-  buildPOI(title: string, category: string, description: string, type: string) {
-    let newPOI = new PointOfInterest();
-    newPOI.title = title;
-    newPOI.category = category;
-    newPOI.description = description;
-    newPOI.type = type;
-
-    this.newPOI = newPOI;
   }
 
 }
