@@ -6,8 +6,24 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+func DefaultGeoJsonFeatureString() string {
+	return `{
+		"type": "Feature",
+			"geometry": {
+			"type": "Point",
+				"coordinates": [20, 40]
+	},
+	"properties": {
+	"title": "testTitle",
+	"category": "testCategory",
+	"type": "testType",
+	"description": "testDescription"
+	}
+}`
+}
+
 func DefaultGeoJsonFeature() *geojson.Feature {
-	geoJsonPoint := geojson.NewFeature(geojson.NewPointGeometry([]float64{50, 100}))
+	geoJsonPoint := geojson.NewFeature(geojson.NewPointGeometry([]float64{20, 40}))
 	geoJsonPoint.SetProperty("title", "testTitle")
 	geoJsonPoint.SetProperty("category", "testCategory")
 	geoJsonPoint.SetProperty("description", "testDescription")
