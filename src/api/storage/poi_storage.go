@@ -161,6 +161,8 @@ func (ps *POIStorageImpl) SearchByCategory(category string, limit int64) ([]*dom
 	if err != nil {
 		return []*domain.PointOfInterest{}, apierror.Wrapf(err, "Could not find POIs by category '%s", category)
 	}
+	
+	defer resCursor.Close(ctx)
 
 	//noinspection GoPreferNilSlice
 	results := []*domain.PointOfInterest{}
