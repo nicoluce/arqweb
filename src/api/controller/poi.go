@@ -33,8 +33,16 @@ func NewPOIController() (*POIController, error) {
 
 func (pc *POIController) AddPOI(c *gin.Context) {
 	var geoJsonFeature geojson.Feature
-	if err := c.ShouldBindJSON(&geoJsonFeature); err != nil {
-		apiError := apierror.BadRequest.Wrapf(err, "Error parsing POI. It should be a GeoJson feature")
+	err := c.ShouldBindJSON(&geoJsonFeature)
+
+	if err != nil || geoJsonFeature.Geometry == nil {
+		var apiError error
+		errorMsg := "Error parsing POI. It should be a GeoJson feature"
+		if err != nil {
+			apiError = apierror.BadRequest.Wrapf(err, errorMsg)
+		} else {
+			apiError = apierror.BadRequest.Newf(errorMsg)
+		}
 		_ = c.Error(apiError)
 		return
 	}

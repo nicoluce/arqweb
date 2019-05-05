@@ -27,11 +27,14 @@ func init() {
 func TestSaveGeoJsonFeature(t *testing.T) {
 	//Given
 	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 	poiCollectionMock := mock.NewMockICollection(ctrl)
-	POIStorage, _ := storage.CreatePOIStorage(poiCollectionMock)
-	pointFeature := test.DefaultGeoJsonFeature()
 
+	POIStorage, _ := storage.CreatePOIStorage(poiCollectionMock)
+
+	pointFeature := test.DefaultGeoJsonFeature()
 	documentId := test.NewDocumentId()
+
 	poiCollectionMock.EXPECT().InsertOne(gomock.Any(), gomock.Any()).Return(&mongo.InsertOneResult{
 		InsertedID: documentId,
 	}, nil)

@@ -30,14 +30,6 @@
   version = "1.3.0"
 
 [[constraint]]
-  branch = "master"
-  name = "github.com/mercadolibre/go-meli-toolkit"
-
-[[constraint]]
-  name = "github.com/newrelic/go-agent"
-  version = "2.7.0"
-
-[[constraint]]
   name = "github.com/pkg/errors"
   version = "0.8.1"
 

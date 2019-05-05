@@ -14,6 +14,7 @@ import (
 	"time"
 )
 
+//go:generate mockgen -destination=../mock/mock_poi_storage.go -package=mock -source=poi_storage.go -imports geojson=github.com/paulmach/go.geojson
 type POIStorage interface {
 	SavePOI(POI *domain.PointOfInterest) (*domain.PointOfInterest, error)
 	SaveFeature(feature *geojson.Feature) (*domain.PointOfInterest, error)
