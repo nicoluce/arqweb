@@ -17,7 +17,7 @@ import (
 type POIStorage interface {
 	SavePOI(POI *domain.PointOfInterest) (*domain.PointOfInterest, error)
 	SaveFeature(feature *geojson.Feature) (*domain.PointOfInterest, error)
-	SearchByCategory(category string, limit int64) ([]*domain.PointOfInterest, error)
+	Search(filters *domain.POIFilter) ([]*domain.PointOfInterest, error)
 }
 
 const (
@@ -150,18 +150,23 @@ func resetPoiCollection() {
 	}
 }
 
-func (ps *POIStorageImpl) SearchByCategory(category string, limit int64) ([]*domain.PointOfInterest, error) {
+func (ps *POIStorageImpl) Search(filters *domain.POIFilter) ([]*domain.PointOfInterest, error) {
+	if filters == nil {
+		filters = &domain.POIFilter{}
+	}
+
 	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
 
 	findOptions := options.Find()
-	findOptions.SetLimit(limit)
+	findOptions.SetLimit(filters.Limit)
 
-	resCursor, err := ps.poiCollection.Find(ctx, bson.M{"category": category}, findOptions)
+	queryFilters := buildQueryFilters(filters)
+	resCursor, err := ps.poiCollection.Find(ctx, queryFilters, findOptions)
 
 	if err != nil {
-		return []*domain.PointOfInterest{}, apierror.Wrapf(err, "Could not find POIs by category '%s", category)
+		return []*domain.PointOfInterest{}, apierror.Wrapf(err, "Could not find POIs using filters %+v", filters)
 	}
-	
+
 	defer resCursor.Close(ctx)
 
 	//noinspection GoPreferNilSlice
@@ -170,7 +175,7 @@ func (ps *POIStorageImpl) SearchByCategory(category string, limit int64) ([]*dom
 		var POI domain.PointOfInterest
 		err = resCursor.Decode(&POI)
 		if err != nil {
-			log.Errorf("Error while decoding POI in find by category. Cause: %v", err)
+			log.Errorf("Error while decoding POI. Cause: %v", err)
 		} else {
 			results = append(results, &POI)
 		}
@@ -178,4 +183,25 @@ func (ps *POIStorageImpl) SearchByCategory(category string, limit int64) ([]*dom
 
 	return results, nil
 
+}
+
+func buildQueryFilters(filters *domain.POIFilter) bson.M {
+	filtersMap := bson.M{}
+	if filters.Category != "" {
+		filtersMap["category"] = filters.Category
+	}
+
+	if filters.Bound {
+		filtersMap["lat"] = bson.M{
+				"$gte": filters.MinLat,
+				"$lte": filters.MaxLat,
+		}
+
+		filtersMap["long"] = bson.M{
+				"$gte": filters.MinLong,
+				"$lte": filters.MaxLong,
+		}
+	}
+
+	return filtersMap
 }

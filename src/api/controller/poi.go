@@ -2,12 +2,12 @@ package controller
 
 import (
 	"github.com/fernetbalboa/arqweb/src/api/apierror"
+	"github.com/fernetbalboa/arqweb/src/api/domain"
 	"github.com/fernetbalboa/arqweb/src/api/storage"
 	"github.com/gin-gonic/gin"
 	"github.com/paulmach/go.geojson"
 	log "github.com/sirupsen/logrus"
 	"net/http"
-	"strconv"
 )
 
 const DefaultSearchLimit int64 = 20
@@ -53,22 +53,21 @@ func (pc *POIController) AddPOI(c *gin.Context) {
 }
 
 func (pc *POIController) SearchPOI(c *gin.Context) {
-	category := c.Query("category")
-	limit, err := strconv.ParseInt(c.Query("limit"), 10, 64)
+	var searchFilters domain.POIFilter
 
-	if err != nil {
-		limit = DefaultSearchLimit
-	}
-
-	if category == "" {
-		err := apierror.BadRequest.Newf("POI search is only available by category. No category was provided")
+	if err := c.ShouldBindQuery(&searchFilters); err != nil {
+		err = apierror.BadRequest.Wrapf(err, "Invalid search query filters")
 		_ = c.Error(err)
 		return
 	}
 
+	if searchFilters.Limit == 0 {
+		searchFilters.Limit = DefaultSearchLimit
+	}
+
 	log.Infof("Searching POIs for request: %s", c.Request.URL)
 
-	POIs, err := pc.POIStorage.SearchByCategory(category, limit)
+	POIs, err := pc.POIStorage.Search(&searchFilters)
 
 	if err != nil {
 		_ = c.Error(err)
