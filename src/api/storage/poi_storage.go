@@ -194,13 +194,13 @@ func buildQueryFilters(filters *domain.POIFilter) bson.M {
 
 	if filters.Bound {
 		filtersMap["lat"] = bson.M{
-				"$gte": filters.MinLat,
-				"$lte": filters.MaxLat,
+			"$gte": filters.MinLat,
+			"$lte": filters.MaxLat,
 		}
 
 		filtersMap["long"] = bson.M{
-				"$gte": filters.MinLong,
-				"$lte": filters.MaxLong,
+			"$gte": filters.MinLong,
+			"$lte": filters.MaxLong,
 		}
 	}
 

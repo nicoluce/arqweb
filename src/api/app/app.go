@@ -15,8 +15,7 @@ var Router *gin.Engine
 // Start app point.
 func Start() {
 	Router = config.ConfiguredRouter()
-
 	LoadEndpoints()
 
-	_ = Router.Run(":8080")
+	_ = Router.RunTLS(":8080", "cert.pem", "key.pem")
 }
