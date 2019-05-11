@@ -33,3 +33,11 @@ $ go run main.go
 $ ng serve
 
 ```
+
+Lo que falta:
+login -> con admin (FRONT Y BACK) 
+Centralizar todas las categorias en una base. (BACK Y ENDPOINT ASI EL FRONT LA MUESTRA) 
+agregar al search el filtro por titulo de un poi. (BACK Y FRONT)
+Extender un poi para que banque imagenes. (BACK Y FRONT BASE64)
+Permitir sugerir categorias a un usuario. (BACK Y FRONT)
+Backoffice del admin entero. 
