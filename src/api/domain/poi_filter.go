@@ -1,11 +1,11 @@
 package domain
 
 type POIFilter struct {
-	Category string `form:"category"`
-	Limit    int64  `form:"limit"`
-	MaxLat   float64  `form:"maxLat"`
-	MaxLong  float64  `form:"maxLong"`
-	MinLat   float64  `form:"minLat"`
-	MinLong  float64  `form:"minLong"`
-	Bound    bool   `form:"bound"`
+	Category string  `form:"category"`
+	Limit    int64   `form:"limit"`
+	MaxLat   float64 `form:"maxLat"`
+	MaxLong  float64 `form:"maxLong"`
+	MinLat   float64 `form:"minLat"`
+	MinLong  float64 `form:"minLong"`
+	Bound    bool    `form:"bound"`
 }

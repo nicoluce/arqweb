@@ -19,6 +19,9 @@ _testmain.go
 *.test
 *.prof
 .idea/
+*.pem
+vendor
+.vendor-new/
 
 *.DS_Store
 src/api/api

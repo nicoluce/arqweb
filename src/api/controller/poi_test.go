@@ -49,7 +49,7 @@ func TestAddPOI(t *testing.T) {
 	t.Run("Add POI successfully", func(t *testing.T) {
 		//Given
 		storageMock := mock.NewMockPOIStorage(ctrl)
-		POIController := &controller.POIController{POIStorage:storageMock}
+		POIController := &controller.POIController{POIStorage: storageMock}
 
 		r := config.ConfiguredRouter()
 		r.POST(addPOIEndpoint, POIController.AddPOI)
@@ -66,7 +66,7 @@ func TestAddPOI(t *testing.T) {
 		assert.Equal(t, http.StatusCreated, w.Code)
 		respBody, _ := json.Marshal(savedPOI)
 
-		assert.Equal(t, respBody,w.Body.Bytes())
+		assert.Equal(t, respBody, w.Body.Bytes())
 
 	})
 }
@@ -79,7 +79,7 @@ func TestSearchPOI(t *testing.T) {
 	t.Run("Search POI successfully", func(t *testing.T) {
 		//Given
 		storageMock := mock.NewMockPOIStorage(ctrl)
-		POIController := &controller.POIController{POIStorage:storageMock}
+		POIController := &controller.POIController{POIStorage: storageMock}
 
 		category := "food"
 		maxLat := 10.63462
@@ -95,7 +95,6 @@ func TestSearchPOI(t *testing.T) {
 		queryParams.Add("minLong", strconv.FormatFloat(minLong, 'f', 10, 64))
 		queryParams.Add("bound", strconv.FormatBool(true))
 
-
 		r := config.ConfiguredRouter()
 		r.GET(searchPOIEndpoint, POIController.SearchPOI)
 		w := httptest.NewRecorder()
@@ -109,13 +108,13 @@ func TestSearchPOI(t *testing.T) {
 		foundPOIs := []*domain.PointOfInterest{savedPOI1, savedPOI2}
 
 		filters := &domain.POIFilter{
-			Category:category,
-			MaxLong:maxLong,
-			MaxLat:maxLat,
-			MinLat:minLat,
-			MinLong:minLong,
-			Bound:true,
-			Limit:controller.DefaultSearchLimit,
+			Category: category,
+			MaxLong:  maxLong,
+			MaxLat:   maxLat,
+			MinLat:   minLat,
+			MinLong:  minLong,
+			Bound:    true,
+			Limit:    controller.DefaultSearchLimit,
 		}
 
 		storageMock.EXPECT().Search(filters).Return(foundPOIs, nil)
@@ -127,8 +126,7 @@ func TestSearchPOI(t *testing.T) {
 		assert.Equal(t, http.StatusOK, w.Code)
 		respBody, _ := json.Marshal(foundPOIs)
 
-		assert.Equal(t, respBody,w.Body.Bytes())
+		assert.Equal(t, respBody, w.Body.Bytes())
 
 	})
 }
-
