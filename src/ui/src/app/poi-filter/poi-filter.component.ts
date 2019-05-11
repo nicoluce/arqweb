@@ -19,7 +19,7 @@ export class POIFilterComponent implements OnInit {
 
   ngOnInit() {
     this.filtersControl = new FormGroup({
-      title: new FormControl("Any", [Validators.required, Validators.maxLength(30)]),
+      title: new FormControl("Any", [Validators.maxLength(30)]),
       category: new FormControl("Any", [Validators.required, Validators.maxLength(30)])
     });
 

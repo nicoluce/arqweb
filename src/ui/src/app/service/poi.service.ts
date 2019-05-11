@@ -44,7 +44,7 @@ export class PoiService {
   Search(title: string, category: string, markerLimit: number, bounds: LatLngBounds): PointOfInterest[] {
     let queryParams = new HttpParams();
 
-    if (title) {
+    if (title && !(title === "Any")) {
       queryParams.append("title", title);
     }
 
@@ -52,7 +52,7 @@ export class PoiService {
       queryParams.append("limit", String(markerLimit));
     }
 
-    if (category) {
+    if (category && !(category === "Any")) {
       queryParams.append("category", category)
     }
 

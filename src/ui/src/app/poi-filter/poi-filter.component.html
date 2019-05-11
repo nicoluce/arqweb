@@ -18,7 +18,7 @@
         </mat-autocomplete>
       </mat-form-field>
 
-      <button mat-raised-button color="primary"> Filter </button>
+      <button mat-raised-button color="primary" [disabled]="!filtersControl.valid"> Filter </button>
 
     </form>
   </mat-card-content>
