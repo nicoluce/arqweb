@@ -14,15 +14,16 @@ import {map, startWith} from 'rxjs/operators';
 export class POIFilterComponent implements OnInit {
   filtersControl: FormGroup;
   availableCategories: string[] = ['Any', 'Food', 'Entertainment', 'Art', 'Museum'];
-  filteredOptions: Observable<string[]>;
+  filteredCategoryOptions: Observable<string[]>;
   @Output() filterChange: EventEmitter<string> = new EventEmitter();
 
   ngOnInit() {
     this.filtersControl = new FormGroup({
+      title: new FormControl("Any", [Validators.required, Validators.maxLength(30)]),
       category: new FormControl("Any", [Validators.required, Validators.maxLength(30)])
     });
 
-    this.filteredOptions = this.filtersControl.get("category").valueChanges
+    this.filteredCategoryOptions = this.filtersControl.get("category").valueChanges
       .pipe(
         startWith(''),
         map(value => this._filter(value))

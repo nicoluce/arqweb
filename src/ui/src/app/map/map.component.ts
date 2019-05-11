@@ -117,8 +117,6 @@ export class MapComponent implements OnInit {
     }
   }
 
-
-
   onPOIAdd(savedPOI: PointOfInterest) {
     this.hideNewPOIForm(false);
     this.newMarker.bindPopup(MapComponent.markerPopupHtml(savedPOI.title, savedPOI.category,
@@ -136,12 +134,19 @@ export class MapComponent implements OnInit {
     return `<h2>${title}</h2> <h3>${category}</h3> <h3>${type}</h3> <p>${description}</p>`;
   }
 
-  //Only filters by category, but could be extended
-  private filterPOIs(category: string) {
+  //Only filters by title and/or category, but could be extended
+  /**
+   * Filters the layers in the map.
+   *
+   * @param poiFilters object with the values from {@link POIFilterComponent#filtersControl}.
+   */
+  private filterPOIs(poiFilters: any) {
+    let category = poiFilters.category;
+    let title = poiFilters.title;
     let markerLimit = 20; //Arbitrary marker limit
     let bounds = this.map.getBounds();
 
-    let POIs = this.poiService.Search(category, markerLimit, bounds);
+    let POIs = this.poiService.Search(title, category, markerLimit, bounds);
     this.layers = [];
     POIs.forEach(
       (POI: PointOfInterest) => {
