@@ -9,11 +9,7 @@ export class LoginService {
   @Output() userLogged = new EventEmitter<User>();
   @Output() userLoggedOut = new EventEmitter<User>();
 
-  //TODO: remove
   constructor() {
-    //Simulate admin login
-    let admin = new User("Fernet", "pass", UserRole.ADMIN);
-    this.userLogged.emit(admin);
   }
 
 

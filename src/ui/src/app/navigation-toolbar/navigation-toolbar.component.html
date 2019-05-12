@@ -4,7 +4,14 @@
   </span>
 
   <span fxFlex fxLayoutAlign="end">
-    <a *ngIf="!loggedUser" routerLink="/login" class="login">Login</a>
+    <div *ngIf="!loggedUser">
+      <span>
+        <a routerLink="/login" class="login">Login</a>
+      </span>
+      <span>
+        <a class="login" (click)="logAdmin()">Log admin</a>
+      </span>
+    </div>
 
     <div *ngIf="loggedUser">
       <a [matMenuTriggerFor]="menu" class="logout">
@@ -16,7 +23,10 @@
           <span>Logout</span>
         </a>
       </mat-menu>
+
+      <a *ngIf="loggedUser.isAdmin()" routerLink="/administration" class="administration">Management</a>
     </div>
+
 
   </span>
 </mat-toolbar>

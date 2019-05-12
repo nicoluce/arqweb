@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {LoginService} from "../service/login.service";
-import {User} from "../domain/user";
+import {User, UserRole} from "../domain/user";
 
 @Component({
   selector: 'app-navigation-toolbar',
@@ -32,6 +32,11 @@ export class NavigationToolbarComponent implements OnInit {
 
   private logOut(): void {
     this.loginService.logOut();
+  }
+
+  //TODO: delete
+  private logAdmin() {
+    this.loginService.login(new User("Fernet", "pass", UserRole.ADMIN));
   }
 
 }

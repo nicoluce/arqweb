@@ -15,6 +15,7 @@ import {HttpClientModule} from "@angular/common/http";
 import {POIFilterComponent} from "./poi-filter/poi-filter.component";
 import { LoginComponent } from './login/login.component';
 import { NavigationToolbarComponent } from './navigation-toolbar/navigation-toolbar.component';
+import { BackofficeComponent } from './backoffice/backoffice.component';
 
 
 @NgModule({
@@ -25,6 +26,7 @@ import { NavigationToolbarComponent } from './navigation-toolbar/navigation-tool
     POIFilterComponent,
     LoginComponent,
     NavigationToolbarComponent,
+    BackofficeComponent,
   ],
   imports: [
     BrowserModule,
