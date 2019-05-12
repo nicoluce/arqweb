@@ -7,7 +7,6 @@
     <a *ngIf="!loggedUser" routerLink="/login" class="login">Login</a>
 
     <div *ngIf="loggedUser">
-      <!-- <span  style="color: white">{{loggedUser.username}}</span> -->
       <a [matMenuTriggerFor]="menu" class="logout">
           <span>{{loggedUser.username}}</span>
       </a>
@@ -18,5 +17,6 @@
         </a>
       </mat-menu>
     </div>
+
   </span>
 </mat-toolbar>

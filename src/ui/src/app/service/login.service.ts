@@ -1,5 +1,5 @@
 import {EventEmitter, Injectable, Output} from '@angular/core';
-import {User} from "../domain/user";
+import {User, UserRole} from "../domain/user";
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +9,13 @@ export class LoginService {
   @Output() userLogged = new EventEmitter<User>();
   @Output() userLoggedOut = new EventEmitter<User>();
 
-  constructor() { }
+  //TODO: remove
+  constructor() {
+    //Simulate admin login
+    let admin = new User("Fernet", "pass", UserRole.ADMIN);
+    this.userLogged.emit(admin);
+  }
+
 
   public login(user: User): void {
     //TODO: call backend

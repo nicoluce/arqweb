@@ -14,14 +14,7 @@ import { AddMarkerFormComponent } from './add-marker-form/add-marker-form.compon
 import {HttpClientModule} from "@angular/common/http";
 import {POIFilterComponent} from "./poi-filter/poi-filter.component";
 import { LoginComponent } from './login/login.component';
-import {RouterModule, Routes} from "@angular/router";
 import { NavigationToolbarComponent } from './navigation-toolbar/navigation-toolbar.component';
-
-const appRoutes: Routes = [
-  { path: '', redirectTo: '/map', pathMatch: 'full'},
-  { path: 'map', component: MapComponent },
-  { path: 'login', component: LoginComponent },
-];
 
 
 @NgModule({
@@ -31,7 +24,7 @@ const appRoutes: Routes = [
     AddMarkerFormComponent,
     POIFilterComponent,
     LoginComponent,
-    NavigationToolbarComponent
+    NavigationToolbarComponent,
   ],
   imports: [
     BrowserModule,
@@ -42,10 +35,6 @@ const appRoutes: Routes = [
     LeafletModule.forRoot(),
     MaterialModule,
     FlexLayoutModule,
-    RouterModule.forRoot(
-      appRoutes,
-      { enableTracing: true } // <-- debugging purposes only
-    )
   ],
   providers: [],
   bootstrap: [AppComponent]
