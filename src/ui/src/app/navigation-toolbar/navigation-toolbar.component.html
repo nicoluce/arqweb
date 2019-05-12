@@ -4,6 +4,7 @@
   </span>
 
   <span fxFlex fxLayoutAlign="end">
-    <a routerLink="/login" class="login">Login</a>
+    <a *ngIf="!loggedUser" routerLink="/login" class="login">Login</a>
+    <span *ngIf="loggedUser" style="color: white">{{loggedUser.username}}</span>
   </span>
 </mat-toolbar>

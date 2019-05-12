@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {EventEmitter, Injectable, Output} from '@angular/core';
 import {User} from "../domain/user";
 
 @Injectable({
@@ -6,11 +6,14 @@ import {User} from "../domain/user";
 })
 export class LoginService {
 
+  @Output() userLogged = new EventEmitter<User>();
+
   constructor() { }
 
   public login(user: User): void {
     //TODO: call backend
     localStorage.setItem("loggedUser", JSON.stringify(user));
+    this.userLogged.emit(user);
   }
 
   public signUp(user: User): void {

@@ -1,5 +1,5 @@
 <section fxLayoutAlign="center center">
-  <mat-tab-group mat-align-tabs="center" animationDuration="0ms">
+  <mat-tab-group mat-align-tabs="center" animationDuration="0ms" [(selectedIndex)]="selectedTabIndex">
     <mat-tab label="Login">
       <mat-card fxFlex="500px" fxLayout="column"  align="center" fxFlex.xs="100%" style="margin: 2em">
 
@@ -7,10 +7,10 @@
           <form [formGroup]="loginControl" (ngSubmit)="login(loginControl.value)" fxFlex fxLayout="column">
 
             <mat-form-field>
-              <input matInput type="text" placeholder="Username" formControlName="username">
+              <input matInput type="text" placeholder="Username" required formControlName="username">
             </mat-form-field>
             <mat-form-field>
-              <input matInput type="text" placeholder="Password" formControlName="password">
+              <input matInput type="text" placeholder="Password" required formControlName="password">
             </mat-form-field>
 
             <mat-card-actions align="center">
@@ -28,10 +28,10 @@
             <form [formGroup]="signUpControl" (ngSubmit)="signUp(signUpControl.value)" fxFlex fxLayout="column">
 
               <mat-form-field>
-                <input matInput type="text" placeholder="Username" formControlName="username">
+                <input matInput type="text" placeholder="Username" required formControlName="username">
               </mat-form-field>
               <mat-form-field>
-                <input matInput type="text" placeholder="Password" formControlName="password">
+                <input matInput type="text" placeholder="Password" required formControlName="password">
               </mat-form-field>
 
               <mat-card-actions align="center">
