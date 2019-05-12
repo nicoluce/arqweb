@@ -85,3 +85,42 @@ func (pc *POIController) SearchPOI(c *gin.Context) {
 	c.JSON(http.StatusOK, POIs)
 
 }
+
+func (pc *POIController) GetCategories(c *gin.Context) {
+	categories, err := pc.POIStorage.GetCategories()
+
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	c.JSON(http.StatusOK, categories)
+}
+
+func (pc *POIController) AddCategory(c *gin.Context) {
+	type JsonCategory struct {
+		ID       interface{}
+		Type     string
+		Category string
+	}
+	var jsonCategory JsonCategory
+	err := c.ShouldBindJSON(&jsonCategory)
+	if err != nil || jsonCategory.Category == "" {
+		errorMsg := "Error parsing Category. It should be a JsonCategory"
+		var apiError error
+		if err != nil {
+			apiError = apierror.BadRequest.Wrapf(err, errorMsg)
+		} else {
+			apiError = apierror.BadRequest.Newf(errorMsg)
+		}
+		_ = c.Error(apiError)
+		return
+	}
+
+	err = pc.POIStorage.AddCategory(jsonCategory.Category)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+}
