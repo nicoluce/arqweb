@@ -7,7 +7,7 @@ import {
   MatCardModule,
   MatFormFieldModule,
   MatInputModule,
-  MatSelectModule, MatToolbarModule
+  MatSelectModule, MatTableModule, MatTabsModule, MatToolbarModule
 } from "@angular/material";
 
 @NgModule({
@@ -22,7 +22,8 @@ import {
     MatCardModule,
     MatButtonModule,
     MatAutocompleteModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatTabsModule
   ],
   exports: [
     BrowserAnimationsModule,
@@ -33,7 +34,8 @@ import {
     MatCardModule,
     MatButtonModule,
     MatAutocompleteModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatTabsModule
   ]
 })
 export class MaterialModule { }
