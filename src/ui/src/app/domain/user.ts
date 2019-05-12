@@ -9,7 +9,7 @@ export class User {
     this.role = role;
   }
 
-  public isAdmin(): boolean {
+  public isAdmin(this:User): boolean {
     return UserRole.ADMIN === this.role;
   }
 }
