@@ -52,8 +52,4 @@ export class LoginComponent implements OnInit {
     this.signUpControl.get("password").setValue("");
   }
 
-  private logOut(): void {
-
-  }
-
 }

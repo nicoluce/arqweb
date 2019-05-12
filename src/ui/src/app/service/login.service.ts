@@ -7,6 +7,7 @@ import {User} from "../domain/user";
 export class LoginService {
 
   @Output() userLogged = new EventEmitter<User>();
+  @Output() userLoggedOut = new EventEmitter<User>();
 
   constructor() { }
 
@@ -18,5 +19,11 @@ export class LoginService {
 
   public signUp(user: User): void {
     //TODO: call backend
+  }
+
+  public logOut(): void {
+    let user = <User>JSON.parse(localStorage.getItem("loggedUser"));
+    localStorage.removeItem("loggedUser");
+    this.userLoggedOut.emit(user); //Emit who logged out
   }
 }

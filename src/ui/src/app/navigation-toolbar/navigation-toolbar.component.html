@@ -5,6 +5,18 @@
 
   <span fxFlex fxLayoutAlign="end">
     <a *ngIf="!loggedUser" routerLink="/login" class="login">Login</a>
-    <span *ngIf="loggedUser" style="color: white">{{loggedUser.username}}</span>
+
+    <div *ngIf="loggedUser">
+      <!-- <span  style="color: white">{{loggedUser.username}}</span> -->
+      <a [matMenuTriggerFor]="menu" class="logout">
+          <span>{{loggedUser.username}}</span>
+      </a>
+      <mat-menu #menu="matMenu" xPosition="before" >
+        <a mat-menu-item (click)="logOut()">
+          <mat-icon>exit_to_app</mat-icon>
+          <span>Logout</span>
+        </a>
+      </mat-menu>
+    </div>
   </span>
 </mat-toolbar>

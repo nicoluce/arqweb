@@ -5,8 +5,8 @@ import {
   MatAutocompleteModule,
   MatButtonModule,
   MatCardModule,
-  MatFormFieldModule,
-  MatInputModule,
+  MatFormFieldModule, MatIconModule,
+  MatInputModule, MatMenuModule,
   MatSelectModule, MatTableModule, MatTabsModule, MatToolbarModule
 } from "@angular/material";
 
@@ -23,7 +23,9 @@ import {
     MatButtonModule,
     MatAutocompleteModule,
     MatToolbarModule,
-    MatTabsModule
+    MatTabsModule,
+    MatMenuModule,
+    MatIconModule
   ],
   exports: [
     BrowserAnimationsModule,
@@ -35,7 +37,10 @@ import {
     MatButtonModule,
     MatAutocompleteModule,
     MatToolbarModule,
-    MatTabsModule
+    MatTabsModule,
+    MatMenuModule,
+    MatIconModule
+
   ]
 })
 export class MaterialModule { }

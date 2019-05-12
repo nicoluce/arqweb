@@ -21,6 +21,17 @@ export class NavigationToolbarComponent implements OnInit {
         this.loggedUser = loggedUser;
       }
     );
+
+    this.loginService.userLoggedOut.subscribe(
+      () => {
+        this.loggedUser = null;
+      }
+    );
+
+  }
+
+  private logOut(): void {
+    this.loginService.logOut();
   }
 
 }
