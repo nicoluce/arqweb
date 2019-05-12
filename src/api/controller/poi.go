@@ -82,6 +82,7 @@ func (pc *POIController) SearchPOI(c *gin.Context) {
 		return
 	}
 
+	log.Infof("Search results: %v", POIs)
 	c.JSON(http.StatusOK, POIs)
 
 }

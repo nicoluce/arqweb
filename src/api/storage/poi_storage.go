@@ -192,6 +192,10 @@ func buildQueryFilters(filters *domain.POIFilter) bson.M {
 		filtersMap["category"] = filters.Category
 	}
 
+	if filters.Title != "" {
+		filtersMap["title"] = filters.Title
+	}
+
 	if filters.Bound {
 		filtersMap["lat"] = bson.M{
 			"$gte": filters.MinLat,
