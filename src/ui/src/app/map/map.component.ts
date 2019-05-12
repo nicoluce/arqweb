@@ -146,13 +146,14 @@ export class MapComponent implements OnInit {
     let markerLimit = 20; //Arbitrary marker limit
     let bounds = this.map.getBounds();
 
-    let POIs = this.poiService.Search(title, category, markerLimit, bounds);
     this.layers = [];
-    POIs.forEach(
-      (POI: PointOfInterest) => {
-        this.layers.push(MapComponent.POIToMarker(POI))
-      }, this
-    )
+    this.poiService.Search(title, category, markerLimit, bounds).subscribe(
+      (searchResult: PointOfInterest[]) => searchResult.forEach(
+        (POI: PointOfInterest) => {
+          this.layers.push(MapComponent.POIToMarker(POI))
+        }, this
+      )
+    );
   }
 
 

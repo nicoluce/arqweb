@@ -83,7 +83,7 @@ export class AddMarkerFormComponent implements OnInit {
   }
 
   saveNewPOI(){
-    this.poiService.savePOI(this.newPOI);
+    this.poiService.savePOI(this.newPOI).subscribe();
   }
 
 }

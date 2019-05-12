@@ -4,6 +4,7 @@ import {HttpClient, HttpParams} from "@angular/common/http";
 import {Feature} from "geojson";
 import {environment} from "../../environments/environment";
 import {LatLngBounds} from "leaflet";
+import {Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -16,11 +17,9 @@ export class PoiService {
   }
 
   //Saves the POI in the backend
-  savePOI(POI: PointOfInterest): void {
+  savePOI(POI: PointOfInterest): Observable<PointOfInterest> {
     let POIGeoJSON = PoiService.POIToGeoJSON(POI);
-    this.http.post<PointOfInterest>(environment.baseUrl + "/poi", POIGeoJSON).subscribe(
-      (next: PointOfInterest) => console.log(`Saved POI with id: ${next.id}`)
-    );
+    return this.http.post<PointOfInterest>(environment.baseUrl + "/poi", POIGeoJSON);
   }
 
   //Converts a POI to a GeoJSON
@@ -41,7 +40,7 @@ export class PoiService {
 
   }
 
-  Search(title: string, category: string, markerLimit: number, bounds: LatLngBounds): PointOfInterest[] {
+  Search(title: string, category: string, markerLimit: number, bounds: LatLngBounds): Observable<PointOfInterest[]> {
     let queryParams = new HttpParams();
 
     if (title && !(title === "Any")) {
@@ -68,14 +67,8 @@ export class PoiService {
       queryParams.append("bound", String(true));
     }
 
-    let results = [];
-    this.http.get<PointOfInterest[]>(environment.baseUrl + "/poi/search",
-      {params: queryParams}).subscribe(
-      (searchResult: PointOfInterest[]) => searchResult.forEach(
-        (poi: PointOfInterest) => results.push(poi)
-      )
-    );
+    return this.http.get<PointOfInterest[]>(environment.baseUrl + "/poi/search",
+      {params: queryParams});
 
-    return results;
   }
 }
