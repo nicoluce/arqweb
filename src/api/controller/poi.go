@@ -99,13 +99,14 @@ func (pc *POIController) GetCategories(c *gin.Context) {
 
 func (pc *POIController) AddCategory(c *gin.Context) {
 	type JsonCategory struct {
-		ID       interface{}
-		Type     string
-		Category string
+		ID     interface{}
+		Type   string
+		Name   string
+		Hidden bool
 	}
 	var jsonCategory JsonCategory
 	err := c.ShouldBindJSON(&jsonCategory)
-	if err != nil || jsonCategory.Category == "" {
+	if err != nil || jsonCategory.Name == "" {
 		errorMsg := "Error parsing Category. It should be a JsonCategory"
 		var apiError error
 		if err != nil {
@@ -117,7 +118,7 @@ func (pc *POIController) AddCategory(c *gin.Context) {
 		return
 	}
 
-	err = pc.POIStorage.AddCategory(jsonCategory.Category)
+	err = pc.POIStorage.AddCategory(jsonCategory.Name, jsonCategory.Hidden)
 	if err != nil {
 		_ = c.Error(err)
 		return

@@ -19,8 +19,8 @@ type POIStorage interface {
 	SavePOI(POI *domain.PointOfInterest) (*domain.PointOfInterest, error)
 	SaveFeature(feature *geojson.Feature) (*domain.PointOfInterest, error)
 	Search(filters *domain.POIFilter) ([]*domain.PointOfInterest, error)
-	GetCategories() ([]string, error)
-	AddCategory(category string) error
+	GetCategories() ([]domain.Category, error)
+	AddCategory(name string, hidden bool) error
 }
 
 const (
@@ -193,32 +193,41 @@ func (ps *POIStorageImpl) Search(filters *domain.POIFilter) ([]*domain.PointOfIn
 
 }
 
-func (ps *POIStorageImpl) GetCategories() ([]string, error) {
+func (ps *POIStorageImpl) GetCategories() ([]domain.Category, error) {
 
 	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
 
-	type Categories struct {
-		Categories []string
-	}
-
-	var result Categories
-	err := ps.catCollection.FindOne(ctx, bson.D{}).Decode(&result)
+	resCursor, err := ps.catCollection.Find(ctx, bson.M{})
 
 	if err != nil {
-		return []string{}, apierror.Wrapf(err, "Could not retrieve list of categories")
+		return []domain.Category{}, apierror.Wrapf(err, "Could not retrieve list of categories")
 	}
 
-	return result.Categories, nil
+	defer resCursor.Close(ctx)
+
+	results := []domain.Category{}
+	for resCursor.Next(ctx) {
+		var cat domain.Category
+		err = resCursor.Decode(&cat)
+		if err != nil {
+			log.Errorf("Error while decoding Category. Cause: %v", err)
+		} else {
+			log.Infof("%s", cat.Name)
+			results = append(results, cat)
+		}
+	}
+
+	return results, nil
 }
 
-func (ps *POIStorageImpl) AddCategory(category string) error {
+func (ps *POIStorageImpl) AddCategory(name string, hidden bool) error {
 	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
 
-	log.Infof("Adding category %s", category)
-	_, err := ps.catCollection.UpdateOne(ctx, nil, bson.M{"$push": bson.E{"categories", category}})
+	log.Infof("Adding category %s", name)
+	_, err := ps.catCollection.InsertOne(ctx, domain.Category{Name: name, Hidden: hidden}, nil)
 
 	if err != nil {
-		return apierror.Wrapf(err, "Could add '%s' to categories list", category)
+		return apierror.Wrapf(err, "Could add '%s' to categories list", name)
 	}
 
 	return nil
