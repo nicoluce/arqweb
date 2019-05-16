@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {LoginService} from "../service/login.service";
 import {User, UserRole} from "../domain/user";
 
@@ -10,18 +10,28 @@ import {User, UserRole} from "../domain/user";
 export class NavigationToolbarComponent implements OnInit {
   appTitle = 'Map Ui';
   loggedUser: User;
+  @Output() sidenavToggled = new EventEmitter();
 
   constructor(private loginService: LoginService) {
 
   }
 
   ngOnInit() {
+    //Remember logged user
+    this.loginService.getLoggedUser().subscribe(
+      (loggedUser: User) => {
+        this.loggedUser = loggedUser;
+      },
+    );
+
+    //Subscribe to new logins
     this.loginService.userLogged.subscribe(
       (loggedUser: User) => {
         this.loggedUser = loggedUser;
       }
     );
 
+    //Subscribe to logouts
     this.loginService.userLoggedOut.subscribe(
       () => {
         this.loggedUser = null;
@@ -39,4 +49,7 @@ export class NavigationToolbarComponent implements OnInit {
     this.loginService.login(new User("Fernet", "pass", UserRole.ADMIN));
   }
 
+  private toggleSidenav() {
+    this.sidenavToggled.emit();
+  }
 }

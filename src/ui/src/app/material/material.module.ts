@@ -6,8 +6,8 @@ import {
   MatButtonModule,
   MatCardModule,
   MatFormFieldModule, MatIconModule,
-  MatInputModule, MatMenuModule,
-  MatSelectModule, MatTableModule, MatTabsModule, MatToolbarModule
+  MatInputModule, MatListModule, MatMenuModule, MatNavList,
+  MatSelectModule, MatSidenavModule, MatTableModule, MatTabsModule, MatToolbarModule
 } from "@angular/material";
 
 @NgModule({
@@ -25,7 +25,9 @@ import {
     MatToolbarModule,
     MatTabsModule,
     MatMenuModule,
-    MatIconModule
+    MatIconModule,
+    MatSidenavModule,
+    MatListModule
   ],
   exports: [
     BrowserAnimationsModule,
@@ -39,8 +41,9 @@ import {
     MatToolbarModule,
     MatTabsModule,
     MatMenuModule,
-    MatIconModule
-
+    MatIconModule,
+    MatSidenavModule,
+    MatListModule
   ]
 })
 export class MaterialModule { }

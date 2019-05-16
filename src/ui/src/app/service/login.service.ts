@@ -13,13 +13,12 @@ export class LoginService {
   constructor() {
   }
 
-
   private loggedUserKey = "loggedUser";
 
   public login(user: User): void {
     //TODO: call backend
 
-    localStorage.setItem(this.loggedUserKey, JSON.stringify(user));
+    window.localStorage.setItem(this.loggedUserKey, JSON.stringify(user));
     this.userLogged.emit(user);
   }
 
@@ -28,13 +27,13 @@ export class LoginService {
   }
 
   public logOut(): void {
-    let user = <User>JSON.parse(localStorage.getItem(this.loggedUserKey));
-    localStorage.removeItem(this.loggedUserKey);
+    let user = <User>JSON.parse(window.localStorage.getItem(this.loggedUserKey));
+    window.localStorage.removeItem(this.loggedUserKey);
     this.userLoggedOut.emit(user); //Emit who logged out
   }
 
   public getLoggedUser(): Observable<User> {
-    let loggedUserJson = localStorage.getItem(this.loggedUserKey);
+    let loggedUserJson = window.localStorage.getItem(this.loggedUserKey);
     if (loggedUserJson) {
       let parsedJson = <User>JSON.parse(loggedUserJson);
       return of(new User(parsedJson.username, parsedJson.password, parsedJson.role));

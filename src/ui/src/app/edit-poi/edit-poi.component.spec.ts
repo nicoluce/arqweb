@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BackofficeComponent } from './backoffice.component';
+import { EditPoiComponent } from './edit-poi.component';
 
-describe('BackofficeComponent', () => {
-  let component: BackofficeComponent;
-  let fixture: ComponentFixture<BackofficeComponent>;
+describe('EditPoiComponent', () => {
+  let component: EditPoiComponent;
+  let fixture: ComponentFixture<EditPoiComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BackofficeComponent ]
+      declarations: [ EditPoiComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(BackofficeComponent);
+    fixture = TestBed.createComponent(EditPoiComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
