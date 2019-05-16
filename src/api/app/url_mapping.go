@@ -23,6 +23,6 @@ func LoadEndpoints() {
 
 	poiGroup.POST("", poiController.AddPOI)
 	poiGroup.GET("/search", poiController.SearchPOI)
-	poiGroup.GET("/categories", poiController.GetCategories)
-	poiGroup.POST("/addCategory", poiController.AddCategory)
+	poiGroup.GET("/category", poiController.GetCategories)
+	poiGroup.POST("/category", poiController.AddCategory)
 }

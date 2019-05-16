@@ -24,9 +24,9 @@ type POIStorage interface {
 }
 
 const (
-	Database             = "arqweb"
-	POICollection        = "poi"
-	CategoriesCollection = "categories"
+	Database           = "arqweb"
+	POICollection      = "poi"
+	CategoryCollection = "categories"
 )
 
 func init() {
@@ -50,7 +50,7 @@ func CreatePOIStorage(POIcollection ICollection, catCollection ICollection) (POI
 func NewPOIStorage() (POIStorage, error) {
 	client, err := getMongoDBClient()
 	poiCollection := client.Database(Database).Collection(POICollection)
-	catCollection := client.Database(Database).Collection(CategoriesCollection)
+	catCollection := client.Database(Database).Collection(CategoryCollection)
 	if err != nil {
 		return nil, err
 	}
@@ -212,7 +212,6 @@ func (ps *POIStorageImpl) GetCategories() ([]domain.Category, error) {
 		if err != nil {
 			log.Errorf("Error while decoding Category. Cause: %v", err)
 		} else {
-			log.Infof("%s", cat.Name)
 			results = append(results, cat)
 		}
 	}
@@ -224,10 +223,10 @@ func (ps *POIStorageImpl) AddCategory(name string, hidden bool) error {
 	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
 
 	log.Infof("Adding category %s", name)
-	_, err := ps.catCollection.InsertOne(ctx, domain.Category{Name: name, Hidden: hidden}, nil)
+	_, err := ps.catCollection.InsertOne(ctx, domain.Category{Name: name, Hidden: hidden})
 
 	if err != nil {
-		return apierror.Wrapf(err, "Could add '%s' to categories list", name)
+		return apierror.Wrapf(err, "Couldn't add '%s' to categories list", name)
 	}
 
 	return nil
