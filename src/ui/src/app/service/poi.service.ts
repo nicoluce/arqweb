@@ -4,7 +4,8 @@ import {HttpClient, HttpParams} from "@angular/common/http";
 import {Feature} from "geojson";
 import {environment} from "../../environments/environment";
 import {LatLngBounds} from "leaflet";
-import {Observable} from "rxjs";
+import {Observable, of} from "rxjs";
+import {Category} from "../domain/category";
 
 @Injectable({
   providedIn: 'root'
@@ -12,12 +13,15 @@ import {Observable} from "rxjs";
 export class PoiService {
   private http: HttpClient;
 
+  public availableCategories = ["food", "entertainment", "art", "museum"]; //TODO: fetch from backend
+  public availableTypes = ["building", "person", "event", "object"]; //TODO: fetch from backend
+
   constructor(http: HttpClient) {
     this.http = http;
   }
 
   //Saves the POI in the backend
-  savePOI(POI: PointOfInterest): Observable<PointOfInterest> {
+  public savePOI(POI: PointOfInterest): Observable<PointOfInterest> {
     let POIGeoJSON = PoiService.POIToGeoJSON(POI);
     return this.http.post<PointOfInterest>(environment.baseUrl + "/poi", POIGeoJSON);
   }
@@ -32,7 +36,7 @@ export class PoiService {
       },
       properties: {
         "title": POI.title,
-        "category": POI.category,
+        "category": POI.category.name,
         "type": POI.type,
         "description": POI.description
       }
@@ -40,7 +44,9 @@ export class PoiService {
 
   }
 
-  Search(title?: string, category?: string, markerLimit?: number, bounds?: LatLngBounds): Observable<PointOfInterest[]> {
+  public Search(title?: string, categoryName?: string, markerLimit?: number, bounds?: LatLngBounds,
+         showHiddenCategories?: boolean): Observable<PointOfInterest[]> {
+
     let queryParams = new HttpParams();
 
     if (title && !(title === "Any")) {
@@ -51,8 +57,8 @@ export class PoiService {
       queryParams = queryParams.append("limit", String(markerLimit));
     }
 
-    if (category && !(category === "Any")) {
-      queryParams = queryParams.append("category", category)
+    if (categoryName && !(categoryName === "Any")) {
+      queryParams = queryParams.append("categoryName", categoryName)
     }
 
     if (bounds) {
@@ -67,12 +73,34 @@ export class PoiService {
       queryParams = queryParams.append("bound", String(true));
     }
 
+    if (showHiddenCategories) {
+      queryParams = queryParams.append("hidden_categories", String(true));
+    }
+
     return this.http.get<PointOfInterest[]>(environment.baseUrl + "/poi/search",
       {params: queryParams});
 
   }
 
-  updatePOI(POI: PointOfInterest): Observable<PointOfInterest> {
+  public updatePOI(POI: PointOfInterest): Observable<PointOfInterest> {
     return this.http.put<PointOfInterest>(environment.baseUrl + "/poi", PoiService.POIToGeoJSON(POI));
+  }
+
+  public getCategories(): Observable<Category[]> {
+    return this.http.get<Category[]>(environment.baseUrl + "/category")
+  }
+
+  public getCategory(name: string): Observable<Category> {
+    return of(new Category("food", false));
+    //TODO: use backend
+    //return this.http.get<Category>(environment.baseUrl + `/category/${name}`)
+  }
+
+  public updateCategory(categoryName: string, category: Category): Observable<Category> {
+    return this.http.put<Category>(environment.baseUrl + `/category/${categoryName}`, category)
+  }
+
+  deleteCategory(categoryName: string): Observable<Category> {
+    return this.http.delete<Category>(environment.baseUrl + `/category/${categoryName}`)
   }
 }

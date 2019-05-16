@@ -1,7 +1,5 @@
-<h1>Look at that map!</h1>
-
 <app-poi-filter (filterChange)="filterPOIs($event)"></app-poi-filter>
-<div class="map"
+<div id="map" class="map"
      leaflet
      [leafletOptions]="initialSetup"
      [leafletLayersControl]="layersControl"

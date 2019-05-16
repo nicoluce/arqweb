@@ -1,9 +1,9 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {PointOfInterest} from "../domain/point-of-interest";
-import {LatLng, LeafletEvent, Marker} from "leaflet";
-import {MapComponent} from "../map/map.component";
+import {Marker} from "leaflet";
 import {PoiService} from "../service/poi.service";
+import {Category} from "../domain/category";
 
 @Component({
   selector: 'app-add-marker-form',
@@ -24,24 +24,24 @@ export class AddMarkerFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.addPOIForm = this.defaultForm(0, 0); //Placeholder
+    this.addPOIForm = AddMarkerFormComponent.defaultForm(0, 0); //Placeholder
   }
 
   //Resets the form to track the newest marker
   public resetPOIForm() {
     //Subscribe to marker events to update form accordingly
-    this.marker.on('add move drag dragEnd', function (e: LeafletEvent) {
+    this.marker.on('add move drag dragEnd', function () {
       let newLatLng = this.formComponent.marker.getLatLng();
       this.formComponent.addPOIForm.setControl("lat", new FormControl(newLatLng.lat));
       this.formComponent.addPOIForm.setControl("long", new FormControl(newLatLng.lng));
     }, {formComponent: this});
 
     let latLng = this.marker.getLatLng();
-    this.addPOIForm = this.defaultForm(latLng.lat, latLng.lng);
+    this.addPOIForm = AddMarkerFormComponent.defaultForm(latLng.lat, latLng.lng);
 
   }
 
-  defaultForm(lat: number, long: number): FormGroup {
+  static defaultForm(lat: number, long: number): FormGroup {
     return new FormGroup({
       title: new FormControl('', [Validators.required, Validators.maxLength(60)]),
       category: new FormControl('', [Validators.required, Validators.maxLength(60)]),
@@ -69,7 +69,7 @@ export class AddMarkerFormComponent implements OnInit {
   buildPOI(title: string, category: string, description: string, type: string, lat: number, long: number) {
     let newPOI = new PointOfInterest();
     newPOI.title = title;
-    newPOI.category = category;
+    newPOI.category = new Category(category, false);
     newPOI.description = description;
     newPOI.type = type;
     newPOI.lat = lat;

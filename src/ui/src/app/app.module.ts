@@ -17,6 +17,7 @@ import { LoginComponent } from './login/login.component';
 import { NavigationToolbarComponent } from './navigation-toolbar/navigation-toolbar.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { EditPoiComponent } from './edit-poi/edit-poi.component';
+import { EditCategoryComponent } from './edit-category/edit-category.component';
 
 
 @NgModule({
@@ -29,6 +30,7 @@ import { EditPoiComponent } from './edit-poi/edit-poi.component';
     NavigationToolbarComponent,
     SidenavComponent,
     EditPoiComponent,
+    EditCategoryComponent,
   ],
   imports: [
     BrowserModule,

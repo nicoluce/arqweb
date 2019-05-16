@@ -4,6 +4,7 @@ import {MapComponent} from "./map/map.component";
 import {LoginComponent} from "./login/login.component";
 import {AuthGuardService} from "./service/auth-guard.service";
 import {EditPoiComponent} from "./edit-poi/edit-poi.component";
+import {EditCategoryComponent} from "./edit-category/edit-category.component";
 
 const routes: Routes = [
   { path: '', redirectTo: '/map', pathMatch: 'full'},
@@ -16,7 +17,7 @@ const routes: Routes = [
             path: 'poi', component: EditPoiComponent
           },
           {
-            path: 'category', component: EditPoiComponent //TODO: change component
+            path: 'category', component: EditCategoryComponent
           },
           {
             path: '', redirectTo: '/map', pathMatch: 'full'

@@ -12,10 +12,9 @@
 
       <mat-form-field>
         <mat-select placeholder="Category" required formControlName="category">
-          <mat-option value="food">Food</mat-option>
-          <mat-option value="entertainment">Entertainment</mat-option>
-          <mat-option value="art">Art</mat-option>
-          <mat-option value="museum">Museum</mat-option>
+          <mat-option *ngFor="let category of poiService.availableCategories" [value]="category">
+            {{category | titlecase}}
+          </mat-option>
         </mat-select>
       </mat-form-field>
 
@@ -25,10 +24,9 @@
 
       <mat-form-field>
         <mat-select placeholder="Type" required formControlName="type">
-          <mat-option value="building">Building</mat-option>
-          <mat-option value="person">Person</mat-option>
-          <mat-option value="event">Event</mat-option>
-          <mat-option value="object">Object</mat-option>
+          <mat-option *ngFor="let type of poiService.availableTypes" [value]="type">
+            {{type | titlecase}}
+          </mat-option>
         </mat-select>
       </mat-form-field>
 

@@ -4,7 +4,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {
   MatAutocompleteModule,
   MatButtonModule,
-  MatCardModule,
+  MatCardModule, MatCheckboxModule,
   MatFormFieldModule, MatIconModule,
   MatInputModule, MatListModule, MatMenuModule, MatNavList,
   MatSelectModule, MatSidenavModule, MatTableModule, MatTabsModule, MatToolbarModule
@@ -27,7 +27,8 @@ import {
     MatMenuModule,
     MatIconModule,
     MatSidenavModule,
-    MatListModule
+    MatListModule,
+    MatCheckboxModule
   ],
   exports: [
     BrowserAnimationsModule,
@@ -43,7 +44,9 @@ import {
     MatMenuModule,
     MatIconModule,
     MatSidenavModule,
-    MatListModule
+    MatListModule,
+    MatCheckboxModule
+
   ]
 })
 export class MaterialModule { }

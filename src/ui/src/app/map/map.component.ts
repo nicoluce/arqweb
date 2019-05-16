@@ -90,7 +90,7 @@ export class MapComponent implements OnInit {
       draggable: true,
       riseOnHover: true
     });
-
+    this.layers.push(newMarker);
     this.newMarker = newMarker;
 
     //Zoom on marker when clicked
@@ -105,8 +105,8 @@ export class MapComponent implements OnInit {
     //SetTimeout is used to give time for the @ViewChild to set the component
     //after the *ngIf activation
     setTimeout(() => this.addMarkerComponent.resetPOIForm(), 1);
-
-    this.layers.push(newMarker);
+    //Set map on top of screen to give more space to the add POI form
+    setTimeout(() => document.getElementById("map").scrollIntoView(true), 100);
 
   }
 
@@ -119,7 +119,7 @@ export class MapComponent implements OnInit {
 
   onPOIAdd(savedPOI: PointOfInterest) {
     this.hideNewPOIForm(false);
-    this.newMarker.bindPopup(MapComponent.markerPopupHtml(savedPOI.title, savedPOI.category,
+    this.newMarker.bindPopup(MapComponent.markerPopupHtml(savedPOI.title, savedPOI.category.name,
       savedPOI.description, savedPOI.type));
     this.newMarker.dragging.disable();
     let newIcon = icon({
@@ -147,7 +147,7 @@ export class MapComponent implements OnInit {
     let bounds = this.map.getBounds();
 
     this.layers = [];
-    this.poiService.Search(title, category, markerLimit, bounds).subscribe(
+    this.poiService.Search(title, category, markerLimit, bounds, false).subscribe(
       (searchResult: PointOfInterest[]) => searchResult.forEach(
         (POI: PointOfInterest) => {
           this.layers.push(MapComponent.POIToMarker(POI))
@@ -172,7 +172,7 @@ export class MapComponent implements OnInit {
         title: POI.title
       });
 
-    marker.bindPopup(MapComponent.markerPopupHtml(POI.title, POI.category, POI.description, POI.type));
+    marker.bindPopup(MapComponent.markerPopupHtml(POI.title, POI.category.name, POI.description, POI.type));
 
     return marker
   }
