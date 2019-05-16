@@ -1,6 +1,7 @@
 package domain
 
 type POIFilter struct {
+	Title    string  `form:"title"`
 	Category string  `form:"category"`
 	Limit    int64   `form:"limit"`
 	MaxLat   float64 `form:"maxLat"`

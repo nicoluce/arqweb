@@ -1,3 +1,75 @@
-<p>
-  edit-poi works!
-</p>
+<mat-card>
+  <mat-card-title>Search point of interest</mat-card-title>
+
+  <mat-card-content>
+    <form #searchForm="ngForm" fxLayout="row" (ngSubmit)="onSubmit()">
+      <mat-form-field>
+        <input matInput type="text" placeholder="Title" name="title" required [(ngModel)]="searchPOITitle">
+      </mat-form-field>
+
+      <mat-action-list>
+        <button mat-raised-button color="primary" type="submit" class="btn btn-success"
+                [disabled]="!searchForm.form.valid">Search</button>
+      </mat-action-list>
+    </form>
+  </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="POI" fxLayout="column" fxLayoutGap="30px">
+  <mat-card-title>Edit point of interest</mat-card-title>
+
+  <mat-card-content>
+    <form #editPOIForm="ngForm" fxLayout fxLayoutGap="10px" (ngSubmit)="updatePOI()" fxFlex="80%" fxFlex.lt-md="100%"
+    >
+      <mat-card-content fxLayout="column" fxLayoutAlign="space-between center" fxLayoutGap="20px">
+        <mat-form-field>
+          <input matInput type="text" placeholder="Title" name="title" required [(ngModel)]="POI.title">
+        </mat-form-field>
+
+
+        <mat-form-field>
+          <mat-select placeholder="Category" required name="category" [(ngModel)]="POI.category">
+            <mat-option value="food">Food</mat-option>
+            <mat-option value="entertainment">Entertainment</mat-option>
+            <mat-option value="art">Art</mat-option>
+            <mat-option value="museum">Museum</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <textarea matInput placeholder="Description" name="description" [(ngModel)]="POI.description"></textarea>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-select placeholder="Type" required name="type" [(ngModel)]="POI.type">
+            <mat-option value="building">Building</mat-option>
+            <mat-option value="person">Person</mat-option>
+            <mat-option value="event">Event</mat-option>
+            <mat-option value="object">Object</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+      </mat-card-content>
+
+      <mat-card-content fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="20px">
+        <mat-form-field>
+          <input matInput type="text" placeholder="Latitude" required name="lat" [(ngModel)]="POI.lat">
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput type="text" placeholder="Longitude" required name="long" [(ngModel)]="POI.long">
+        </mat-form-field>
+
+        <mat-card-actions fxLayoutAlign="end" align="center">
+          <button mat-raised-button color="primary" [disabled]="!editPOIForm.form.valid">Apply changes</button>
+          <button mat-raised-button color="warn" (click)="cancelEditPOI()">Cancel</button>
+        </mat-card-actions>
+
+      </mat-card-content>
+
+    </form>
+  </mat-card-content>
+</mat-card>
+
+
+

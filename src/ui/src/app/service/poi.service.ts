@@ -40,19 +40,19 @@ export class PoiService {
 
   }
 
-  Search(title: string, category: string, markerLimit: number, bounds: LatLngBounds): Observable<PointOfInterest[]> {
+  Search(title?: string, category?: string, markerLimit?: number, bounds?: LatLngBounds): Observable<PointOfInterest[]> {
     let queryParams = new HttpParams();
 
     if (title && !(title === "Any")) {
-      queryParams.append("title", title);
+      queryParams = queryParams.append("title", title);
     }
 
     if (markerLimit) {
-      queryParams.append("limit", String(markerLimit));
+      queryParams = queryParams.append("limit", String(markerLimit));
     }
 
     if (category && !(category === "Any")) {
-      queryParams.append("category", category)
+      queryParams = queryParams.append("category", category)
     }
 
     if (bounds) {
@@ -60,15 +60,19 @@ export class PoiService {
       let eastLong = bounds.getEast();
       let northLat = bounds.getNorth();
       let southLat = bounds.getSouth();
-      queryParams.append("west_long", String(westLong));
-      queryParams.append("east_long", String(eastLong));
-      queryParams.append("north_lat", String(northLat));
-      queryParams.append("south_at", String(southLat));
-      queryParams.append("bound", String(true));
+      queryParams = queryParams.append("west_long", String(westLong));
+      queryParams = queryParams.append("east_long", String(eastLong));
+      queryParams = queryParams.append("north_lat", String(northLat));
+      queryParams = queryParams.append("south_at", String(southLat));
+      queryParams = queryParams.append("bound", String(true));
     }
 
     return this.http.get<PointOfInterest[]>(environment.baseUrl + "/poi/search",
       {params: queryParams});
 
+  }
+
+  updatePOI(POI: PointOfInterest): Observable<PointOfInterest> {
+    return this.http.put<PointOfInterest>(environment.baseUrl + "/poi", PoiService.POIToGeoJSON(POI));
   }
 }
