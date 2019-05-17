@@ -19,11 +19,14 @@ type POIStorage interface {
 	SavePOI(POI *domain.PointOfInterest) (*domain.PointOfInterest, error)
 	SaveFeature(feature *geojson.Feature) (*domain.PointOfInterest, error)
 	Search(filters *domain.POIFilter) ([]*domain.PointOfInterest, error)
+	GetCategories() ([]domain.Category, error)
+	AddCategory(name string, hidden bool) error
 }
 
 const (
-	Database      = "arqweb"
-	POICollection = "poi"
+	Database           = "arqweb"
+	POICollection      = "poi"
+	CategoryCollection = "categories"
 )
 
 func init() {
@@ -32,11 +35,13 @@ func init() {
 
 type POIStorageImpl struct {
 	poiCollection ICollection
+	catCollection ICollection
 }
 
-func CreatePOIStorage(POIcollection ICollection) (POIStorage, error) {
+func CreatePOIStorage(POIcollection ICollection, catCollection ICollection) (POIStorage, error) {
 	storage := &POIStorageImpl{
 		poiCollection: POIcollection,
+		catCollection: catCollection,
 	}
 
 	return storage, nil
@@ -45,11 +50,12 @@ func CreatePOIStorage(POIcollection ICollection) (POIStorage, error) {
 func NewPOIStorage() (POIStorage, error) {
 	client, err := getMongoDBClient()
 	poiCollection := client.Database(Database).Collection(POICollection)
+	catCollection := client.Database(Database).Collection(CategoryCollection)
 	if err != nil {
 		return nil, err
 	}
 
-	return CreatePOIStorage(poiCollection)
+	return CreatePOIStorage(poiCollection, catCollection)
 }
 
 func getMongoDBClient() (*mongo.Client, error) {
@@ -59,6 +65,7 @@ func getMongoDBClient() (*mongo.Client, error) {
 	if err != nil {
 		return nil, apierror.Wrap(err, "Could not connect to MongoDB")
 	}
+	log.Info("Succesfully connected to MonGoDB database")
 
 	ctx, _ = context.WithTimeout(context.Background(), 5*time.Second)
 	err = client.Ping(ctx, readpref.Primary())
@@ -184,6 +191,45 @@ func (ps *POIStorageImpl) Search(filters *domain.POIFilter) ([]*domain.PointOfIn
 
 	return results, nil
 
+}
+
+func (ps *POIStorageImpl) GetCategories() ([]domain.Category, error) {
+
+	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
+
+	resCursor, err := ps.catCollection.Find(ctx, bson.M{})
+
+	if err != nil {
+		return []domain.Category{}, apierror.Wrapf(err, "Could not retrieve list of categories")
+	}
+
+	defer resCursor.Close(ctx)
+
+	results := []domain.Category{}
+	for resCursor.Next(ctx) {
+		var cat domain.Category
+		err = resCursor.Decode(&cat)
+		if err != nil {
+			log.Errorf("Error while decoding Category. Cause: %v", err)
+		} else {
+			results = append(results, cat)
+		}
+	}
+
+	return results, nil
+}
+
+func (ps *POIStorageImpl) AddCategory(name string, hidden bool) error {
+	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
+
+	log.Infof("Adding category %s", name)
+	_, err := ps.catCollection.InsertOne(ctx, domain.Category{Name: name, Hidden: hidden})
+
+	if err != nil {
+		return apierror.Wrapf(err, "Couldn't add '%s' to categories list", name)
+	}
+
+	return nil
 }
 
 func buildQueryFilters(filters *domain.POIFilter) bson.M {
