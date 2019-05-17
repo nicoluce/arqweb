@@ -21,6 +21,7 @@ type POIStorage interface {
 	Search(filters *domain.POIFilter) ([]*domain.PointOfInterest, error)
 	GetCategories() ([]domain.Category, error)
 	AddCategory(name string, hidden bool) error
+	EditCategory(newVersionCategory *domain.Category) error
 }
 
 const (
@@ -227,6 +228,24 @@ func (ps *POIStorageImpl) AddCategory(name string, hidden bool) error {
 
 	if err != nil {
 		return apierror.Wrapf(err, "Couldn't add '%s' to categories list", name)
+	}
+
+	return nil
+}
+
+func (ps *POIStorageImpl) EditCategory(newVersionCategory *domain.Category) error {
+	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
+
+	log.Infof("Updating category %s", newVersionCategory.Id)
+
+	// set filters and updates
+	filter := bson.M{"_id": newVersionCategory.Id}
+	update := bson.M{"$set": newVersionCategory}
+
+	// update document
+	_, err := ps.catCollection.UpdateOne(ctx, filter, update)
+	if err != nil {
+		return apierror.Wrapf(err, "Couldn't update category with id: '%s'", newVersionCategory.Id)
 	}
 
 	return nil
