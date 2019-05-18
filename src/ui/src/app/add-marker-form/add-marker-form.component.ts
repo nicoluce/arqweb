@@ -1,6 +1,6 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {PointOfInterest} from "../domain/point-of-interest";
+import {Image, PointOfInterest} from "../domain/point-of-interest";
 import {Marker} from "leaflet";
 import {PoiService} from "../service/poi.service";
 import {Category} from "../domain/category";
@@ -17,6 +17,9 @@ export class AddMarkerFormComponent implements OnInit {
   newPOI: PointOfInterest;
   @Output() addedPOI: EventEmitter<any> = new EventEmitter();
   @Output() cancelPOI: EventEmitter<any> = new EventEmitter();
+
+  @ViewChild("fileInput") pictureInput;
+
   private poiService: PoiService;
 
   constructor(poiService: PoiService) {
@@ -48,16 +51,38 @@ export class AddMarkerFormComponent implements OnInit {
       description: new FormControl(''),
       type: new FormControl('', [Validators.required, Validators.maxLength(30)]),
       lat: new FormControl(lat),
-      long: new FormControl(long)
+      long: new FormControl(long),
+      picture: new FormGroup({
+        name: new FormControl(''),
+        contentType: new FormControl(''),
+        data: new FormControl('')
+        }
+      )
     })
+  }
+
+  onFileChange(event) {
+    let reader = new FileReader();
+    if(event.target.files && event.target.files.length > 0) {
+      let file = event.target.files[0];
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        this.addPOIForm.get('picture').setValue({
+          name: file.name,
+          contentType: file.type,
+          data: (<string>reader.result).split(',')[1]
+        })
+      };
+    }
   }
 
   //Argument has same fields as control group
   addPOI(newPoiForm: any) {
     let latLng = this.marker.getLatLng();
-
+    let formPicture = newPoiForm.picture;
+    let picture = new Image(formPicture.data, formPicture.name, formPicture.contentType)
     this.buildPOI(newPoiForm.title, newPoiForm.category,
-      newPoiForm.description, newPoiForm.type, latLng.lat, latLng.lng);
+      newPoiForm.description, newPoiForm.type, latLng.lat, latLng.lng, picture);
 
     this.saveNewPOI();
 
@@ -66,7 +91,8 @@ export class AddMarkerFormComponent implements OnInit {
 
   }
 
-  buildPOI(title: string, category: string, description: string, type: string, lat: number, long: number) {
+  buildPOI(title: string, category: string, description: string, type: string,
+           lat: number, long: number, picture: Image) {
     let newPOI = new PointOfInterest();
     newPOI.title = title;
     newPOI.category = this.getCategory(category);
@@ -74,7 +100,7 @@ export class AddMarkerFormComponent implements OnInit {
     newPOI.type = type;
     newPOI.lat = lat;
     newPOI.long = long;
-
+    newPOI.picture = picture;
     this.newPOI = newPOI;
   }
 

@@ -41,6 +41,9 @@
 
       </mat-card-content>
 
+      <label><b>Add Picture</b></label>
+      <input type="file" accept="image/*" (change)="onFileChange($event)" #fileInput>
+
     </mat-card-content>
 
     <mat-card-actions align="center">

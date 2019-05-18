@@ -120,8 +120,7 @@ export class MapComponent implements OnInit {
 
   onPOIAdd(savedPOI: PointOfInterest) {
     this.hideNewPOIForm(false);
-    this.newMarker.bindPopup(MapComponent.markerPopupHtml(savedPOI.title, savedPOI.category,
-      savedPOI.description, savedPOI.type));
+    this.newMarker.bindPopup(MapComponent.markerPopupHtml(savedPOI), {maxWidth: 500, className: 'popup'});
     this.newMarker.dragging.disable();
     let newIcon = icon({
       iconUrl: MapComponent.setMarkerIconUrl,
@@ -130,15 +129,16 @@ export class MapComponent implements OnInit {
     this.newMarker.setIcon(newIcon);
   }
 
-  static markerPopupHtml(title: string, category: Category, description: string, type: string) {
+  static markerPopupHtml(POI: PointOfInterest) {
     return ` 
 <head>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 </head>
-<h2>${this.toTitleCase(title)}</h2>
-<h3>${this.toTitleCase(category.name)} <i class="${category.iconClass}"></i></h3>  
-<h3>Type: ${this.toTitleCase(type)}</h3>
-<p>Description: ${description}</p>
+<h2>${this.toTitleCase(POI.title)}</h2>
+<h3>${this.toTitleCase(POI.category.name)} <i class="${POI.category.iconClass}"></i></h3>  
+<h3>Type: ${this.toTitleCase(POI.type)}</h3>
+<p>Description: ${POI.description}</p>
+<img src="data:${POI.picture.contentType};base64, ${POI.picture.data}" style="width: 100px" style="height: 45px" "/>
 `;
   }
 
@@ -151,7 +151,6 @@ export class MapComponent implements OnInit {
     );
   }
 
-  //Only filters by title and/or category, but could be extended
   /**
    * Filters the layers in the map.
    *
@@ -189,7 +188,7 @@ export class MapComponent implements OnInit {
         title: POI.title
       });
 
-    marker.bindPopup(MapComponent.markerPopupHtml(POI.title, POI.category, POI.description, POI.type));
+    marker.bindPopup(MapComponent.markerPopupHtml(POI), {maxWidth: 500, className: 'popup'});
 
     return marker
   }
