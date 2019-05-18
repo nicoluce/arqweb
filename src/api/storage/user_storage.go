@@ -6,13 +6,14 @@ import (
 	"github.com/fernetbalboa/arqweb/src/api/domain"
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/x/bsonx"
 	"time"
 )
 
 //go:generate mockgen -destination=../mock/mock_user_storage.go -package=mock -source=user_storage.go
 type UserStorage interface {
 	SaveUser(POI *domain.User) (*domain.User, error)
-	Search(userID primitive.ObjectID) (*domain.User, error)
+	Search(userName string) (*domain.User, error)
 }
 
 const (
@@ -45,10 +46,10 @@ func NewUserStorage() (UserStorage, error) {
 	return CreateUserStorage(UserCollection)
 }
 
-func (ps *UserStorageImpl) SaveUser(User *domain.User) (*domain.User, error) {
+func (us *UserStorageImpl) SaveUser(User *domain.User) (*domain.User, error) {
 	User.Id = primitive.NewObjectID()
 	ctx, _ := context.WithTimeout(context.Background(), 1*time.Second)
-	res, err := ps.UserCollection.InsertOne(ctx, User)
+	res, err := us.UserCollection.InsertOne(ctx, User)
 
 	if err != nil {
 		return nil, apierror.Wrapf(err, "Could not insert new User into MongoDB. User: %+v", User)
@@ -60,8 +61,17 @@ func (ps *UserStorageImpl) SaveUser(User *domain.User) (*domain.User, error) {
 }
 
 
-func (ps *UserStorageImpl) Search(userID primitive.ObjectID ) (*domain.User, error) {
-	return nil, nil
+func (us *UserStorageImpl) Search(username string) (*domain.User, error) {
+
+	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
+	res := us.UserCollection.FindOne(ctx, bsonx.Doc{{"username", bsonx.String(username)}})
+	var user domain.User
+	err := res.Decode(&user)
+	if err != nil {
+		log.Errorf("Error while decoding User. Cause: %v", err)
+		return nil, err
+	}
+	return &user, nil
 }
 
 func resetUserCollection() {

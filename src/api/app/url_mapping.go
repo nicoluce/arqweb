@@ -26,6 +26,7 @@ func LoadEndpoints() {
 	Router.GET("/ping", controller.Ping)
 
 	userGroup := Router.Group("/user")
+	userGroup.POST("/signup", userController.Signup)
 	userGroup.GET("/login", userController.Login)
 
 	poiGroup := Router.Group("/poi")

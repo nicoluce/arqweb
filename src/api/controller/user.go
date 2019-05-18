@@ -1,14 +1,12 @@
 package controller
 
 import (
-	"crypto"
-	"crypto/md5"
 	"github.com/fernetbalboa/arqweb/src/api/apierror"
 	"github.com/fernetbalboa/arqweb/src/api/domain"
 	"github.com/fernetbalboa/arqweb/src/api/storage"
 	"github.com/gin-gonic/gin"
-	"net/http"
 	log "github.com/sirupsen/logrus"
+	"net/http"
 )
 
 type UserController struct {
@@ -30,7 +28,38 @@ func NewUserController() (*UserController, error) {
 	return CreateUserController(userStorage), nil
 }
 
-func (pc *UserController) Login(c *gin.Context) {
+func (uc *UserController) Signup(c *gin.Context) {
+	var userData domain.User
+	err := c.ShouldBindJSON(&userData)
+
+	if err != nil {
+		apiError := apierror.BadRequest.Wrapf(err, "Error parsing User")
+		_ = c.Error(apiError)
+		return
+	}
+
+	log.Infof("Processing login for user: %v", userData.Username)
+
+	user, err := uc.UserStorage.Search(userData.Username)
+
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+	if user != nil {
+		c.JSON(http.StatusForbidden, "Username already exists")
+	}
+	userData.IsAdmin = false
+	user, err = uc.UserStorage.SaveUser(&userData)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+	c.JSON(http.StatusCreated, "user created")
+}
+
+
+func (uc *UserController) Login(c *gin.Context) {
 	var userData domain.User
 	err := c.ShouldBindJSON(&userData)
 
@@ -42,14 +71,14 @@ func (pc *UserController) Login(c *gin.Context) {
 
 	log.Infof("Processing login for user id: %v", userData.Id)
 
-	user, err := pc.UserStorage.Search(userData.Id)
+	user, err := uc.UserStorage.Search(userData.Username)
 
 	if err != nil {
 		_ = c.Error(err)
 		return
 	}
-	password := md5.Sum([]byte(userData.Password))
-	if password == []byte(user.Password) {
+
+	if user.Password == userData.Password {
 		c.JSON(http.StatusOK, user)
 	}
 	c.JSON(http.StatusForbidden, "")
