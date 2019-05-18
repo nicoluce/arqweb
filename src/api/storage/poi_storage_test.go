@@ -18,6 +18,7 @@ import (
 const (
 	TestDB            string = "test_db"
 	POITestCollection        = "poi_test"
+	CategoryTestCollection = "cat_test"
 )
 
 func init() {
@@ -29,8 +30,9 @@ func TestSaveGeoJsonFeature(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	poiCollectionMock := mock.NewMockICollection(ctrl)
+	catCollectionMock := mock.NewMockICollection(ctrl)
 
-	POIStorage, _ := storage.CreatePOIStorage(poiCollectionMock)
+	POIStorage, _ := storage.CreatePOIStorage(poiCollectionMock, catCollectionMock)
 
 	pointFeature := test.DefaultGeoJsonFeature()
 	documentId := test.NewDocumentId()
@@ -59,8 +61,9 @@ func TestSearch(t *testing.T) {
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	client, _ := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
 	POICollection := client.Database(TestDB).Collection(POITestCollection)
+	CatCollection := client.Database(TestDB).Collection(CategoryTestCollection)
 
-	POIStorage, _ := storage.CreatePOIStorage(POICollection)
+	POIStorage, _ := storage.CreatePOIStorage(POICollection, CatCollection)
 
 	t.Run("Search by category", func(t *testing.T) {
 		//noinspection GoUnhandledErrorResult

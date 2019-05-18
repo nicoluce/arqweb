@@ -2,7 +2,7 @@ package storage
 
 import (
 	"context"
-	"github.com/FernetBalboa/arqweb/src/api/apierror"
+	"github.com/fernetbalboa/arqweb/src/api/apierror"
 	"github.com/fernetbalboa/arqweb/src/api/domain"
 	"github.com/paulmach/go.geojson"
 	log "github.com/sirupsen/logrus"
@@ -94,7 +94,7 @@ func (ps *POIStorageImpl) SavePOI(POI *domain.PointOfInterest) (*domain.PointOfI
 	return POI, nil
 }
 
-func (ps *POIStorageImpl) EditPOI(newVersionPOI *domain.PointOfInterest) error {
+func (ps *POIStorageImpl) EditPOI(newVersionPOI domain.PointOfInterest) error {
 	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
 
 	log.Infof("Updating POI '%s'", newVersionPOI.Id)
@@ -253,7 +253,7 @@ func (ps *POIStorageImpl) AddCategory(name string, hidden bool) error {
 	return nil
 }
 
-func (ps *POIStorageImpl) EditCategory(newVersionCategory *domain.Category) error {
+func (ps *POIStorageImpl) EditCategory(newVersionCategory domain.Category) error {
 	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
 
 	log.Infof("Updating category '%s'", newVersionCategory.Id)

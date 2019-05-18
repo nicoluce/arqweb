@@ -1,9 +1,9 @@
 package controller
 
 import (
-	"github.com/FernetBalboa/arqweb/src/api/apierror"
-	"github.com/FernetBalboa/arqweb/src/api/domain"
-	"github.com/FernetBalboa/arqweb/src/api/storage"
+	"github.com/fernetbalboa/arqweb/src/api/apierror"
+	"github.com/fernetbalboa/arqweb/src/api/domain"
+	"github.com/fernetbalboa/arqweb/src/api/storage"
 	"github.com/gin-gonic/gin"
 	"github.com/paulmach/go.geojson"
 	log "github.com/sirupsen/logrus"
