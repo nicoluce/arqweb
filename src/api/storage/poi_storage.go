@@ -318,7 +318,6 @@ func buildCategoryQueryFilters(filters *domain.CategoryFilter) bson.M {
 	return filtersMap
 }
 
-
 func buildPOIQueryFilters(filters *domain.POIFilter) bson.M {
 	filtersMap := bson.M{}
 	if filters.Category != "" {
