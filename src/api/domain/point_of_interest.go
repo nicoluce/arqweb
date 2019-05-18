@@ -15,8 +15,9 @@ type PointOfInterest struct {
 }
 
 type Image struct {
-	Filename    string `json:"filename"`
+	Filename    string `json:"name"`
 	Data        string `json:"data"` //bytes are encoded in Base64
+	ContentType string `json:"content_type"`
 }
 
 
