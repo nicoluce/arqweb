@@ -7,15 +7,23 @@ import (
 func DefaultUserString() string {
 	return `{
 	"username": "testName",
-	"password": "testPass",
+	"password": "testPass"
 }`
 }
 
 func DefaultUser() *domain.User {
 	return &domain.User{
-		Id:          NewDocumentId(),
-		Username:     "testName",
-		Password:    "testPass",
-		IsAdmin: false,
+		Username: "testName",
+		Password: "testPass",
+		IsAdmin:  false,
+	}
+}
+
+func DefaultUserWithId() *domain.User {
+	return &domain.User{
+		Id:       NewDocumentId(),
+		Username: "testName",
+		Password: "testPass",
+		IsAdmin:  false,
 	}
 }

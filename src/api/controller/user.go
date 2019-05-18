@@ -38,7 +38,7 @@ func (uc *UserController) Signup(c *gin.Context) {
 		return
 	}
 
-	log.Infof("Processing login for user: %v", userData.Username)
+	log.Infof("Processing signup for user: %v", userData.Username)
 
 	user, err := uc.UserStorage.Search(userData.Username)
 
@@ -46,18 +46,21 @@ func (uc *UserController) Signup(c *gin.Context) {
 		_ = c.Error(err)
 		return
 	}
+
 	if user != nil {
-		c.JSON(http.StatusForbidden, "Username already exists")
+		err := apierror.Forbidden.Newf("Username already exists")
+		_ = c.Error(err)
+		return
 	}
+
 	userData.IsAdmin = false
 	user, err = uc.UserStorage.SaveUser(&userData)
 	if err != nil {
 		_ = c.Error(err)
 		return
 	}
-	c.JSON(http.StatusCreated, "user created")
+	c.JSON(http.StatusCreated, user)
 }
-
 
 func (uc *UserController) Login(c *gin.Context) {
 	var userData domain.User
@@ -77,9 +80,16 @@ func (uc *UserController) Login(c *gin.Context) {
 		_ = c.Error(err)
 		return
 	}
+	if user == nil {
+		err = apierror.Forbidden.Newf("Invalid username or password")
+		_ = c.Error(err)
+		return
+	}
 
 	if user.Password == userData.Password {
 		c.JSON(http.StatusOK, user)
+		return
 	}
-	c.JSON(http.StatusForbidden, "")
+	err = apierror.Forbidden.Newf("Invalid username or password")
+	_ = c.Error(err)
 }

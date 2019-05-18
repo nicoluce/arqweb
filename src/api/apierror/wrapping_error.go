@@ -9,6 +9,7 @@ import (
 const (
 	NoType = ErrorType(iota)
 	BadRequest
+	Forbidden
 	NotFound
 	Internal
 	External

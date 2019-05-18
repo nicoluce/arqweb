@@ -12,7 +12,7 @@ import (
 
 //go:generate mockgen -destination=../mock/mock_user_storage.go -package=mock -source=user_storage.go
 type UserStorage interface {
-	SaveUser(POI *domain.User) (*domain.User, error)
+	SaveUser(User *domain.User) (*domain.User, error)
 	Search(userName string) (*domain.User, error)
 }
 
@@ -59,7 +59,6 @@ func (us *UserStorageImpl) SaveUser(User *domain.User) (*domain.User, error) {
 
 	return User, nil
 }
-
 
 func (us *UserStorageImpl) Search(username string) (*domain.User, error) {
 
