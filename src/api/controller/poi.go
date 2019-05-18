@@ -1,9 +1,9 @@
 package controller
 
 import (
-	"github.com/fernetbalboa/arqweb/src/api/apierror"
-	"github.com/fernetbalboa/arqweb/src/api/domain"
-	"github.com/fernetbalboa/arqweb/src/api/storage"
+	"github.com/FernetBalboa/arqweb/src/api/apierror"
+	"github.com/FernetBalboa/arqweb/src/api/domain"
+	"github.com/FernetBalboa/arqweb/src/api/storage"
 	"github.com/gin-gonic/gin"
 	"github.com/paulmach/go.geojson"
 	log "github.com/sirupsen/logrus"
@@ -150,7 +150,7 @@ func (pc *POIController) EditCategory(c *gin.Context) {
 	}
 
 	if categoryId != newVersionCategory.Id.String() {
-		apiError := apierror.BadRequest.New("Category ID can not be updated")
+		apiError := apierror.BadRequest.New("Category field ID can not be updated")
 		_ = c.Error(apiError)
 		return
 	}

@@ -2,7 +2,7 @@ package storage
 
 import (
 	"context"
-	"github.com/fernetbalboa/arqweb/src/api/apierror"
+	"github.com/FernetBalboa/arqweb/src/api/apierror"
 	"github.com/fernetbalboa/arqweb/src/api/domain"
 	"github.com/paulmach/go.geojson"
 	log "github.com/sirupsen/logrus"
@@ -17,11 +17,12 @@ import (
 //go:generate mockgen -destination=../mock/mock_poi_storage.go -package=mock -source=poi_storage.go -imports geojson=github.com/paulmach/go.geojson
 type POIStorage interface {
 	SavePOI(POI *domain.PointOfInterest) (*domain.PointOfInterest, error)
+	EditPOI(newVersionPOI domain.PointOfInterest) error
 	SaveFeature(feature *geojson.Feature) (*domain.PointOfInterest, error)
 	Search(filters *domain.POIFilter) ([]*domain.PointOfInterest, error)
 	GetCategories() ([]domain.Category, error)
 	AddCategory(name string, hidden bool) error
-	EditCategory(newVersionCategory *domain.Category) error
+	EditCategory(newVersionCategory domain.Category) error
 }
 
 const (
@@ -91,6 +92,25 @@ func (ps *POIStorageImpl) SavePOI(POI *domain.PointOfInterest) (*domain.PointOfI
 	POI.Id = res.InsertedID.(primitive.ObjectID)
 
 	return POI, nil
+}
+
+func (ps *POIStorageImpl) EditPOI(newVersionPOI *domain.PointOfInterest) error {
+	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
+
+	log.Infof("Updating POI '%s'", newVersionPOI.Id)
+
+	// set filters and updates
+	filter := bson.M{"_id": newVersionPOI.Id}
+	update := bson.M{"$set": newVersionPOI}
+
+	// update document
+	_, err := ps.catCollection.UpdateOne(ctx, filter, update)
+	if err != nil {
+		return apierror.Wrapf(err, "Couldn't update POI with id: '%s'", newVersionPOI.Id)
+	}
+
+	log.Infof("POI '%s' successfully updated", newVersionPOI.Id)
+	return nil
 }
 
 func (ps *POIStorageImpl) SaveFeature(feature *geojson.Feature) (*domain.PointOfInterest, error) {
@@ -236,7 +256,7 @@ func (ps *POIStorageImpl) AddCategory(name string, hidden bool) error {
 func (ps *POIStorageImpl) EditCategory(newVersionCategory *domain.Category) error {
 	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
 
-	log.Infof("Updating category %s", newVersionCategory.Id)
+	log.Infof("Updating category '%s'", newVersionCategory.Id)
 
 	// set filters and updates
 	filter := bson.M{"_id": newVersionCategory.Id}
@@ -248,6 +268,7 @@ func (ps *POIStorageImpl) EditCategory(newVersionCategory *domain.Category) erro
 		return apierror.Wrapf(err, "Couldn't update category with id: '%s'", newVersionCategory.Id)
 	}
 
+	log.Infof("Category '%s' successfully updated", newVersionCategory.Id)
 	return nil
 }
 
