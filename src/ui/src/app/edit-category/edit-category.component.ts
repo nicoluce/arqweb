@@ -27,7 +27,7 @@ export class EditCategoryComponent implements OnInit {
   }
 
   private updateCategory(): void {
-    this.poiService.updateCategory(this.searchCategoryName, this.category).subscribe(
+    this.poiService.updateCategory(this.category).subscribe(
       (newCategory: Category) => {
         this.category = newCategory;
       }

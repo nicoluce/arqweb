@@ -23,8 +23,13 @@
     >
       <mat-card-content fxLayout="column" fxLayoutAlign="space-between center" fxLayoutGap="20px">
         <mat-form-field>
-          <input matInput type="text" placeholder="Name" readonly name="name" [(ngModel)]="category.name">
+          <input matInput type="text" placeholder="Id" readonly name="id" [(ngModel)]="category.id">
         </mat-form-field>
+
+        <mat-form-field>
+          <input matInput type="text" placeholder="Name" name="name" [(ngModel)]="category.name">
+        </mat-form-field>
+
 
         <mat-checkbox [(ngModel)]="category.hidden">Hide</mat-checkbox>
 

@@ -69,13 +69,23 @@ export class AddMarkerFormComponent implements OnInit {
   buildPOI(title: string, category: string, description: string, type: string, lat: number, long: number) {
     let newPOI = new PointOfInterest();
     newPOI.title = title;
-    newPOI.category = new Category(category, false);
+    newPOI.category = this.getCategory(category);
     newPOI.description = description;
     newPOI.type = type;
     newPOI.lat = lat;
     newPOI.long = long;
 
     this.newPOI = newPOI;
+  }
+
+  getCategory(categoryName: string): Category {
+    let category: Category = null;
+    this.poiService.getCategory(categoryName).subscribe(
+      (retrievedCategory: Category) =>
+        category = retrievedCategory
+    );
+
+    return category;
   }
 
   cancelNewPOI() {

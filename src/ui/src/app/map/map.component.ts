@@ -4,6 +4,7 @@ import {icon, LatLng, latLng, Layer, LeafletMouseEvent, Map, marker, Marker, til
 import {PointOfInterest} from "../domain/point-of-interest";
 import {AddMarkerFormComponent} from "../add-marker-form/add-marker-form.component";
 import {PoiService} from "../service/poi.service";
+import {Category} from "../domain/category";
 
 @Component({
   selector: 'app-map',
@@ -119,7 +120,7 @@ export class MapComponent implements OnInit {
 
   onPOIAdd(savedPOI: PointOfInterest) {
     this.hideNewPOIForm(false);
-    this.newMarker.bindPopup(MapComponent.markerPopupHtml(savedPOI.title, savedPOI.category.name,
+    this.newMarker.bindPopup(MapComponent.markerPopupHtml(savedPOI.title, savedPOI.category,
       savedPOI.description, savedPOI.type));
     this.newMarker.dragging.disable();
     let newIcon = icon({
@@ -129,9 +130,25 @@ export class MapComponent implements OnInit {
     this.newMarker.setIcon(newIcon);
   }
 
-  //TODO: improve
-  static markerPopupHtml(title: string, category: string, description: string, type: string) {
-    return `<h2>${title}</h2> <h3>${category}</h3> <h3>${type}</h3> <p>${description}</p>`;
+  static markerPopupHtml(title: string, category: Category, description: string, type: string) {
+    return ` 
+<head>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+</head>
+<h2>${this.toTitleCase(title)}</h2>
+<h3>${this.toTitleCase(category.name)} <i class="${category.iconClass}"></i></h3>  
+<h3>Type: ${this.toTitleCase(type)}</h3>
+<p>Description: ${description}</p>
+`;
+  }
+
+  private static toTitleCase(str: string): string {
+    return str.replace(
+      /\w\S*/g,
+      function(txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+      }
+    );
   }
 
   //Only filters by title and/or category, but could be extended
@@ -172,7 +189,7 @@ export class MapComponent implements OnInit {
         title: POI.title
       });
 
-    marker.bindPopup(MapComponent.markerPopupHtml(POI.title, POI.category.name, POI.description, POI.type));
+    marker.bindPopup(MapComponent.markerPopupHtml(POI.title, POI.category, POI.description, POI.type));
 
     return marker
   }

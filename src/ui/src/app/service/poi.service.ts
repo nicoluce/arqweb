@@ -91,13 +91,13 @@ export class PoiService {
   }
 
   public getCategory(name: string): Observable<Category> {
-    return of(new Category("food", false));
+    return of(new Category("abcd","food", false, "fas fa-hamburger"));
     //TODO: use backend
     //return this.http.get<Category>(environment.baseUrl + `/category/${name}`)
   }
 
-  public updateCategory(categoryName: string, category: Category): Observable<Category> {
-    return this.http.put<Category>(environment.baseUrl + `/category/${categoryName}`, category)
+  public updateCategory(category: Category): Observable<Category> {
+    return this.http.put<Category>(environment.baseUrl + `/category/${category.id}`, category)
   }
 
   deleteCategory(categoryName: string): Observable<Category> {
