@@ -56,7 +56,7 @@ func TestSaveGeoJsonFeature(t *testing.T) {
 }
 
 //Integration test using local MongoDB
-func TestSearch(t *testing.T) {
+func TestSearchPOI(t *testing.T) {
 	//Given
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	client, _ := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
@@ -65,7 +65,7 @@ func TestSearch(t *testing.T) {
 
 	POIStorage, _ := storage.CreatePOIStorage(POICollection, CatCollection)
 
-	t.Run("Search by category", func(t *testing.T) {
+	t.Run("Search POI by category", func(t *testing.T) {
 		//noinspection GoUnhandledErrorResult
 		defer client.Database(TestDB).Drop(context.Background())
 		POI := test.DefaultPOI()
@@ -89,7 +89,7 @@ func TestSearch(t *testing.T) {
 		assert.NotContains(t, foundPOIs, anotherCategoryPOI)
 	})
 
-	t.Run("Search in latitude bounds", func(t *testing.T) {
+	t.Run("Search POI in latitude bounds", func(t *testing.T) {
 		//noinspection GoUnhandledErrorResult
 		defer client.Database(TestDB).Drop(context.Background())
 		insideBoundsPOI := test.DefaultPOI()
@@ -124,7 +124,111 @@ func TestSearch(t *testing.T) {
 		assert.NotContains(t, foundPOIs, savedOutsideBoundsPOI)
 	})
 
-	t.Run("Search in longitude bounds", func(t *testing.T) {
+	t.Run("Search POI in longitude bounds", func(t *testing.T) {
+		//noinspection GoUnhandledErrorResult
+		defer client.Database(TestDB).Drop(context.Background())
+		insideBoundsPOI := test.DefaultPOI()
+		minLat := insideBoundsPOI.Lat - 10
+		maxLat := insideBoundsPOI.Lat + 10
+		minLong := insideBoundsPOI.Long - 10
+		maxLong := insideBoundsPOI.Long + 10
+
+		outsideBoundsPOI := test.DefaultPOI()
+		outsideBoundsPOI.Long = maxLong + 1
+
+		savedInsideBoundsPOI, saveErr1 := POIStorage.SavePOI(insideBoundsPOI)
+		savedOutsideBoundsPOI, saveErr2 := POIStorage.SavePOI(outsideBoundsPOI)
+
+		boundsFilter := &domain.POIFilter{
+			MaxLat:  maxLat,
+			MaxLong: maxLong,
+			MinLat:  minLat,
+			MinLong: minLong,
+			Bound:   true,
+		}
+
+		//When
+		foundPOIs, searchErr := POIStorage.Search(boundsFilter)
+
+		//Then
+		assert.NoError(t, saveErr1)
+		assert.NoError(t, saveErr2)
+		assert.NoError(t, searchErr)
+
+		assert.Contains(t, foundPOIs, savedInsideBoundsPOI)
+		assert.NotContains(t, foundPOIs, savedOutsideBoundsPOI)
+	})
+}
+
+func TestSearchCategory(t *testing.T) {
+	//Given
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	client, _ := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
+	POICollection := client.Database(TestDB).Collection(POITestCollection)
+	CatCollection := client.Database(TestDB).Collection(CategoryTestCollection)
+
+	POIStorage, _ := storage.CreatePOIStorage(POICollection, CatCollection)
+
+	t.Run("Search POI by category", func(t *testing.T) {
+		//noinspection GoUnhandledErrorResult
+		defer client.Database(TestDB).Drop(context.Background())
+		category := test.DefaultCategory()
+		anotherCategory := test.DefaultCategory()
+		anotherCategory.Name = "anotherName"
+
+		_ = POIStorage.AddCategory(category, false)
+		anotherCategoryPOI, saveErr2 := POIStorage.SavePOI(anotherPOI)
+
+		categoryFilter := &domain.POIFilter{Category: POI.Category}
+
+		//When
+		foundPOIs, searchErr := POIStorage.Search(categoryFilter)
+
+		//Then
+		assert.NoError(t, saveErr1)
+		assert.NoError(t, saveErr2)
+		assert.NoError(t, searchErr)
+
+		assert.Contains(t, foundPOIs, savedPOI)
+		assert.NotContains(t, foundPOIs, anotherCategoryPOI)
+	})
+
+	t.Run("Search POI in latitude bounds", func(t *testing.T) {
+		//noinspection GoUnhandledErrorResult
+		defer client.Database(TestDB).Drop(context.Background())
+		insideBoundsPOI := test.DefaultPOI()
+		minLat := insideBoundsPOI.Lat - 10
+		maxLat := insideBoundsPOI.Lat + 10
+		minLong := insideBoundsPOI.Long - 10
+		maxLong := insideBoundsPOI.Long + 10
+
+		outsideBoundsPOI := test.DefaultPOI()
+		outsideBoundsPOI.Lat = minLat - 1
+
+		savedInsideBoundsPOI, saveErr1 := POIStorage.SavePOI(insideBoundsPOI)
+		savedOutsideBoundsPOI, saveErr2 := POIStorage.SavePOI(outsideBoundsPOI)
+
+		boundsFilter := &domain.POIFilter{
+			MaxLat:  maxLat,
+			MaxLong: maxLong,
+			MinLat:  minLat,
+			MinLong: minLong,
+			Bound:   true,
+		}
+
+		//When
+		foundPOIs, searchErr := POIStorage.Search(boundsFilter)
+
+		//Then
+		assert.NoError(t, saveErr1)
+		assert.NoError(t, saveErr2)
+		assert.NoError(t, searchErr)
+
+		assert.Contains(t, foundPOIs, savedInsideBoundsPOI)
+		assert.NotContains(t, foundPOIs, savedOutsideBoundsPOI)
+	})
+
+	t.Run("Search POI in longitude bounds", func(t *testing.T) {
 		//noinspection GoUnhandledErrorResult
 		defer client.Database(TestDB).Drop(context.Background())
 		insideBoundsPOI := test.DefaultPOI()

@@ -132,7 +132,7 @@ func (pc *POIController) AddCategory(c *gin.Context) {
 		return
 	}
 
-	err = pc.POIStorage.AddCategory(category.Name, category.Hidden)
+	err = pc.POIStorage.AddCategory(category)
 	if err != nil {
 		_ = c.Error(err)
 		return

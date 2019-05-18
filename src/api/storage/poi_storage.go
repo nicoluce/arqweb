@@ -21,7 +21,7 @@ type POIStorage interface {
 	SaveFeature(feature *geojson.Feature) (*domain.PointOfInterest, error)
 	Search(filters *domain.POIFilter) ([]*domain.PointOfInterest, error)
 	GetCategories() ([]domain.Category, error)
-	AddCategory(name string, hidden bool) error
+	AddCategory(category domain.Category) error
 	EditCategory(newVersionCategory domain.Category) error
 }
 
@@ -240,14 +240,14 @@ func (ps *POIStorageImpl) GetCategories() ([]domain.Category, error) {
 	return results, nil
 }
 
-func (ps *POIStorageImpl) AddCategory(name string, hidden bool) error {
+func (ps *POIStorageImpl) SaveCategory(category domain.Category) error {
 	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
 
-	log.Infof("Adding category %s", name)
-	_, err := ps.catCollection.InsertOne(ctx, domain.Category{Name: name, Hidden: hidden})
+	log.Infof("Adding category %s", category.Name)
+	_, err := ps.catCollection.InsertOne(ctx, category)
 
 	if err != nil {
-		return apierror.Wrapf(err, "Couldn't add '%s' to categories list", name)
+		return apierror.Wrapf(err, "Couldn't add '%s' to categories list", category.Name)
 	}
 
 	return nil
