@@ -7,7 +7,6 @@ package mock
 import (
 	domain "github.com/fernetbalboa/arqweb/src/api/domain"
 	gomock "github.com/golang/mock/gomock"
-	primitive "go.mongodb.org/mongo-driver/bson/primitive"
 	reflect "reflect"
 )
 
@@ -50,16 +49,16 @@ func (mr *MockUserStorageMockRecorder) SaveUser(POI interface{}) *gomock.Call {
 }
 
 // Search mocks base method
-func (m *MockUserStorage) Search(userID primitive.ObjectID) (*domain.User, error) {
+func (m *MockUserStorage) Search(userName string) (*domain.User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Search", userID)
+	ret := m.ctrl.Call(m, "Search", userName)
 	ret0, _ := ret[0].(*domain.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Search indicates an expected call of Search
-func (mr *MockUserStorageMockRecorder) Search(userID interface{}) *gomock.Call {
+func (mr *MockUserStorageMockRecorder) Search(userName interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Search", reflect.TypeOf((*MockUserStorage)(nil).Search), userID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Search", reflect.TypeOf((*MockUserStorage)(nil).Search), userName)
 }
