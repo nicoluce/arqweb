@@ -16,9 +16,9 @@ import (
 )
 
 const (
-	TestDB            string = "test_db"
-	POITestCollection        = "poi_test"
-	CategoryTestCollection = "cat_test"
+	TestDB                 string = "test_db"
+	POITestCollection             = "poi_test"
+	CategoryTestCollection        = "cat_test"
 )
 
 func init() {
@@ -78,7 +78,7 @@ func TestSearchPOI(t *testing.T) {
 		categoryFilter := &domain.POIFilter{Category: POI.Category}
 
 		//When
-		foundPOIs, searchErr := POIStorage.Search(categoryFilter)
+		foundPOIs, searchErr := POIStorage.SearchPOI(categoryFilter)
 
 		//Then
 		assert.NoError(t, saveErr1)
@@ -113,7 +113,7 @@ func TestSearchPOI(t *testing.T) {
 		}
 
 		//When
-		foundPOIs, searchErr := POIStorage.Search(boundsFilter)
+		foundPOIs, searchErr := POIStorage.SearchPOI(boundsFilter)
 
 		//Then
 		assert.NoError(t, saveErr1)
@@ -148,7 +148,7 @@ func TestSearchPOI(t *testing.T) {
 		}
 
 		//When
-		foundPOIs, searchErr := POIStorage.Search(boundsFilter)
+		foundPOIs, searchErr := POIStorage.SearchPOI(boundsFilter)
 
 		//Then
 		assert.NoError(t, saveErr1)
@@ -169,97 +169,52 @@ func TestSearchCategory(t *testing.T) {
 
 	POIStorage, _ := storage.CreatePOIStorage(POICollection, CatCollection)
 
-	t.Run("Search POI by category", func(t *testing.T) {
+	t.Run("Search category by name", func(t *testing.T) {
 		//noinspection GoUnhandledErrorResult
 		defer client.Database(TestDB).Drop(context.Background())
 		category := test.DefaultCategory()
 		anotherCategory := test.DefaultCategory()
 		anotherCategory.Name = "anotherName"
 
-		_ = POIStorage.AddCategory(category, false)
-		anotherCategoryPOI, saveErr2 := POIStorage.SavePOI(anotherPOI)
+		saveErr1 := POIStorage.AddCategory(category)
+		saveErr2 := POIStorage.AddCategory(anotherCategory)
 
-		categoryFilter := &domain.POIFilter{Category: POI.Category}
+		filter := &domain.CategoryFilter{Name: category.Name}
 
 		//When
-		foundPOIs, searchErr := POIStorage.Search(categoryFilter)
+		foundCategories, searchErr := POIStorage.SearchCategory(filter)
 
 		//Then
 		assert.NoError(t, saveErr1)
 		assert.NoError(t, saveErr2)
 		assert.NoError(t, searchErr)
 
-		assert.Contains(t, foundPOIs, savedPOI)
-		assert.NotContains(t, foundPOIs, anotherCategoryPOI)
+		assert.Contains(t, foundCategories, category)
+		assert.NotContains(t, foundCategories, anotherCategory)
 	})
 
-	t.Run("Search POI in latitude bounds", func(t *testing.T) {
+	t.Run("Search category by hidden", func(t *testing.T) {
 		//noinspection GoUnhandledErrorResult
 		defer client.Database(TestDB).Drop(context.Background())
-		insideBoundsPOI := test.DefaultPOI()
-		minLat := insideBoundsPOI.Lat - 10
-		maxLat := insideBoundsPOI.Lat + 10
-		minLong := insideBoundsPOI.Long - 10
-		maxLong := insideBoundsPOI.Long + 10
+		category := test.DefaultCategory()
+		hiddenCategory := test.DefaultCategory()
+		hiddenCategory.Hidden = true
 
-		outsideBoundsPOI := test.DefaultPOI()
-		outsideBoundsPOI.Lat = minLat - 1
+		saveErr1 := POIStorage.AddCategory(category)
+		saveErr2 := POIStorage.AddCategory(hiddenCategory)
 
-		savedInsideBoundsPOI, saveErr1 := POIStorage.SavePOI(insideBoundsPOI)
-		savedOutsideBoundsPOI, saveErr2 := POIStorage.SavePOI(outsideBoundsPOI)
-
-		boundsFilter := &domain.POIFilter{
-			MaxLat:  maxLat,
-			MaxLong: maxLong,
-			MinLat:  minLat,
-			MinLong: minLong,
-			Bound:   true,
-		}
+		filter := &domain.CategoryFilter{Hidden: false}
 
 		//When
-		foundPOIs, searchErr := POIStorage.Search(boundsFilter)
+		foundCategories, searchErr := POIStorage.SearchCategory(filter)
 
 		//Then
 		assert.NoError(t, saveErr1)
 		assert.NoError(t, saveErr2)
 		assert.NoError(t, searchErr)
 
-		assert.Contains(t, foundPOIs, savedInsideBoundsPOI)
-		assert.NotContains(t, foundPOIs, savedOutsideBoundsPOI)
+		assert.Contains(t, foundCategories, category)
+		assert.NotContains(t, foundCategories, hiddenCategory)
 	})
 
-	t.Run("Search POI in longitude bounds", func(t *testing.T) {
-		//noinspection GoUnhandledErrorResult
-		defer client.Database(TestDB).Drop(context.Background())
-		insideBoundsPOI := test.DefaultPOI()
-		minLat := insideBoundsPOI.Lat - 10
-		maxLat := insideBoundsPOI.Lat + 10
-		minLong := insideBoundsPOI.Long - 10
-		maxLong := insideBoundsPOI.Long + 10
-
-		outsideBoundsPOI := test.DefaultPOI()
-		outsideBoundsPOI.Long = maxLong + 1
-
-		savedInsideBoundsPOI, saveErr1 := POIStorage.SavePOI(insideBoundsPOI)
-		savedOutsideBoundsPOI, saveErr2 := POIStorage.SavePOI(outsideBoundsPOI)
-
-		boundsFilter := &domain.POIFilter{
-			MaxLat:  maxLat,
-			MaxLong: maxLong,
-			MinLat:  minLat,
-			MinLong: minLong,
-			Bound:   true,
-		}
-
-		//When
-		foundPOIs, searchErr := POIStorage.Search(boundsFilter)
-
-		//Then
-		assert.NoError(t, saveErr1)
-		assert.NoError(t, saveErr2)
-		assert.NoError(t, searchErr)
-
-		assert.Contains(t, foundPOIs, savedInsideBoundsPOI)
-		assert.NotContains(t, foundPOIs, savedOutsideBoundsPOI)
-	})
 }

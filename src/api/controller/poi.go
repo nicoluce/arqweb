@@ -75,7 +75,7 @@ func (pc *POIController) EditPOI(c *gin.Context) {
 		return
 	}
 
-	err = pc.POIStorage.EditPOI(poi)
+	err = pc.POIStorage.EditPOI(&poi)
 
 	c.JSON(http.StatusOK, gin.H{"id": poiId, "message": "POI successfully updated",
 		"status": "OK", "code": http.StatusOK})
@@ -96,7 +96,7 @@ func (pc *POIController) SearchPOI(c *gin.Context) {
 
 	log.Infof("Searching POIs for request: %s", c.Request.URL)
 
-	POIs, err := pc.POIStorage.Search(&searchFilters)
+	POIs, err := pc.POIStorage.SearchPOI(&searchFilters)
 
 	if err != nil {
 		_ = c.Error(err)
@@ -132,7 +132,7 @@ func (pc *POIController) AddCategory(c *gin.Context) {
 		return
 	}
 
-	err = pc.POIStorage.AddCategory(category)
+	err = pc.POIStorage.AddCategory(&category)
 	if err != nil {
 		_ = c.Error(err)
 		return
@@ -155,7 +155,7 @@ func (pc *POIController) EditCategory(c *gin.Context) {
 		return
 	}
 
-	err = pc.POIStorage.EditCategory(newVersionCategory)
+	err = pc.POIStorage.EditCategory(&newVersionCategory)
 	if err != nil {
 		_ = c.Error(err)
 		return
