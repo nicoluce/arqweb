@@ -18,6 +18,7 @@ import { NavigationToolbarComponent } from './navigation-toolbar/navigation-tool
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { EditPoiComponent } from './edit-poi/edit-poi.component';
 import { EditCategoryComponent } from './edit-category/edit-category.component';
+import {IconPickerModule} from "ngx-icon-picker";
 
 
 @NgModule({
@@ -41,6 +42,8 @@ import { EditCategoryComponent } from './edit-category/edit-category.component';
     LeafletModule.forRoot(),
     MaterialModule,
     FlexLayoutModule,
+    IconPickerModule
+
   ],
   providers: [],
   bootstrap: [AppComponent]

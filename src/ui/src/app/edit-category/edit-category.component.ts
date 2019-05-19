@@ -11,6 +11,8 @@ export class EditCategoryComponent implements OnInit {
 
   private searchCategoryName: string;
   private category: Category;
+  fallbackIcon: string ="fas fa-question-sign";
+  icon: string;
 
   constructor(private poiService: PoiService) { }
 
@@ -24,6 +26,7 @@ export class EditCategoryComponent implements OnInit {
         this.category = category;
       }
     );
+    this.icon = this.category.iconClass;
   }
 
   private updateCategory(): void {
@@ -46,4 +49,7 @@ export class EditCategoryComponent implements OnInit {
     );
   }
 
+  onIconPickerSelect(newIcon: string) {
+    this.category.iconClass = newIcon
+  }
 }
