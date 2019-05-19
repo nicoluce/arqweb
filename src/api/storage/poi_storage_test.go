@@ -30,9 +30,8 @@ func TestSaveGeoJsonFeature(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	poiCollectionMock := mock.NewMockICollection(ctrl)
-	catCollectionMock := mock.NewMockICollection(ctrl)
 
-	POIStorage, _ := storage.CreatePOIStorage(poiCollectionMock, catCollectionMock)
+	POIStorage, _ := storage.CreatePOIStorage(poiCollectionMock)
 
 	pointFeature := test.DefaultGeoJsonFeature()
 	documentId := test.NewDocumentId()
@@ -61,9 +60,8 @@ func TestSearchPOI(t *testing.T) {
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	client, _ := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
 	POICollection := client.Database(TestDB).Collection(POITestCollection)
-	CatCollection := client.Database(TestDB).Collection(CategoryTestCollection)
 
-	POIStorage, _ := storage.CreatePOIStorage(POICollection, CatCollection)
+	POIStorage, _ := storage.CreatePOIStorage(POICollection)
 
 	t.Run("Search POI by category", func(t *testing.T) {
 		//noinspection GoUnhandledErrorResult
@@ -160,61 +158,3 @@ func TestSearchPOI(t *testing.T) {
 	})
 }
 
-func TestSearchCategory(t *testing.T) {
-	//Given
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-	client, _ := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
-	POICollection := client.Database(TestDB).Collection(POITestCollection)
-	CatCollection := client.Database(TestDB).Collection(CategoryTestCollection)
-
-	POIStorage, _ := storage.CreatePOIStorage(POICollection, CatCollection)
-
-	t.Run("Search category by name", func(t *testing.T) {
-		//noinspection GoUnhandledErrorResult
-		defer client.Database(TestDB).Drop(context.Background())
-		category := test.DefaultCategory()
-		anotherCategory := test.DefaultCategory()
-		anotherCategory.Name = "anotherName"
-
-		saveErr1 := POIStorage.AddCategory(category)
-		saveErr2 := POIStorage.AddCategory(anotherCategory)
-
-		filter := &domain.CategoryFilter{Name: category.Name}
-
-		//When
-		foundCategories, searchErr := POIStorage.SearchCategory(filter)
-
-		//Then
-		assert.NoError(t, saveErr1)
-		assert.NoError(t, saveErr2)
-		assert.NoError(t, searchErr)
-
-		assert.Contains(t, foundCategories, category)
-		assert.NotContains(t, foundCategories, anotherCategory)
-	})
-
-	t.Run("Search category by hidden", func(t *testing.T) {
-		//noinspection GoUnhandledErrorResult
-		defer client.Database(TestDB).Drop(context.Background())
-		category := test.DefaultCategory()
-		hiddenCategory := test.DefaultCategory()
-		hiddenCategory.Hidden = true
-
-		saveErr1 := POIStorage.AddCategory(category)
-		saveErr2 := POIStorage.AddCategory(hiddenCategory)
-
-		filter := &domain.CategoryFilter{Hidden: false}
-
-		//When
-		foundCategories, searchErr := POIStorage.SearchCategory(filter)
-
-		//Then
-		assert.NoError(t, saveErr1)
-		assert.NoError(t, saveErr2)
-		assert.NoError(t, searchErr)
-
-		assert.Contains(t, foundCategories, category)
-		assert.NotContains(t, foundCategories, hiddenCategory)
-	})
-
-}

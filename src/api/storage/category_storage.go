@@ -1,0 +1,151 @@
+package storage
+
+import (
+	"context"
+	"github.com/fernetbalboa/arqweb/src/api/apierror"
+	"github.com/fernetbalboa/arqweb/src/api/domain"
+	log "github.com/sirupsen/logrus"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"time"
+)
+
+//go:generate mockgen -destination=../mock/mock_cat_storage.go -package=mock -source=category_storage.go
+type CategoryStorage interface {
+	AddCategory(category *domain.Category) error
+	GetCategories() ([]domain.Category, error)
+	SearchCategory(filters *domain.CategoryFilter) ([]*domain.Category, error)
+	EditCategory(newVersionCategory *domain.Category) error
+}
+
+const (
+	CategoryCollection = "categories"
+)
+
+func init() {
+	resetPoiCollection() //Comment if data should be kept between program runs
+}
+
+type CategoryStorageImpl struct {
+	catCollection ICollection
+}
+
+func CreateCategoryStorage(catCollection ICollection) (CategoryStorage, error) {
+	storage := &CategoryStorageImpl{
+		catCollection: catCollection,
+	}
+
+	return storage, nil
+}
+func NewCategoryStorage() (CategoryStorage, error) {
+	client, err := getMongoDBClient()
+	catCollection := client.Database(Database).Collection(CategoryCollection)
+	if err != nil {
+		return nil, err
+	}
+
+	return CreateCategoryStorage(catCollection)
+}
+
+func (cs *CategoryStorageImpl) GetCategories() ([]domain.Category, error) {
+
+	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
+
+	resCursor, err := cs.catCollection.Find(ctx, bson.M{})
+
+	if err != nil {
+		return []domain.Category{}, apierror.Wrapf(err, "Could not retrieve list of categories")
+	}
+
+	defer resCursor.Close(ctx)
+
+	results := []domain.Category{}
+	for resCursor.Next(ctx) {
+		var cat domain.Category
+		err = resCursor.Decode(&cat)
+		if err != nil {
+			log.Errorf("Error while decoding Category. Cause: %v", err)
+		} else {
+			results = append(results, cat)
+		}
+	}
+
+	return results, nil
+}
+
+func (cs *CategoryStorageImpl) SearchCategory(filters *domain.CategoryFilter) ([]*domain.Category, error) {
+	if filters == nil {
+		filters = &domain.CategoryFilter{}
+	}
+
+	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
+
+	findOptions := options.Find()
+	findOptions.SetLimit(filters.Limit)
+
+	queryFilters := buildCategoryQueryFilters(filters)
+	resCursor, err := cs.catCollection.Find(ctx, queryFilters, findOptions)
+
+	if err != nil {
+		return nil, apierror.Wrapf(err, "Could not find any category using filters %+v", filters)
+	}
+
+	defer resCursor.Close(ctx)
+
+	//noinspection GoPreferNilSlice
+	results := []*domain.Category{}
+	for resCursor.Next(ctx) {
+		var cat domain.Category
+		err = resCursor.Decode(&cat)
+		if err != nil {
+			log.Errorf("Error while decoding category. Cause: %v", err)
+		} else {
+			results = append(results, &cat)
+		}
+	}
+
+	return results, nil
+
+}
+
+func (cs *CategoryStorageImpl) AddCategory(category *domain.Category) error {
+	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
+
+	log.Infof("Adding category %s", category.Name)
+	_, err := cs.catCollection.InsertOne(ctx, category)
+
+	if err != nil {
+		return apierror.Wrapf(err, "Couldn't add '%s' to categories list", category.Name)
+	}
+
+	return nil
+}
+
+func (cs *CategoryStorageImpl) EditCategory(newVersionCategory *domain.Category) error {
+	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
+
+	log.Infof("Updating category '%s'", newVersionCategory.Id)
+
+	// set filters and updates
+	filter := bson.M{"_id": newVersionCategory.Id}
+	update := bson.M{"$set": newVersionCategory}
+
+	// update document
+	_, err := cs.catCollection.UpdateOne(ctx, filter, update)
+	if err != nil {
+		return apierror.Wrapf(err, "Couldn't update category with id: '%s'", newVersionCategory.Id)
+	}
+
+	log.Infof("Category '%s' successfully updated", newVersionCategory.Id)
+	return nil
+}
+
+func buildCategoryQueryFilters(filters *domain.CategoryFilter) bson.M {
+	filtersMap := bson.M{}
+	if filters.Name != "" {
+		filtersMap["name"] = filters.Name
+	}
+	filtersMap["hidden"] = filters.Hidden
+
+	return filtersMap
+}

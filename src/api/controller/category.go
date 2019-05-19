@@ -9,26 +9,26 @@ import (
 )
 
 type CategoryController struct {
-	POIStorage storage.POIStorage
+	CategoryStorage storage.CategoryStorage
 }
 
-func CreateCategoryController(POIStorage storage.POIStorage) *CategoryController {
+func CreateCategoryController(CategoryStorage storage.CategoryStorage) *CategoryController {
 	return &CategoryController{
-		POIStorage: POIStorage,
+		CategoryStorage: CategoryStorage,
 	}
 }
 
 func NewCategoryController() (*CategoryController, error) {
-	POIStorage, err := storage.NewPOIStorage()
+	CatStorage, err := storage.NewCategoryStorage()
 	if err != nil {
 		return nil, apierror.Wrapf(err, "Could not create POI controller")
 	}
 
-	return CreateCategoryController(POIStorage), nil
+	return CreateCategoryController(CatStorage), nil
 }
 
 func (cc *CategoryController) GetCategories(c *gin.Context) {
-	categories, err := cc.POIStorage.GetCategories()
+	categories, err := cc.CategoryStorage.GetCategories()
 
 	if err != nil {
 		_ = c.Error(err)
@@ -53,7 +53,7 @@ func (cc *CategoryController) AddCategory(c *gin.Context) {
 		return
 	}
 
-	err = cc.POIStorage.AddCategory(&category)
+	err = cc.CategoryStorage.AddCategory(&category)
 	if err != nil {
 		_ = c.Error(err)
 		return
@@ -76,7 +76,7 @@ func (cc *CategoryController) EditCategory(c *gin.Context) {
 		return
 	}
 
-	err = cc.POIStorage.EditCategory(&newVersionCategory)
+	err = cc.CategoryStorage.EditCategory(&newVersionCategory)
 	if err != nil {
 		_ = c.Error(err)
 		return
