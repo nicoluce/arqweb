@@ -6,10 +6,15 @@ import (
 )
 
 var poiController *controller.POIController
+var categoryController *controller.CategoryController
 var userController *controller.UserController
 
 func init() {
 	POIController, err := controller.NewPOIController()
+	if err != nil {
+		log.Fatalf("Could not create POI controller. Cause: %s", err.Error())
+	}
+	CategoryController, err := controller.NewCategoryController()
 	if err != nil {
 		log.Fatalf("Could not create POI controller. Cause: %s", err.Error())
 	}
@@ -19,6 +24,7 @@ func init() {
 	}
 	poiController = POIController
 	userController = UserController
+	categoryController = CategoryController
 }
 
 // LoadEndpoints is the base function to map endpoints.
@@ -36,7 +42,7 @@ func LoadEndpoints() {
 	poiGroup.PUT("/:id", poiController.EditPOI)
 
 	categoryGroup := Router.Group("/category")
-	categoryGroup.GET("", poiController.GetCategories)
-	categoryGroup.POST("", poiController.AddCategory)
-	categoryGroup.PUT("/:id", poiController.EditCategory)
+	categoryGroup.GET("", categoryController.GetCategories)
+	categoryGroup.POST("", categoryController.AddCategory)
+	categoryGroup.PUT("/:id", categoryController.EditCategory)
 }
