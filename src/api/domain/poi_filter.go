@@ -9,4 +9,5 @@ type POIFilter struct {
 	MinLat   float64 `form:"minLat"`
 	MinLong  float64 `form:"minLong"`
 	Bound    bool    `form:"bound"`
+	Hidden   bool    `form:"hidden"`
 }

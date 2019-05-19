@@ -15,7 +15,7 @@ func DefaultCategory() *domain.Category {
 
 func DefaultCategoryWithId() *domain.Category {
 	return &domain.Category{
-		Id:       NewDocumentId(),
+		Id:     NewDocumentId(),
 		Name:   "aName",
 		Hidden: false,
 		Icon:   "anIcon",
@@ -26,7 +26,7 @@ func DefaultCategoryString() string {
 	category := DefaultCategory()
 	out, err := json.Marshal(category)
 	if err != nil {
-		panic (err)
+		panic(err)
 	}
 
 	return string(out)

@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	UserTestCollection        = "user_test"
+	UserTestCollection = "user_test"
 )
 
 func init() {

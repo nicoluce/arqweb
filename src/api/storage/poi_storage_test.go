@@ -87,6 +87,30 @@ func TestSearchPOI(t *testing.T) {
 		assert.NotContains(t, foundPOIs, anotherCategoryPOI)
 	})
 
+	t.Run("Search POI by hidden value", func(t *testing.T) {
+		//noinspection GoUnhandledErrorResult
+		defer client.Database(TestDB).Drop(context.Background())
+		POI := test.DefaultPOI()
+		anotherPOI := test.DefaultPOI()
+		anotherPOI.Hidden = true
+
+		savedPOI, saveErr1 := POIStorage.SavePOI(POI)
+		hiddenPoi, saveErr2 := POIStorage.SavePOI(anotherPOI)
+
+		hiddenFilter := &domain.POIFilter{Hidden: POI.Hidden}
+
+		//When
+		foundPOIs, searchErr := POIStorage.SearchPOI(hiddenFilter)
+
+		//Then
+		assert.NoError(t, saveErr1)
+		assert.NoError(t, saveErr2)
+		assert.NoError(t, searchErr)
+
+		assert.Contains(t, foundPOIs, savedPOI)
+		assert.NotContains(t, foundPOIs, hiddenPoi)
+	})
+
 	t.Run("Search POI in latitude bounds", func(t *testing.T) {
 		//noinspection GoUnhandledErrorResult
 		defer client.Database(TestDB).Drop(context.Background())
@@ -157,4 +181,3 @@ func TestSearchPOI(t *testing.T) {
 		assert.NotContains(t, foundPOIs, savedOutsideBoundsPOI)
 	})
 }
-

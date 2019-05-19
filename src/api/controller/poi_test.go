@@ -71,7 +71,7 @@ func TestAddPOI(t *testing.T) {
 	})
 }
 
-func TestSearchCategory (t *testing.T) {
+func TestSearchCategory(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	searchPOIEndpoint := "/category/search"
@@ -94,6 +94,7 @@ func TestSearchCategory (t *testing.T) {
 		queryParams.Add("maxLong", strconv.FormatFloat(maxLong, 'f', 10, 64))
 		queryParams.Add("minLong", strconv.FormatFloat(minLong, 'f', 10, 64))
 		queryParams.Add("bound", strconv.FormatBool(true))
+		queryParams.Add("hidden", strconv.FormatBool(false))
 
 		r := config.ConfiguredRouter()
 		r.GET(searchPOIEndpoint, POIController.SearchPOI)
@@ -104,6 +105,9 @@ func TestSearchCategory (t *testing.T) {
 		savedPOI1 := test.DefaultPOI()
 		savedPOI2 := test.DefaultPOI()
 		savedPOI2.Id = test.NewDocumentId()
+		savedPOI3 := test.DefaultPOI()
+		savedPOI3.Hidden = true
+		savedPOI3.Id = test.NewDocumentId()
 
 		foundPOIs := []*domain.PointOfInterest{savedPOI1, savedPOI2}
 
@@ -115,6 +119,7 @@ func TestSearchCategory (t *testing.T) {
 			MinLong:  minLong,
 			Bound:    true,
 			Limit:    controller.DefaultSearchLimit,
+			Hidden:   false,
 		}
 
 		storageMock.EXPECT().SearchPOI(filters).Return(foundPOIs, nil)

@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-const Database           = "arqweb"
+const Database = "arqweb"
 
 //go:generate mockgen -destination=../mock/mock_db_collection.go -package=mock -source=db.go
 type ICollection interface {

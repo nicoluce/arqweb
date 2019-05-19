@@ -1,13 +1,13 @@
 package controller_test
 
 import (
+	"github.com/fernetbalboa/arqweb/src/api/apierror"
 	"github.com/fernetbalboa/arqweb/src/api/config"
 	"github.com/fernetbalboa/arqweb/src/api/controller"
 	"github.com/fernetbalboa/arqweb/src/api/mock"
 	"github.com/fernetbalboa/arqweb/src/api/test"
 	"github.com/gin-gonic/gin/json"
 	"github.com/golang/mock/gomock"
-	"github.com/mercadolibre/cx-emails/src/api/apierror"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"

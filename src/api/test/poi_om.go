@@ -17,7 +17,8 @@ func DefaultGeoJsonFeatureString() string {
 	"title": "testTitle",
 	"category": "testCategory",
 	"type": "testType",
-	"description": "testDescription"
+	"description": "testDescription",
+	"hidden": false
 	}
 }`
 }
@@ -28,6 +29,7 @@ func DefaultGeoJsonFeature() *geojson.Feature {
 	geoJsonPoint.SetProperty("category", "testCategory")
 	geoJsonPoint.SetProperty("description", "testDescription")
 	geoJsonPoint.SetProperty("type", "testType")
+	geoJsonPoint.SetProperty("hidden", false)
 
 	return geoJsonPoint
 }
@@ -42,6 +44,7 @@ func DefaultPOI() *domain.PointOfInterest {
 		Type:        defGeoJson.PropertyMustString("type", ""),
 		Lat:         defGeoJson.Geometry.Point[0],
 		Long:        defGeoJson.Geometry.Point[1],
+		Hidden:      false,
 	}
 }
 

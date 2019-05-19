@@ -21,7 +21,7 @@ type POIStorage interface {
 }
 
 const (
-	POICollection      = "poi"
+	POICollection = "poi"
 )
 
 func init() {
@@ -49,8 +49,6 @@ func NewPOIStorage() (POIStorage, error) {
 
 	return CreatePOIStorage(poiCollection)
 }
-
-
 
 func (ps *POIStorageImpl) SavePOI(POI *domain.PointOfInterest) (*domain.PointOfInterest, error) {
 
@@ -112,6 +110,8 @@ func (ps *POIStorageImpl) featureToPOI(feature *geojson.Feature) (*domain.PointO
 	//Not required
 	description := feature.PropertyMustString("description", "")
 
+	hidden := feature.PropertyMustBool("hidden", false)
+
 	POIType, err := feature.PropertyString("type")
 	if err != nil {
 		return nil, apierror.BadRequest.Wrapf(err,
@@ -129,6 +129,7 @@ func (ps *POIStorageImpl) featureToPOI(feature *geojson.Feature) (*domain.PointO
 			Type:        POIType,
 			Lat:         lat,
 			Long:        long,
+			Hidden:      hidden,
 		}
 		return POI, nil
 	}
@@ -212,6 +213,8 @@ func buildPOIQueryFilters(filters *domain.POIFilter) bson.M {
 	if filters.Title != "" {
 		filtersMap["title"] = filters.Title
 	}
+
+	filtersMap["hidden"] = filters.Hidden
 
 	return filtersMap
 }
