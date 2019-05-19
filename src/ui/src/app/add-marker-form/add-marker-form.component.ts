@@ -18,8 +18,6 @@ export class AddMarkerFormComponent implements OnInit {
   @Output() addedPOI: EventEmitter<any> = new EventEmitter();
   @Output() cancelPOI: EventEmitter<any> = new EventEmitter();
 
-  @ViewChild("fileInput") pictureInput;
-
   private poiService: PoiService;
 
   constructor(poiService: PoiService) {
