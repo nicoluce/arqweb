@@ -41,9 +41,9 @@ func LoadEndpoints() {
 	poiGroup.GET("/search", poiController.SearchPOI)
 	poiGroup.PUT("/:id", poiController.EditPOI)
 
-	categoryGroup := Router.Group("/category")
-	categoryGroup.GET("", categoryController.GetCategories)
-	categoryGroup.GET("/search", categoryController.SearchCategory)
-	categoryGroup.POST("", categoryController.AddCategory)
-	categoryGroup.PUT("/:id", categoryController.EditCategory)
+	categoriesGroup := Router.Group("/categories")
+	categoriesGroup.GET("", categoryController.GetCategories)
+	categoriesGroup.GET("/search", categoryController.SearchCategory)
+	categoriesGroup.POST("", categoryController.AddCategory)
+	categoriesGroup.PUT("/:id", categoryController.EditCategory)
 }

@@ -22,7 +22,7 @@ func init() {
 func TestAddCategory(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	addCategoryEndpoint := "/category"
+	addCategoryEndpoint := "/categories"
 
 	t.Run("Add category successfully", func(t *testing.T) {
 		//Given
