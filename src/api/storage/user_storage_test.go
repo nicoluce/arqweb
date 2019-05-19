@@ -53,13 +53,13 @@ func TestUserSearch(t *testing.T) {
 	//Given
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	client, _ := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
-	UserCollection := client.Database(TestDB).Collection(UserTestCollection)
+	UserCollection := client.Database("test_db").Collection(UserTestCollection)
 
 	UserStorage, _ := storage.CreateUserStorage(UserCollection)
 
 	t.Run("Search by username", func(t *testing.T) {
 		//noinspection GoUnhandledErrorResult
-		defer client.Database(TestDB).Drop(context.Background())
+		defer client.Database("test_db").Drop(context.Background())
 		User := test.DefaultUser()
 		anotherUser := test.DefaultUser()
 		anotherUser.Username = "ALBERTO FERNANDEZ"
@@ -68,14 +68,16 @@ func TestUserSearch(t *testing.T) {
 		anotherUsernameUser, saveErr2 := UserStorage.SaveUser(anotherUser)
 
 		//When
-		foundUsers, searchErr := UserStorage.Search(User.Username)
+		foundUser, searchErr := UserStorage.Search(User.Username)
 
 		//Then
 		assert.NoError(t, saveErr1)
 		assert.NoError(t, saveErr2)
 		assert.NoError(t, searchErr)
 
-		assert.Contains(t, foundUsers, savedUser)
-		assert.NotContains(t, foundUsers, anotherUsernameUser)
+		assert.Equal(t, foundUser.Username, savedUser.Username)
+		assert.Equal(t, foundUser.Password, savedUser.Password)
+		assert.Equal(t, foundUser.IsAdmin, savedUser.IsAdmin)
+		assert.NotEqual(t, foundUser.Username, anotherUsernameUser.Username)
 	})
 }
