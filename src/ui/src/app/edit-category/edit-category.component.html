@@ -1,0 +1,46 @@
+<mat-card>
+  <mat-card-title>Search category</mat-card-title>
+
+  <mat-card-content>
+    <form #searchForm="ngForm" fxLayout="row" (ngSubmit)="getCategory()">
+      <mat-form-field>
+        <input matInput type="text" placeholder="Name" name="name" required [(ngModel)]="searchCategoryName">
+      </mat-form-field>
+
+      <mat-action-list>
+        <button mat-raised-button color="primary" type="submit" class="btn btn-success"
+                [disabled]="!searchForm.form.valid">Search</button>
+      </mat-action-list>
+    </form>
+  </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="category" fxLayout="column" fxLayoutGap="30px">
+  <mat-card-title>Edit category</mat-card-title>
+
+  <mat-card-content>
+    <form #editCategoryForm="ngForm" fxLayout fxLayoutGap="10px" (ngSubmit)="updateCategory()" fxFlex="80%" fxFlex.lt-md="100%"
+    >
+      <mat-card-content fxLayout="column" fxLayoutAlign="space-between center" fxLayoutGap="20px">
+        <mat-form-field>
+          <input matInput type="text" placeholder="Id" readonly name="id" [(ngModel)]="category.id">
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput type="text" placeholder="Name" name="name" [(ngModel)]="category.name">
+        </mat-form-field>
+
+
+        <mat-checkbox [(ngModel)]="category.hidden">Hide</mat-checkbox>
+
+        <mat-card-actions fxLayoutAlign="end" align="center">
+          <button mat-raised-button color="primary" [disabled]="!editCategoryForm.form.valid">Apply changes</button>
+          <button mat-raised-button color="accent" (click)="cancelUpdateCategory()">Cancel</button>
+          <button mat-raised-button color="warn" (click)="deleteCategory()">Delete category</button>
+        </mat-card-actions>
+
+      </mat-card-content>
+
+    </form>
+  </mat-card-content>
+</mat-card>

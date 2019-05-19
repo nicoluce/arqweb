@@ -1,14 +1,29 @@
 import {Feature} from "geojson";
+import {Category} from "./category";
 
 export class PointOfInterest {
 
-  id: string
+  id: string;
   title: string;
-  category: string;
+  category: Category;
   ownerId: number;
   description: string;
   type: string;
   lat: number;
   long: number;
+  picture: Image; //Base64 image
 
+}
+
+export class Image {
+  data: string; //Base64
+  name: string; //Filename
+  contentType: string;
+
+
+  constructor(data: string, name: string, contentType: string) {
+    this.data = data;
+    this.name = name;
+    this.contentType = contentType;
+  }
 }

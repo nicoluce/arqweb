@@ -4,6 +4,7 @@ import {icon, LatLng, latLng, Layer, LeafletMouseEvent, Map, marker, Marker, til
 import {PointOfInterest} from "../domain/point-of-interest";
 import {AddMarkerFormComponent} from "../add-marker-form/add-marker-form.component";
 import {PoiService} from "../service/poi.service";
+import {Category} from "../domain/category";
 
 @Component({
   selector: 'app-map',
@@ -90,7 +91,7 @@ export class MapComponent implements OnInit {
       draggable: true,
       riseOnHover: true
     });
-
+    this.layers.push(newMarker);
     this.newMarker = newMarker;
 
     //Zoom on marker when clicked
@@ -105,8 +106,8 @@ export class MapComponent implements OnInit {
     //SetTimeout is used to give time for the @ViewChild to set the component
     //after the *ngIf activation
     setTimeout(() => this.addMarkerComponent.resetPOIForm(), 1);
-
-    this.layers.push(newMarker);
+    //Set map on top of screen to give more space to the add POI form
+    setTimeout(() => document.getElementById("map").scrollIntoView(true), 100);
 
   }
 
@@ -119,8 +120,7 @@ export class MapComponent implements OnInit {
 
   onPOIAdd(savedPOI: PointOfInterest) {
     this.hideNewPOIForm(false);
-    this.newMarker.bindPopup(MapComponent.markerPopupHtml(savedPOI.title, savedPOI.category,
-      savedPOI.description, savedPOI.type));
+    this.newMarker.bindPopup(MapComponent.markerPopupHtml(savedPOI), {maxWidth: 500, className: 'popup'});
     this.newMarker.dragging.disable();
     let newIcon = icon({
       iconUrl: MapComponent.setMarkerIconUrl,
@@ -129,12 +129,28 @@ export class MapComponent implements OnInit {
     this.newMarker.setIcon(newIcon);
   }
 
-  //TODO: improve
-  static markerPopupHtml(title: string, category: string, description: string, type: string) {
-    return `<h2>${title}</h2> <h3>${category}</h3> <h3>${type}</h3> <p>${description}</p>`;
+  static markerPopupHtml(POI: PointOfInterest) {
+    return ` 
+<head>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+</head>
+<h2>${this.toTitleCase(POI.title)}</h2>
+<h3>${this.toTitleCase(POI.category.name)} <i class="${POI.category.iconClass}"></i></h3>  
+<h3>Type: ${this.toTitleCase(POI.type)}</h3>
+<p>Description: ${POI.description}</p>
+<img src="data:${POI.picture.contentType};base64, ${POI.picture.data}" style="width: 100px" style="height: 45px" "/>
+`;
   }
 
-  //Only filters by title and/or category, but could be extended
+  private static toTitleCase(str: string): string {
+    return str.replace(
+      /\w\S*/g,
+      function(txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+      }
+    );
+  }
+
   /**
    * Filters the layers in the map.
    *
@@ -146,13 +162,14 @@ export class MapComponent implements OnInit {
     let markerLimit = 20; //Arbitrary marker limit
     let bounds = this.map.getBounds();
 
-    let POIs = this.poiService.Search(title, category, markerLimit, bounds);
     this.layers = [];
-    POIs.forEach(
-      (POI: PointOfInterest) => {
-        this.layers.push(MapComponent.POIToMarker(POI))
-      }, this
-    )
+    this.poiService.Search(title, category, markerLimit, bounds, false).subscribe(
+      (searchResult: PointOfInterest[]) => searchResult.forEach(
+        (POI: PointOfInterest) => {
+          this.layers.push(MapComponent.POIToMarker(POI))
+        }, this
+      )
+    );
   }
 
 
@@ -171,7 +188,7 @@ export class MapComponent implements OnInit {
         title: POI.title
       });
 
-    marker.bindPopup(MapComponent.markerPopupHtml(POI.title, POI.category, POI.description, POI.type));
+    marker.bindPopup(MapComponent.markerPopupHtml(POI), {maxWidth: 500, className: 'popup'});
 
     return marker
   }

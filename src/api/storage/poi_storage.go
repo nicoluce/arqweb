@@ -340,5 +340,9 @@ func buildPOIQueryFilters(filters *domain.POIFilter) bson.M {
 		}
 	}
 
+	if filters.Title != "" {
+		filtersMap["title"] = filters.Title
+	}
+
 	return filtersMap
 }

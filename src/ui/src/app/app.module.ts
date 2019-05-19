@@ -13,13 +13,24 @@ import {FlexLayoutModule} from "@angular/flex-layout";
 import { AddMarkerFormComponent } from './add-marker-form/add-marker-form.component';
 import {HttpClientModule} from "@angular/common/http";
 import {POIFilterComponent} from "./poi-filter/poi-filter.component";
+import { LoginComponent } from './login/login.component';
+import { NavigationToolbarComponent } from './navigation-toolbar/navigation-toolbar.component';
+import { SidenavComponent } from './sidenav/sidenav.component';
+import { EditPoiComponent } from './edit-poi/edit-poi.component';
+import { EditCategoryComponent } from './edit-category/edit-category.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     MapComponent,
     AddMarkerFormComponent,
-    POIFilterComponent
+    POIFilterComponent,
+    LoginComponent,
+    NavigationToolbarComponent,
+    SidenavComponent,
+    EditPoiComponent,
+    EditCategoryComponent,
   ],
   imports: [
     BrowserModule,
@@ -29,7 +40,7 @@ import {POIFilterComponent} from "./poi-filter/poi-filter.component";
     HttpClientModule,
     LeafletModule.forRoot(),
     MaterialModule,
-    FlexLayoutModule
+    FlexLayoutModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

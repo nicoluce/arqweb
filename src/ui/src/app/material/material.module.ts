@@ -4,10 +4,10 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {
   MatAutocompleteModule,
   MatButtonModule,
-  MatCardModule,
-  MatFormFieldModule,
-  MatInputModule,
-  MatSelectModule
+  MatCardModule, MatCheckboxModule,
+  MatFormFieldModule, MatIconModule,
+  MatInputModule, MatListModule, MatMenuModule, MatNavList,
+  MatSelectModule, MatSidenavModule, MatTableModule, MatTabsModule, MatToolbarModule
 } from "@angular/material";
 
 @NgModule({
@@ -21,7 +21,14 @@ import {
     MatInputModule,
     MatCardModule,
     MatButtonModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatToolbarModule,
+    MatTabsModule,
+    MatMenuModule,
+    MatIconModule,
+    MatSidenavModule,
+    MatListModule,
+    MatCheckboxModule
   ],
   exports: [
     BrowserAnimationsModule,
@@ -31,7 +38,15 @@ import {
     MatInputModule,
     MatCardModule,
     MatButtonModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatToolbarModule,
+    MatTabsModule,
+    MatMenuModule,
+    MatIconModule,
+    MatSidenavModule,
+    MatListModule,
+    MatCheckboxModule
+
   ]
 })
 export class MaterialModule { }
