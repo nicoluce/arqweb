@@ -6,9 +6,18 @@ type PointOfInterest struct {
 	Id          primitive.ObjectID `json:"id" bson:"_id" required:"false"`
 	Title       string             `json:"title" bson:"title" required:"true"`
 	Category    string             `json:"category" bson:"category" required:"true"`
+	Image		Image   		   `json:"image" bson:"image" required:"false"`
 	OwnerId     int64              `json:"ownerId" bson:"ownerId" required:"false"`
 	Description string             `json:"description" bson:"description" required:"false"`
 	Type        string             `json:"type" bson:"type" required:"true"`
 	Lat         float64            `json:"lat" bson:"lat" required:"false"`
 	Long        float64            `json:"long" bson:"long" required:"false"`
 }
+
+type Image struct {
+	Filename    string `json:"name"`
+	Data        string `json:"data"` //bytes are encoded in Base64
+	ContentType string `json:"content_type"`
+}
+
+
