@@ -17,10 +17,13 @@ import (
 //go:generate mockgen -destination=../mock/mock_poi_storage.go -package=mock -source=poi_storage.go -imports geojson=github.com/paulmach/go.geojson
 type POIStorage interface {
 	SavePOI(POI *domain.PointOfInterest) (*domain.PointOfInterest, error)
+	EditPOI(newVersionPOI *domain.PointOfInterest) error
 	SaveFeature(feature *geojson.Feature) (*domain.PointOfInterest, error)
-	Search(filters *domain.POIFilter) ([]*domain.PointOfInterest, error)
+	SearchPOI(filters *domain.POIFilter) ([]*domain.PointOfInterest, error)
 	GetCategories() ([]domain.Category, error)
-	AddCategory(name string, hidden bool) error
+	SearchCategory(filters *domain.CategoryFilter) ([]*domain.Category, error)
+	AddCategory(category *domain.Category) error
+	EditCategory(newVersionCategory *domain.Category) error
 }
 
 const (
@@ -92,6 +95,25 @@ func (ps *POIStorageImpl) SavePOI(POI *domain.PointOfInterest) (*domain.PointOfI
 	return POI, nil
 }
 
+func (ps *POIStorageImpl) EditPOI(newVersionPOI *domain.PointOfInterest) error {
+	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
+
+	log.Infof("Updating POI '%s'", newVersionPOI.Id)
+
+	// set filters and updates
+	filter := bson.M{"_id": newVersionPOI.Id}
+	update := bson.M{"$set": newVersionPOI}
+
+	// update document
+	_, err := ps.catCollection.UpdateOne(ctx, filter, update)
+	if err != nil {
+		return apierror.Wrapf(err, "Couldn't update POI with id: '%s'", newVersionPOI.Id)
+	}
+
+	log.Infof("POI '%s' successfully updated", newVersionPOI.Id)
+	return nil
+}
+
 func (ps *POIStorageImpl) SaveFeature(feature *geojson.Feature) (*domain.PointOfInterest, error) {
 	POI, err := ps.featureToPOI(feature)
 	if err != nil {
@@ -158,7 +180,7 @@ func resetPoiCollection() {
 	}
 }
 
-func (ps *POIStorageImpl) Search(filters *domain.POIFilter) ([]*domain.PointOfInterest, error) {
+func (ps *POIStorageImpl) SearchPOI(filters *domain.POIFilter) ([]*domain.PointOfInterest, error) {
 	if filters == nil {
 		filters = &domain.POIFilter{}
 	}
@@ -168,7 +190,7 @@ func (ps *POIStorageImpl) Search(filters *domain.POIFilter) ([]*domain.PointOfIn
 	findOptions := options.Find()
 	findOptions.SetLimit(filters.Limit)
 
-	queryFilters := buildQueryFilters(filters)
+	queryFilters := buildPOIQueryFilters(filters)
 	resCursor, err := ps.poiCollection.Find(ctx, queryFilters, findOptions)
 
 	if err != nil {
@@ -219,20 +241,84 @@ func (ps *POIStorageImpl) GetCategories() ([]domain.Category, error) {
 	return results, nil
 }
 
-func (ps *POIStorageImpl) AddCategory(name string, hidden bool) error {
+func (ps *POIStorageImpl) SearchCategory(filters *domain.CategoryFilter) ([]*domain.Category, error) {
+	if filters == nil {
+		filters = &domain.CategoryFilter{}
+	}
+
 	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
 
-	log.Infof("Adding category %s", name)
-	_, err := ps.catCollection.InsertOne(ctx, domain.Category{Name: name, Hidden: hidden})
+	findOptions := options.Find()
+	findOptions.SetLimit(filters.Limit)
+
+	queryFilters := buildCategoryQueryFilters(filters)
+	resCursor, err := ps.catCollection.Find(ctx, queryFilters, findOptions)
 
 	if err != nil {
-		return apierror.Wrapf(err, "Couldn't add '%s' to categories list", name)
+		return nil, apierror.Wrapf(err, "Could not find any category using filters %+v", filters)
+	}
+
+	defer resCursor.Close(ctx)
+
+	//noinspection GoPreferNilSlice
+	results := []*domain.Category{}
+	for resCursor.Next(ctx) {
+		var cat domain.Category
+		err = resCursor.Decode(&cat)
+		if err != nil {
+			log.Errorf("Error while decoding category. Cause: %v", err)
+		} else {
+			results = append(results, &cat)
+		}
+	}
+
+	return results, nil
+
+}
+
+func (ps *POIStorageImpl) AddCategory(category *domain.Category) error {
+	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
+
+	log.Infof("Adding category %s", category.Name)
+	_, err := ps.catCollection.InsertOne(ctx, category)
+
+	if err != nil {
+		return apierror.Wrapf(err, "Couldn't add '%s' to categories list", category.Name)
 	}
 
 	return nil
 }
 
-func buildQueryFilters(filters *domain.POIFilter) bson.M {
+func (ps *POIStorageImpl) EditCategory(newVersionCategory *domain.Category) error {
+	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
+
+	log.Infof("Updating category '%s'", newVersionCategory.Id)
+
+	// set filters and updates
+	filter := bson.M{"_id": newVersionCategory.Id}
+	update := bson.M{"$set": newVersionCategory}
+
+	// update document
+	_, err := ps.catCollection.UpdateOne(ctx, filter, update)
+	if err != nil {
+		return apierror.Wrapf(err, "Couldn't update category with id: '%s'", newVersionCategory.Id)
+	}
+
+	log.Infof("Category '%s' successfully updated", newVersionCategory.Id)
+	return nil
+}
+
+func buildCategoryQueryFilters(filters *domain.CategoryFilter) bson.M {
+	filtersMap := bson.M{}
+	if filters.Name != "" {
+		filtersMap["name"] = filters.Name
+	}
+	filtersMap["hidden"] = filters.Hidden
+
+	return filtersMap
+}
+
+func buildPOIQueryFilters(filters *domain.POIFilter) bson.M {
 	filtersMap := bson.M{}
 	if filters.Category != "" {
 		filtersMap["category"] = filters.Category

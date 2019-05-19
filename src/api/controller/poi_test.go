@@ -117,7 +117,7 @@ func TestSearchPOI(t *testing.T) {
 			Limit:    controller.DefaultSearchLimit,
 		}
 
-		storageMock.EXPECT().Search(filters).Return(foundPOIs, nil)
+		storageMock.EXPECT().SearchPOI(filters).Return(foundPOIs, nil)
 
 		//When
 		r.ServeHTTP(w, req)

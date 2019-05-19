@@ -57,7 +57,28 @@ func (pc *POIController) AddPOI(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, savedPOI)
+}
 
+func (pc *POIController) EditPOI(c *gin.Context) {
+	poiId := c.Param("id")
+	var poi domain.PointOfInterest
+	err := c.ShouldBindJSON(&poi)
+
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	if poiId != poi.Id.String() {
+		apiError := apierror.BadRequest.New("POI ID can not be updated")
+		_ = c.Error(apiError)
+		return
+	}
+
+	err = pc.POIStorage.EditPOI(&poi)
+
+	c.JSON(http.StatusOK, gin.H{"id": poiId, "message": "POI successfully updated",
+		"status": "OK", "code": http.StatusOK})
 }
 
 func (pc *POIController) SearchPOI(c *gin.Context) {
@@ -75,7 +96,7 @@ func (pc *POIController) SearchPOI(c *gin.Context) {
 
 	log.Infof("Searching POIs for request: %s", c.Request.URL)
 
-	POIs, err := pc.POIStorage.Search(&searchFilters)
+	POIs, err := pc.POIStorage.SearchPOI(&searchFilters)
 
 	if err != nil {
 		_ = c.Error(err)
@@ -84,7 +105,6 @@ func (pc *POIController) SearchPOI(c *gin.Context) {
 
 	log.Infof("Search results: %v", POIs)
 	c.JSON(http.StatusOK, POIs)
-
 }
 
 func (pc *POIController) GetCategories(c *gin.Context) {
@@ -99,10 +119,9 @@ func (pc *POIController) GetCategories(c *gin.Context) {
 }
 
 func (pc *POIController) AddCategory(c *gin.Context) {
-
-	var jsonCategory domain.Category
-	err := c.ShouldBindJSON(&jsonCategory)
-	if err != nil || jsonCategory.Name == "" {
+	var category domain.Category
+	err := c.ShouldBindJSON(&category)
+	if err != nil || category.Name == "" {
 		errorMsg := "Error parsing Category. It should be a Category obj"
 		var apiError error
 		if err != nil {
@@ -114,10 +133,35 @@ func (pc *POIController) AddCategory(c *gin.Context) {
 		return
 	}
 
-	err = pc.POIStorage.AddCategory(jsonCategory.Name, jsonCategory.Hidden)
+	err = pc.POIStorage.AddCategory(&category)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+}
+
+func (pc *POIController) EditCategory(c *gin.Context) {
+	categoryId := c.Param("id")
+	var newVersionCategory domain.Category
+	err := c.ShouldBindJSON(&newVersionCategory)
+
 	if err != nil {
 		_ = c.Error(err)
 		return
 	}
 
+	if categoryId != newVersionCategory.Id.String() {
+		apiError := apierror.BadRequest.New("Category field ID can not be updated")
+		_ = c.Error(apiError)
+		return
+	}
+
+	err = pc.POIStorage.EditCategory(&newVersionCategory)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"id": categoryId, "message": "Category successfully updated",
+		"status": "OK", "code": http.StatusOK})
 }
