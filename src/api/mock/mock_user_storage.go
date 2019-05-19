@@ -34,18 +34,18 @@ func (m *MockUserStorage) EXPECT() *MockUserStorageMockRecorder {
 }
 
 // SaveUser mocks base method
-func (m *MockUserStorage) SaveUser(POI *domain.User) (*domain.User, error) {
+func (m *MockUserStorage) SaveUser(User *domain.User) (*domain.User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SaveUser", POI)
+	ret := m.ctrl.Call(m, "SaveUser", User)
 	ret0, _ := ret[0].(*domain.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // SaveUser indicates an expected call of SaveUser
-func (mr *MockUserStorageMockRecorder) SaveUser(POI interface{}) *gomock.Call {
+func (mr *MockUserStorageMockRecorder) SaveUser(User interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveUser", reflect.TypeOf((*MockUserStorage)(nil).SaveUser), POI)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveUser", reflect.TypeOf((*MockUserStorage)(nil).SaveUser), User)
 }
 
 // Search mocks base method

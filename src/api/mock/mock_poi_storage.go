@@ -78,3 +78,32 @@ func (mr *MockPOIStorageMockRecorder) Search(filters interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Search", reflect.TypeOf((*MockPOIStorage)(nil).Search), filters)
 }
+
+// GetCategories mocks base method
+func (m *MockPOIStorage) GetCategories() ([]domain.Category, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetCategories")
+	ret0, _ := ret[0].([]domain.Category)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetCategories indicates an expected call of GetCategories
+func (mr *MockPOIStorageMockRecorder) GetCategories() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCategories", reflect.TypeOf((*MockPOIStorage)(nil).GetCategories))
+}
+
+// AddCategory mocks base method
+func (m *MockPOIStorage) AddCategory(name string, hidden bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddCategory", name, hidden)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// AddCategory indicates an expected call of AddCategory
+func (mr *MockPOIStorageMockRecorder) AddCategory(name, hidden interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddCategory", reflect.TypeOf((*MockPOIStorage)(nil).AddCategory), name, hidden)
+}

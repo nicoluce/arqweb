@@ -17,7 +17,5 @@ func Start() {
 	Router = config.ConfiguredRouter()
 	LoadEndpoints()
 
-	// if you wanna run it without tls, comment this line and uncomment the other one
-	_ = Router.RunTLS(":8080", "cert.pem", "key.pem")
-	//_ = Router.Run(":8080")
+	_ = Router.Run(":8080")
 }
