@@ -21,10 +21,6 @@ export class EditPoiComponent implements OnInit {
     this.searchPOITitle = '';
   }
 
-  sanitize() {
-    return this.domSanitizer.bypassSecurityTrustResourceUrl(this.POIPictureUrl);
-  }
-
   getPOI() {
     this.poiService.Search(this.searchPOITitle).subscribe(
       (POI: PointOfInterest[]) => {

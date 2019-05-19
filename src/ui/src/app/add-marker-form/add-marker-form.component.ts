@@ -78,7 +78,7 @@ export class AddMarkerFormComponent implements OnInit {
   addPOI(newPoiForm: any) {
     let latLng = this.marker.getLatLng();
     let formPicture = newPoiForm.picture;
-    let picture = new Image(formPicture.data, formPicture.name, formPicture.contentType)
+    let picture = new Image(formPicture.data, formPicture.name, formPicture.contentType);
     this.buildPOI(newPoiForm.title, newPoiForm.category,
       newPoiForm.description, newPoiForm.type, latLng.lat, latLng.lng, picture);
 
@@ -99,6 +99,7 @@ export class AddMarkerFormComponent implements OnInit {
     newPOI.lat = lat;
     newPOI.long = long;
     newPOI.picture = picture;
+    newPOI.hidden = false;
     this.newPOI = newPOI;
   }
 

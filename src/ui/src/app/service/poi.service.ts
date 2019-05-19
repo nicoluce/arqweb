@@ -7,6 +7,7 @@ import {LatLngBounds} from "leaflet";
 import {Observable, of} from "rxjs";
 import {Category} from "../domain/category";
 import {Image} from "../domain/point-of-interest";
+import {CategorySuggestion} from "../domain/category-suggestion";
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +40,13 @@ export class PoiService {
         "title": POI.title,
         "category": POI.category.name,
         "type": POI.type,
-        "description": POI.description
+        "description": POI.description,
+        "picture": {
+          "data": POI.picture.data,
+          "name": POI.picture.contentType,
+          "contentType": POI.picture.contentType
+        },
+        "hidden": POI.hidden
       }
     };
 
@@ -114,5 +121,9 @@ export class PoiService {
 
   deleteCategory(categoryName: string): Observable<Category> {
     return this.http.delete<Category>(environment.baseUrl + `/category/${categoryName}`)
+  }
+
+  sendCategorySuggestion(categorySuggestion: CategorySuggestion): Observable<CategorySuggestion> {
+    return this.http.post<CategorySuggestion>(environment.baseUrl + "/suggestion/category", categorySuggestion);
   }
 }

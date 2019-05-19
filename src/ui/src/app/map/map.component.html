@@ -1,4 +1,10 @@
-<app-poi-filter (filterChange)="filterPOIs($event)"></app-poi-filter>
+<div>
+  <app-poi-filter (filterChange)="filterPOIs($event)" fxFlex="75%"></app-poi-filter>
+  <mat-card fxFlex>
+    <button mat-flat-button color="accent" routerLink="/suggestion/category/new">Suggest a new category</button>
+  </mat-card>
+</div>
+
 <div id="map" class="map"
      leaflet
      [leafletOptions]="initialSetup"

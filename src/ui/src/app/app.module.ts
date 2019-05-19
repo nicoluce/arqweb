@@ -19,6 +19,7 @@ import { SidenavComponent } from './sidenav/sidenav.component';
 import { EditPoiComponent } from './edit-poi/edit-poi.component';
 import { EditCategoryComponent } from './edit-category/edit-category.component';
 import {IconPickerModule} from "ngx-icon-picker";
+import { NewCategorySuggestionFormComponent } from './new-category-suggestion-form/new-category-suggestion-form.component';
 
 
 @NgModule({
@@ -32,6 +33,7 @@ import {IconPickerModule} from "ngx-icon-picker";
     SidenavComponent,
     EditPoiComponent,
     EditCategoryComponent,
+    NewCategorySuggestionFormComponent,
   ],
   imports: [
     BrowserModule,
