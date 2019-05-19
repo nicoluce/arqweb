@@ -71,10 +71,10 @@ func TestAddPOI(t *testing.T) {
 	})
 }
 
-func TestSearchPOI(t *testing.T) {
+func TestSearchCategory (t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	searchPOIEndpoint := "/poi/search"
+	searchPOIEndpoint := "/category/search"
 
 	t.Run("Search POI successfully", func(t *testing.T) {
 		//Given

@@ -5,6 +5,7 @@ import (
 	"github.com/fernetbalboa/arqweb/src/api/domain"
 	"github.com/fernetbalboa/arqweb/src/api/storage"
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 )
 
@@ -27,17 +28,6 @@ func NewCategoryController() (*CategoryController, error) {
 	return CreateCategoryController(CatStorage), nil
 }
 
-func (cc *CategoryController) GetCategories(c *gin.Context) {
-	categories, err := cc.CategoryStorage.GetCategories()
-
-	if err != nil {
-		_ = c.Error(err)
-		return
-	}
-
-	c.JSON(http.StatusOK, categories)
-}
-
 func (cc *CategoryController) AddCategory(c *gin.Context) {
 	var category domain.Category
 	err := c.ShouldBindJSON(&category)
@@ -53,11 +43,50 @@ func (cc *CategoryController) AddCategory(c *gin.Context) {
 		return
 	}
 
-	err = cc.CategoryStorage.AddCategory(&category)
+	savedCategory, err := cc.CategoryStorage.SaveCategory(&category)
 	if err != nil {
 		_ = c.Error(err)
 		return
 	}
+
+	c.JSON(http.StatusCreated, savedCategory)
+}
+
+func (cc *CategoryController) GetCategories(c *gin.Context) {
+	categories, err := cc.CategoryStorage.GetCategories()
+
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	c.JSON(http.StatusOK, categories)
+}
+
+func (cc *CategoryController) SearchCategory(c *gin.Context) {
+	var searchFilters domain.CategoryFilter
+
+	if err := c.ShouldBindQuery(&searchFilters); err != nil {
+		err = apierror.BadRequest.Wrapf(err, "Invalid search query filters")
+		_ = c.Error(err)
+		return
+	}
+
+	if searchFilters.Limit == 0 {
+		searchFilters.Limit = DefaultSearchLimit
+	}
+
+	log.Infof("Searching POIs for request: %s", c.Request.URL)
+
+	categories, err := cc.CategoryStorage.SearchCategory(&searchFilters)
+
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	log.Infof("Search results: %v", categories)
+	c.JSON(http.StatusOK, categories)
 }
 
 func (cc *CategoryController) EditCategory(c *gin.Context) {

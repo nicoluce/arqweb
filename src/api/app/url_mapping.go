@@ -43,6 +43,7 @@ func LoadEndpoints() {
 
 	categoryGroup := Router.Group("/category")
 	categoryGroup.GET("", categoryController.GetCategories)
+	categoryGroup.GET("/search", categoryController.SearchCategory)
 	categoryGroup.POST("", categoryController.AddCategory)
 	categoryGroup.PUT("/:id", categoryController.EditCategory)
 }

@@ -6,13 +6,14 @@ import (
 	"github.com/fernetbalboa/arqweb/src/api/domain"
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"time"
 )
 
 //go:generate mockgen -destination=../mock/mock_cat_storage.go -package=mock -source=category_storage.go
 type CategoryStorage interface {
-	AddCategory(category *domain.Category) error
+	SaveCategory(category *domain.Category) (*domain.Category, error)
 	GetCategories() ([]domain.Category, error)
 	SearchCategory(filters *domain.CategoryFilter) ([]*domain.Category, error)
 	EditCategory(newVersionCategory *domain.Category) error
@@ -45,6 +46,21 @@ func NewCategoryStorage() (CategoryStorage, error) {
 	}
 
 	return CreateCategoryStorage(catCollection)
+}
+
+func (cs *CategoryStorageImpl) SaveCategory(category *domain.Category) (*domain.Category, error) {
+
+	category.Id = primitive.NewObjectID()
+	ctx, _ := context.WithTimeout(context.Background(), 1*time.Second)
+	res, err := cs.catCollection.InsertOne(ctx, category)
+
+	if err != nil {
+		return nil, apierror.Wrapf(err, "Could not insert new category into MongoDB. category: %+v", category)
+	}
+
+	category.Id = res.InsertedID.(primitive.ObjectID)
+
+	return category, nil
 }
 
 func (cs *CategoryStorageImpl) GetCategories() ([]domain.Category, error) {
@@ -106,19 +122,6 @@ func (cs *CategoryStorageImpl) SearchCategory(filters *domain.CategoryFilter) ([
 
 	return results, nil
 
-}
-
-func (cs *CategoryStorageImpl) AddCategory(category *domain.Category) error {
-	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
-
-	log.Infof("Adding category %s", category.Name)
-	_, err := cs.catCollection.InsertOne(ctx, category)
-
-	if err != nil {
-		return apierror.Wrapf(err, "Couldn't add '%s' to categories list", category.Name)
-	}
-
-	return nil
 }
 
 func (cs *CategoryStorageImpl) EditCategory(newVersionCategory *domain.Category) error {

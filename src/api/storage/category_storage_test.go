@@ -27,8 +27,8 @@ func TestSearchCategory(t *testing.T) {
 		anotherCategory := test.DefaultCategory()
 		anotherCategory.Name = "anotherName"
 
-		saveErr1 := POIStorage.AddCategory(category)
-		saveErr2 := POIStorage.AddCategory(anotherCategory)
+		_, saveErr1 := POIStorage.SaveCategory(category)
+		_, saveErr2 := POIStorage.SaveCategory(anotherCategory)
 
 		filter := &domain.CategoryFilter{Name: category.Name}
 
@@ -51,8 +51,8 @@ func TestSearchCategory(t *testing.T) {
 		hiddenCategory := test.DefaultCategory()
 		hiddenCategory.Hidden = true
 
-		saveErr1 := POIStorage.AddCategory(category)
-		saveErr2 := POIStorage.AddCategory(hiddenCategory)
+		_, saveErr1 := POIStorage.SaveCategory(category)
+		_, saveErr2 := POIStorage.SaveCategory(hiddenCategory)
 
 		filter := &domain.CategoryFilter{Hidden: false}
 

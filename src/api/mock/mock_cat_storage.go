@@ -33,18 +33,19 @@ func (m *MockCategoryStorage) EXPECT() *MockCategoryStorageMockRecorder {
 	return m.recorder
 }
 
-// AddCategory mocks base method
-func (m *MockCategoryStorage) AddCategory(category *domain.Category) error {
+// SaveCategory mocks base method
+func (m *MockCategoryStorage) SaveCategory(category *domain.Category) (*domain.Category, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddCategory", category)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret := m.ctrl.Call(m, "SaveCategory", category)
+	ret0, _ := ret[0].(*domain.Category)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
-// AddCategory indicates an expected call of AddCategory
-func (mr *MockCategoryStorageMockRecorder) AddCategory(category interface{}) *gomock.Call {
+// SaveCategory indicates an expected call of SaveCategory
+func (mr *MockCategoryStorageMockRecorder) SaveCategory(category interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddCategory", reflect.TypeOf((*MockCategoryStorage)(nil).AddCategory), category)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveCategory", reflect.TypeOf((*MockCategoryStorage)(nil).SaveCategory), category)
 }
 
 // GetCategories mocks base method
