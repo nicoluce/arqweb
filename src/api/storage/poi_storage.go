@@ -112,6 +112,19 @@ func (ps *POIStorageImpl) featureToPOI(feature *geojson.Feature) (*domain.PointO
 
 	hidden := feature.PropertyMustBool("hidden", false)
 
+	picture := domain.Picture{}
+	if pictureInfo, ok := feature.Properties["picture"].(map[string]interface{}); ok {
+		if data, ok2 := pictureInfo["data"].(string); ok2 {
+				picture.Data = data
+		}
+		if contentType, ok2 := pictureInfo["contentType"].(string); ok2 {
+			picture.ContentType = contentType
+		}
+		if name, ok2 := pictureInfo["name"].(string); ok2 {
+			picture.Filename = name
+		}
+	}
+
 	if feature.Geometry.IsPoint() {
 		lat := feature.Geometry.Point[0]
 		long := feature.Geometry.Point[1]
@@ -120,6 +133,7 @@ func (ps *POIStorageImpl) featureToPOI(feature *geojson.Feature) (*domain.PointO
 			Title:       title,
 			Category:    category,
 			Description: description,
+			Picture: 	 picture,
 			Lat:         lat,
 			Long:        long,
 			Hidden:      hidden,
