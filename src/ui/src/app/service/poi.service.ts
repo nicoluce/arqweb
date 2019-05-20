@@ -103,12 +103,26 @@ export class PoiService {
     return this.http.get<Category[]>(environment.baseUrl + "/categories")
   }
 
-  public getCategory(name: string): Observable<Category> {
+  public getCategory(name: string): Observable<Category[]> {
     // return of(new Category("abcd","food", false, "fas fa-hamburger"));
     //TODO: use backend
     let queryParams = new HttpParams();
     queryParams = queryParams.append("name", name);
-    return this.http.get<Category>(environment.baseUrl + `/categories/search`, {params: queryParams});
+    return this.http.get<Category[]>(
+      environment.baseUrl + `/categories/search`, {params: queryParams});
+
+    /*return new Promise(((resolve, reject) => {
+      let queryParams = new HttpParams();
+      queryParams = queryParams.append("name", name);
+      this.http.get<Category>(environment.baseUrl + `/categories/search`, {params: queryParams})
+        .subscribe(
+          (category: Category) => {
+            resolve(category)
+          },
+          (error) =>{
+            reject(error);
+          });
+    }))*/
   }
 
   public updateCategory(category: Category): Observable<Category> {

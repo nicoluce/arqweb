@@ -5,7 +5,7 @@ import "go.mongodb.org/mongo-driver/bson/primitive"
 type PointOfInterest struct {
 	Id          primitive.ObjectID `json:"id" bson:"_id" required:"false"`
 	Title       string             `json:"title" bson:"title" required:"true"`
-	Category    Category           `json:"category" bson:"category" required:"true"`
+	Category    string             `json:"category" bson:"category" required:"true"`
 	Image       Image              `json:"image" bson:"image" required:"false"`
 	OwnerId     int64              `json:"ownerId" bson:"ownerId" required:"false"`
 	Description string             `json:"description" bson:"description" required:"false"`
