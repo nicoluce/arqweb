@@ -41,7 +41,6 @@ func DefaultPOI() *domain.PointOfInterest {
 		Title:       defGeoJson.PropertyMustString("title", ""),
 		Category:    defGeoJson.PropertyMustString("category", ""),
 		Description: defGeoJson.PropertyMustString("description", ""),
-		Type:        defGeoJson.PropertyMustString("type", ""),
 		Lat:         defGeoJson.Geometry.Point[0],
 		Long:        defGeoJson.Geometry.Point[1],
 		Hidden:      false,

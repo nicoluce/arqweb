@@ -112,12 +112,6 @@ func (ps *POIStorageImpl) featureToPOI(feature *geojson.Feature) (*domain.PointO
 
 	hidden := feature.PropertyMustBool("hidden", false)
 
-	POIType, err := feature.PropertyString("type")
-	if err != nil {
-		return nil, apierror.BadRequest.Wrapf(err,
-			"GeoJson feature 'type' property is missing or has incorrect type (should be string)")
-	}
-
 	if feature.Geometry.IsPoint() {
 		lat := feature.Geometry.Point[0]
 		long := feature.Geometry.Point[1]
@@ -126,7 +120,6 @@ func (ps *POIStorageImpl) featureToPOI(feature *geojson.Feature) (*domain.PointO
 			Title:       title,
 			Category:    category,
 			Description: description,
-			Type:        POIType,
 			Lat:         lat,
 			Long:        long,
 			Hidden:      hidden,
