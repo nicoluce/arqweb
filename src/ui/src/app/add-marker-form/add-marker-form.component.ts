@@ -17,6 +17,7 @@ export class AddMarkerFormComponent implements OnInit {
   newPOI: PointOfInterest;
   @Output() addedPOI: EventEmitter<any> = new EventEmitter();
   @Output() cancelPOI: EventEmitter<any> = new EventEmitter();
+  private availableCategories: Category[];
 
   private poiService: PoiService;
 
@@ -26,8 +27,13 @@ export class AddMarkerFormComponent implements OnInit {
 
   ngOnInit() {
     this.addPOIForm = AddMarkerFormComponent.defaultForm(0, 0); //Placeholder
+    this.poiService.getCategories().subscribe(
+      (categories: Category[]) => {
+        this.availableCategories = categories;
+      }
+    );
   }
-
+a
   //Resets the form to track the newest marker
   public resetPOIForm() {
     //Subscribe to marker events to update form accordingly
@@ -47,7 +53,6 @@ export class AddMarkerFormComponent implements OnInit {
       title: new FormControl('', [Validators.required, Validators.maxLength(60)]),
       category: new FormControl('', [Validators.required, Validators.maxLength(60)]),
       description: new FormControl(''),
-      type: new FormControl('', [Validators.required, Validators.maxLength(30)]),
       lat: new FormControl(lat),
       long: new FormControl(long),
       picture: new FormGroup({
@@ -80,7 +85,7 @@ export class AddMarkerFormComponent implements OnInit {
     let formPicture = newPoiForm.picture;
     let picture = new Image(formPicture.data, formPicture.name, formPicture.contentType);
     this.buildPOI(newPoiForm.title, newPoiForm.category,
-      newPoiForm.description, newPoiForm.type, latLng.lat, latLng.lng, picture);
+      newPoiForm.description, latLng.lat, latLng.lng, picture);
 
     this.saveNewPOI();
 
@@ -89,13 +94,12 @@ export class AddMarkerFormComponent implements OnInit {
 
   }
 
-  buildPOI(title: string, category: string, description: string, type: string,
+  buildPOI(title: string, category: string, description: string,
            lat: number, long: number, picture: Image) {
     let newPOI = new PointOfInterest();
     newPOI.title = title;
     newPOI.category = this.getCategory(category);
     newPOI.description = description;
-    newPOI.type = type;
     newPOI.lat = lat;
     newPOI.long = long;
     newPOI.picture = picture;

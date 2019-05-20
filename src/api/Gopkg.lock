@@ -260,6 +260,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/gin-gonic/gin",
+    "github.com/gin-gonic/gin/json",
     "github.com/golang/mock/gomock",
     "github.com/paulmach/go.geojson",
     "github.com/pkg/errors",

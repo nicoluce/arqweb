@@ -9,7 +9,6 @@ type PointOfInterest struct {
 	Image       Image              `json:"image" bson:"image" required:"false"`
 	OwnerId     int64              `json:"ownerId" bson:"ownerId" required:"false"`
 	Description string             `json:"description" bson:"description" required:"false"`
-	Type        string             `json:"type" bson:"type" required:"true"`
 	Lat         float64            `json:"lat" bson:"lat" required:"false"`
 	Long        float64            `json:"long" bson:"long" required:"false"`
 	Hidden      bool               `json:"hidden" bson:"hidden" required:"false"`

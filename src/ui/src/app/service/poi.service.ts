@@ -15,7 +15,7 @@ import {take} from "rxjs/operators";
 export class PoiService {
   private http: HttpClient;
 
-  public availableCategories = ["food", "entertainment", "art", "museum"]; //TODO: fetch from backend
+  // public availableCategories = ["food", "entertainment", "art", "museum"]; //TODO: fetch from backend
   public availableTypes = ["building", "person", "event", "object"]; //TODO: fetch from backend
 
   constructor(http: HttpClient) {
@@ -106,13 +106,15 @@ export class PoiService {
   }
 
   public getCategories(): Observable<Category[]> {
-    return this.http.get<Category[]>(environment.baseUrl + "/category")
+    return this.http.get<Category[]>(environment.baseUrl + "/categories")
   }
 
   public getCategory(name: string): Observable<Category> {
-    return of(new Category("abcd","food", false, "fas fa-hamburger"));
+    // return of(new Category("abcd","food", false, "fas fa-hamburger"));
     //TODO: use backend
-    //return this.http.get<Category>(environment.baseUrl + `/category/${name}`)
+    let queryParams = new HttpParams();
+    queryParams = queryParams.append("name", name);
+    return this.http.get<Category>(environment.baseUrl + `/categories/search`, {params: queryParams});
   }
 
   public updateCategory(category: Category): Observable<Category> {

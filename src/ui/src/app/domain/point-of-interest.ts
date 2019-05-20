@@ -8,7 +8,6 @@ export class PointOfInterest {
   category: Category;
   hidden: boolean;
   description: string;
-  type: string;
   lat: number;
   long: number;
   picture: Image; //Base64 image
