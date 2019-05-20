@@ -4,6 +4,8 @@ import {Image, PointOfInterest} from "../domain/point-of-interest";
 import {Marker} from "leaflet";
 import {PoiService} from "../service/poi.service";
 import {Category} from "../domain/category";
+import {__await} from "tslib";
+import {promise} from "selenium-webdriver";
 
 @Component({
   selector: 'app-add-marker-form',
@@ -84,37 +86,29 @@ a
     let latLng = this.marker.getLatLng();
     let formPicture = newPoiForm.picture;
     let picture = new Image(formPicture.data, formPicture.name, formPicture.contentType);
-    this.buildPOI(newPoiForm.title, newPoiForm.category,
+    this.createPOI(newPoiForm.title, newPoiForm.category,
       newPoiForm.description, latLng.lat, latLng.lng, picture);
-
-    this.saveNewPOI();
-
-    //Inform map of save event
-    this.addedPOI.emit(this.newPOI);
-
   }
 
-  buildPOI(title: string, category: string, description: string,
-           lat: number, long: number, picture: Image) {
-    let newPOI = new PointOfInterest();
-    newPOI.title = title;
-    newPOI.category = this.getCategory(category);
-    newPOI.description = description;
-    newPOI.lat = lat;
-    newPOI.long = long;
-    newPOI.picture = picture;
-    newPOI.hidden = false;
-    this.newPOI = newPOI;
-  }
+  createPOI(title: string, category: string, description: string,
+            lat: number, long: number, picture: Image) {
+    this.poiService.getCategory(category).subscribe(
+      (category: Category[]) => {
+        let newPOI = new PointOfInterest();
+        newPOI.title = title;
+        newPOI.category = category[0];
+        newPOI.description = description;
+        newPOI.lat = lat;
+        newPOI.long = long;
+        newPOI.picture = picture;
+        newPOI.hidden = false;
+        this.newPOI = newPOI;
+        this.saveNewPOI();
 
-  getCategory(categoryName: string): Category {
-    let category: Category = null;
-    this.poiService.getCategory(categoryName).subscribe(
-      (retrievedCategory: Category) =>
-        category = retrievedCategory
+        //Inform map of save event
+        this.addedPOI.emit(this.newPOI);
+      }
     );
-
-    return category;
   }
 
   cancelNewPOI() {

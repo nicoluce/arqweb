@@ -136,19 +136,22 @@ export class MapComponent implements OnInit {
 </head>
 <h2>${this.toTitleCase(POI.title)}</h2>
 <h3>${this.toTitleCase(POI.category.name)} <i class="${POI.category.iconClass}"></i></h3>  
-<h3>Type: ${this.toTitleCase(POI.type)}</h3>
 <p>Description: ${POI.description}</p>
 <img hidden="${POI.picture == null}" src="data:${POI.picture.contentType};base64, ${POI.picture.data}" style="width: 100px" style="height: 45px" "/>
 `;
   }
 
   private static toTitleCase(str: string): string {
-    return str.replace(
-      /\w\S*/g,
-      function(txt) {
-        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-      }
-    );
+    if (str) {
+      return str.replace(
+        /\w\S*/g,
+        function (txt) {
+          return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        }
+      );
+    } else {
+      return "";
+    }
   }
 
   /**
