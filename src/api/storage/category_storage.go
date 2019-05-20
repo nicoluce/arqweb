@@ -182,7 +182,7 @@ func resetCategoryCollection() {
 	}
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 
-	err = client.Database(Database).Collection(UserCollection).Drop(ctx)
+	err = client.Database(Database).Collection(CategoryCollection).Drop(ctx)
 
 	if err != nil {
 		log.Error("Could not reset Category MongoDB collection")
