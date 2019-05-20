@@ -17,5 +17,5 @@ type PointOfInterest struct {
 type Image struct {
 	Filename    string `json:"filename" bson:"filename" required:"false"`
 	Data        string `json:"data" bson:"data" required:"false"`
-	ContentType string `json:"contentType" bson:"content_type" required:"false"`
+	ContentType string `json:"contentType" bson:"contentType" required:"false"`
 }
