@@ -22,7 +22,7 @@ func CreateCategoryController(CategoryStorage storage.CategoryStorage) *Category
 func NewCategoryController() (*CategoryController, error) {
 	CatStorage, err := storage.NewCategoryStorage()
 	if err != nil {
-		return nil, apierror.Wrapf(err, "Could not create POI controller")
+		return nil, apierror.Wrapf(err, "Could not create Category controller")
 	}
 
 	return CreateCategoryController(CatStorage), nil
