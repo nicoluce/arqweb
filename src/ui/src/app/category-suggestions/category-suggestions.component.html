@@ -6,10 +6,11 @@
 
     <mat-selection-list role="listbox"
                         [(ngModel)]="selectedSuggestions">
-      <mat-list-option *ngFor="let suggestion of suggestions" role="option">
-        <div>
-          <i class="{{suggestion.category.iconClass}}" style="margin-right: 5px;"></i>
-          {{suggestion.category.name}}
+      <mat-list-option *ngFor="let suggestion of suggestions" role="option"
+                       [ngClass]="getOptionClass(suggestion)">
+        <div >
+          <i class="{{suggestion.category.iconClass}}" style="margin-left: 1px; margin-right: 5px;"></i>
+            {{suggestion.category.name}}
         </div>
       </mat-list-option>
     </mat-selection-list>

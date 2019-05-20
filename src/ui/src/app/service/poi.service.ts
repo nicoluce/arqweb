@@ -139,6 +139,7 @@ export class PoiService {
       suggestion1.status = SuggestionStatus.WAITING_FOR_APPROVAL;
       let suggestion2 = new CategorySuggestion(null, null);
       suggestion2.category = cat2;
+      suggestion2.category.hidden = true;
       suggestion2.status = SuggestionStatus.WAITING_FOR_APPROVAL;
       this.first = false;
       return of([suggestion1, suggestion2]);
@@ -146,6 +147,7 @@ export class PoiService {
       let cat3 = new Category(null, "cat3", false, "fas fa-at");
       let suggestion3 = new CategorySuggestion(null, null);
       suggestion3.category = cat3;
+      suggestion3.category.hidden = true;
       suggestion3.status = SuggestionStatus.WAITING_FOR_APPROVAL;
       return of([suggestion3]);
     }

@@ -60,5 +60,10 @@ export class CategorySuggestionsComponent implements OnInit {
   }
 
 
-
+  getOptionClass(suggestion: CategorySuggestion): string {
+    if (suggestion.category.hidden) {
+      return "hidden-category"
+    }
+    return "";
+  }
 }
