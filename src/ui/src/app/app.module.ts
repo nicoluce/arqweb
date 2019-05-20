@@ -20,6 +20,7 @@ import { EditPoiComponent } from './edit-poi/edit-poi.component';
 import { EditCategoryComponent } from './edit-category/edit-category.component';
 import {IconPickerModule} from "ngx-icon-picker";
 import { NewCategorySuggestionFormComponent } from './new-category-suggestion-form/new-category-suggestion-form.component';
+import { CategorySuggestionsComponent } from './category-suggestions/category-suggestions.component';
 
 
 @NgModule({
@@ -34,6 +35,7 @@ import { NewCategorySuggestionFormComponent } from './new-category-suggestion-fo
     EditPoiComponent,
     EditCategoryComponent,
     NewCategorySuggestionFormComponent,
+    CategorySuggestionsComponent,
   ],
   imports: [
     BrowserModule,

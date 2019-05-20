@@ -1,13 +1,13 @@
-import { Injectable } from '@angular/core';
-import {PointOfInterest} from "../domain/point-of-interest";
+import {Injectable} from '@angular/core';
+import {Image, PointOfInterest} from "../domain/point-of-interest";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Feature} from "geojson";
 import {environment} from "../../environments/environment";
 import {LatLngBounds} from "leaflet";
 import {Observable, of} from "rxjs";
 import {Category} from "../domain/category";
-import {Image} from "../domain/point-of-interest";
-import {CategorySuggestion} from "../domain/category-suggestion";
+import {CategorySuggestion, SuggestionStatus} from "../domain/category-suggestion";
+import {take} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -126,4 +126,46 @@ export class PoiService {
   sendCategorySuggestion(categorySuggestion: CategorySuggestion): Observable<CategorySuggestion> {
     return this.http.post<CategorySuggestion>(environment.baseUrl + "/suggestion/category", categorySuggestion);
   }
+
+  //TODO: remove
+  first = true;
+  getPendingCategorySuggestions(): Observable<CategorySuggestion[]> {
+    //TODO
+    if (this.first) {
+      let cat1 = new Category(null, "cat1", false, "fas fa-at");
+      let cat2 = new Category(null, "cat2", false, "far fa-money-bill-alt");
+      let suggestion1 = new CategorySuggestion(null, null);
+      suggestion1.category = cat1;
+      suggestion1.status = SuggestionStatus.WAITING_FOR_APPROVAL;
+      let suggestion2 = new CategorySuggestion(null, null);
+      suggestion2.category = cat2;
+      suggestion2.status = SuggestionStatus.WAITING_FOR_APPROVAL;
+      this.first = false;
+      return of([suggestion1, suggestion2]);
+    } else {
+      let cat3 = new Category(null, "cat3", false, "fas fa-at");
+      let suggestion3 = new CategorySuggestion(null, null);
+      suggestion3.category = cat3;
+      suggestion3.status = SuggestionStatus.WAITING_FOR_APPROVAL;
+      return of([suggestion3]);
+    }
+
+    /*return this.http.get<CategorySuggestion[]>(environment.baseUrl + "suggestion/category").pipe(
+      (take (10))
+    );*/
+  }
+
+  approveSuggestion(suggestion: CategorySuggestion): Observable<any> {
+    //TODO: use back
+    return of(null)
+    // return this.http.post(environment.baseUrl + `/suggestion/category/${suggestion.id}/approve`, null);
+  }
+
+  rejectSuggestion(suggestion: CategorySuggestion): Observable<any> {
+    //TODO: use back
+    return of(null)
+    // return this.http.post(environment.baseUrl + `/suggestion/category/${suggestion.id}/reject`, null);
+  }
+
+
 }
