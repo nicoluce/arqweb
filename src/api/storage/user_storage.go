@@ -95,11 +95,3 @@ func resetUserCollection() {
 		log.Error("Could not reset User MongoDB collection")
 	}
 }
-
-func NewUser(name string, icon string) *domain.User {
-	return &domain.User{
-		Username: name,
-		Password: false,
-		IsAdmin:  icon,
-	}
-}
