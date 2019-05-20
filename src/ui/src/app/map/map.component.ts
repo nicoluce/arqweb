@@ -138,7 +138,7 @@ export class MapComponent implements OnInit {
 <h3>${this.toTitleCase(POI.category.name)} <i class="${POI.category.iconClass}"></i></h3>  
 <p>Description: ${POI.description}</p>
 `;
-    if (POI.picture) {
+    if (POI.picture.data) {
       html = html + `<img src="data:${POI.picture.contentType};base64, ${POI.picture.data}" style="width: 100px" style="height: 45px" "/>`
     }
     return html;
