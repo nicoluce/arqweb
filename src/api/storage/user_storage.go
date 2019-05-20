@@ -32,6 +32,14 @@ func CreateUserStorage(UserCollection ICollection) (UserStorage, error) {
 	storage := &UserStorageImpl{
 		UserCollection: UserCollection,
 	}
+	_, err := storage.SaveUser(&domain.User{
+		Username: "admin",
+		Password: "admin",
+		IsAdmin:  true,
+	})
+	if err != nil {
+		return nil, err
+	}
 
 	return storage, nil
 }
@@ -85,5 +93,13 @@ func resetUserCollection() {
 
 	if err != nil {
 		log.Error("Could not reset User MongoDB collection")
+	}
+}
+
+func NewUser(name string, icon string) *domain.User {
+	return &domain.User{
+		Username: name,
+		Password: false,
+		IsAdmin:  icon,
 	}
 }
