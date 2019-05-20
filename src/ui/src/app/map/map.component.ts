@@ -4,7 +4,6 @@ import {icon, LatLng, latLng, Layer, LeafletMouseEvent, Map, marker, Marker, til
 import {PointOfInterest} from "../domain/point-of-interest";
 import {AddMarkerFormComponent} from "../add-marker-form/add-marker-form.component";
 import {PoiService} from "../service/poi.service";
-import {Category} from "../domain/category";
 
 @Component({
   selector: 'app-map',
@@ -120,13 +119,14 @@ export class MapComponent implements OnInit {
 
   onPOIAdd(savedPOI: PointOfInterest) {
     this.hideNewPOIForm(false);
-    this.newMarker.bindPopup(MapComponent.markerPopupHtml(savedPOI), {maxWidth: 500, className: 'popup'});
+    this.newMarker.bindPopup(MapComponent.markerPopupHtml(savedPOI), {maxWidth: 700, className: 'popup'});
     this.newMarker.dragging.disable();
     let newIcon = icon({
       iconUrl: MapComponent.setMarkerIconUrl,
       shadowUrl: MapComponent.setMarkerShadowUrl
     });
     this.newMarker.setIcon(newIcon);
+
   }
 
   static markerPopupHtml(POI: PointOfInterest) {
@@ -138,7 +138,7 @@ export class MapComponent implements OnInit {
 <h3>${this.toTitleCase(POI.category.name)} <i class="${POI.category.iconClass}"></i></h3>  
 <h3>Type: ${this.toTitleCase(POI.type)}</h3>
 <p>Description: ${POI.description}</p>
-<img src="data:${POI.picture.contentType};base64, ${POI.picture.data}" style="width: 100px" style="height: 45px" "/>
+<img hidden="${POI.picture == null}" src="data:${POI.picture.contentType};base64, ${POI.picture.data}" style="width: 100px" style="height: 45px" "/>
 `;
   }
 
@@ -188,7 +188,7 @@ export class MapComponent implements OnInit {
         title: POI.title
       });
 
-    marker.bindPopup(MapComponent.markerPopupHtml(POI), {maxWidth: 500, className: 'popup'});
+    marker.bindPopup(MapComponent.markerPopupHtml(POI), {maxWidth: 700, className: 'popup'});
 
     return marker
   }

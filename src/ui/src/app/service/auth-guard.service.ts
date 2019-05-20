@@ -19,7 +19,8 @@ import {User} from "../domain/user";
 })
 export class AuthGuardService implements CanActivate, CanActivateChild {
 
-  private adminUrls = ["/administration/edit/poi", "/administration/edit/category"];
+  private adminUrls = ["/administration/edit/poi", "/administration/edit/category",
+    "/administration/suggestion/category/new"];
 
   constructor(private loginService: LoginService, private router: Router) { }
 

@@ -6,7 +6,7 @@ export class PointOfInterest {
   id: string;
   title: string;
   category: Category;
-  ownerId: number;
+  hidden: boolean;
   description: string;
   type: string;
   lat: number;

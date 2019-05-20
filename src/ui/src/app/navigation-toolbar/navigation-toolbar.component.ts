@@ -1,6 +1,7 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {LoginService} from "../service/login.service";
 import {User, UserRole} from "../domain/user";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-navigation-toolbar',
@@ -12,7 +13,7 @@ export class NavigationToolbarComponent implements OnInit {
   loggedUser: User;
   @Output() sidenavToggled = new EventEmitter();
 
-  constructor(private loginService: LoginService) {
+  constructor(private loginService: LoginService, private router: Router) {
 
   }
 
@@ -42,6 +43,7 @@ export class NavigationToolbarComponent implements OnInit {
 
   private logOut(): void {
     this.loginService.logOut();
+    this.router.navigateByUrl("/");
   }
 
   //TODO: delete
