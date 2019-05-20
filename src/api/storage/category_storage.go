@@ -36,12 +36,12 @@ func CreateCategoryStorage(catCollection ICollection) (CategoryStorage, error) {
 		catCollection: catCollection,
 	}
 
-	_, err := storage.SaveCategory(NewCategory("Food", "fas fa-hamburger"))
+	_, err := storage.SaveCategory(NewCategory("food", "fas fa-hamburger"))
 	if err != nil {
 		return nil, err
 	}
 
-	_, err = storage.SaveCategory(NewCategory("Art", "fas fa-utensils"))
+	_, err = storage.SaveCategory(NewCategory("art", "fas fa-utensils"))
 	if err != nil {
 		return nil, err
 	}
