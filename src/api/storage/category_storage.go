@@ -36,7 +36,12 @@ func CreateCategoryStorage(catCollection ICollection) (CategoryStorage, error) {
 		catCollection: catCollection,
 	}
 
-	_, err := storage.SaveCategory(DefaultCategory())
+	_, err := storage.SaveCategory(NewCategory("food", "fas fa-hamburger"))
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = storage.SaveCategory(NewCategory("art", "fas fa-utensils"))
 	if err != nil {
 		return nil, err
 	}
@@ -159,10 +164,10 @@ func buildCategoryQueryFilters(filters *domain.CategoryFilter) bson.M {
 	return filtersMap
 }
 
-func DefaultCategory() *domain.Category {
+func NewCategory(name string, icon string) *domain.Category {
 	return &domain.Category{
-		Name:   "Food",
+		Name:   name,
 		Hidden: false,
-		Icon:   "fas fa-hamburger",
+		Icon:   icon,
 	}
 }

@@ -32,6 +32,14 @@ func CreateUserStorage(UserCollection ICollection) (UserStorage, error) {
 	storage := &UserStorageImpl{
 		UserCollection: UserCollection,
 	}
+	_, err := storage.SaveUser(&domain.User{
+		Username: "admin",
+		Password: "admin",
+		IsAdmin:  true,
+	})
+	if err != nil {
+		return nil, err
+	}
 
 	return storage, nil
 }
