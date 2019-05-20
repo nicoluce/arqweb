@@ -24,8 +24,9 @@ const (
 )
 
 func init() {
-	resetPoiCollection() //Comment if data should be kept between program runs
+	resetCategoryCollection() //Comment if data should be kept between program runs
 }
+
 
 type CategoryStorageImpl struct {
 	catCollection ICollection
@@ -169,5 +170,21 @@ func NewCategory(name string, icon string) *domain.Category {
 		Name:   name,
 		Hidden: false,
 		Icon:   icon,
+	}
+}
+
+
+func resetCategoryCollection() {
+	client, err := getMongoDBClient()
+
+	if err != nil {
+		return
+	}
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+
+	err = client.Database(Database).Collection(UserCollection).Drop(ctx)
+
+	if err != nil {
+		log.Error("Could not reset Category MongoDB collection")
 	}
 }
