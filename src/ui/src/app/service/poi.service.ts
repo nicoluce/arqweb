@@ -38,7 +38,7 @@ export class PoiService {
         "description": POI.description,
         "picture": {
           "data": POI.picture.data,
-          "name": POI.picture.contentType,
+          "name": POI.picture.name,
           "contentType": POI.picture.contentType
         },
         "hidden": POI.hidden

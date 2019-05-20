@@ -119,7 +119,7 @@ export class MapComponent implements OnInit {
 
   onPOIAdd(savedPOI: PointOfInterest) {
     this.hideNewPOIForm(false);
-    this.newMarker.bindPopup(MapComponent.markerPopupHtml(savedPOI), {maxWidth: 700, className: 'popup'});
+    this.newMarker.bindPopup(<string>MapComponent.markerPopupHtml(savedPOI), {maxWidth: 700, className: 'popup'});
     this.newMarker.dragging.disable();
     let newIcon = icon({
       iconUrl: MapComponent.setMarkerIconUrl,
@@ -129,16 +129,19 @@ export class MapComponent implements OnInit {
 
   }
 
-  static markerPopupHtml(POI: PointOfInterest) {
-    return ` 
+  static markerPopupHtml(POI: PointOfInterest): string {
+    let html: string = ` 
 <head>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 </head>
 <h2>${this.toTitleCase(POI.title)}</h2>
 <h3>${this.toTitleCase(POI.category.name)} <i class="${POI.category.iconClass}"></i></h3>  
 <p>Description: ${POI.description}</p>
-<img hidden="${POI.picture == null}" src="data:${POI.picture.contentType};base64, ${POI.picture.data}" style="width: 100px" style="height: 45px" "/>
 `;
+    if (POI.picture) {
+      html = html + `<img src="data:${POI.picture.contentType};base64, ${POI.picture.data}" style="width: 100px" style="height: 45px" "/>`
+    }
+    return html;
   }
 
   private static toTitleCase(str: string): string {
@@ -191,7 +194,7 @@ export class MapComponent implements OnInit {
         title: POI.title
       });
 
-    marker.bindPopup(MapComponent.markerPopupHtml(POI), {maxWidth: 700, className: 'popup'});
+    marker.bindPopup(<string>MapComponent.markerPopupHtml(POI), {maxWidth: 700, className: 'popup'});
 
     return marker
   }
