@@ -36,8 +36,14 @@ func CreateCategoryStorage(catCollection ICollection) (CategoryStorage, error) {
 		catCollection: catCollection,
 	}
 
+	_, err := storage.SaveCategory(DefaultCategory())
+	if err != nil {
+		return nil, err
+	}
+
 	return storage, nil
 }
+
 func NewCategoryStorage() (CategoryStorage, error) {
 	client, err := getMongoDBClient()
 	catCollection := client.Database(Database).Collection(CategoryCollection)
@@ -151,4 +157,12 @@ func buildCategoryQueryFilters(filters *domain.CategoryFilter) bson.M {
 	filtersMap["hidden"] = filters.Hidden
 
 	return filtersMap
+}
+
+func DefaultCategory() *domain.Category {
+	return &domain.Category{
+		Name:   "Food",
+		Hidden: false,
+		Icon:   "fas fa-hamburger",
+	}
 }
