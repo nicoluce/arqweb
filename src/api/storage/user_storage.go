@@ -6,6 +6,7 @@ import (
 	"github.com/fernetbalboa/arqweb/src/api/domain"
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/x/bsonx"
 	"time"
 )
@@ -75,6 +76,10 @@ func (us *UserStorageImpl) Search(username string) (*domain.User, error) {
 	var user domain.User
 	err := res.Decode(&user)
 	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			log.Errorf("Error while decoding User. USer: %v, doesnt exist.", username)
+			return nil, err
+		}
 		log.Errorf("Error while decoding User. Cause: %v", err)
 		return nil, err
 	}

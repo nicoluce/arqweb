@@ -60,6 +60,9 @@ func ToApiError(err error) ApiError {
 		case Forbidden:
 			apiErr = NewApiError("There was a problem with the request",
 				"forbidden", http.StatusForbidden, CauseList{werr.Error()})
+		case NotFound:
+			apiErr = NewApiError("There was a problem with the request",
+				"not_found", http.StatusNotFound, CauseList{werr.Error()})
 		default:
 			//Do not send error to client unless it's a public error
 			apiErr = NewInternalServerApiError("There was a problem processing the request", nil)
