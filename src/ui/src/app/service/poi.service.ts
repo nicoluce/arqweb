@@ -97,7 +97,21 @@ export class PoiService {
   }
 
   public updatePOI(POI: PointOfInterest): Observable<PointOfInterest> {
-    return this.http.put<PointOfInterest>(environment.baseUrl + "/poi", PoiService.POIToGeoJSON(POI));
+    let poiBody = {
+      id: POI.id,
+      title: POI.title,
+      category: POI.category.name, //Send name instead of object
+      description: POI.description,
+      picture: {
+        data: POI.picture.data,
+        name: POI.picture.name,
+        contentType: POI.picture.contentType
+      },
+      hidden: POI.hidden,
+      lat: POI.lat,
+      long: POI.long
+    };
+    return this.http.put<PointOfInterest>(environment.baseUrl +  `/poi/${POI.id}`, poiBody);
   }
 
   public getCategories(): Observable<Category[]> {
