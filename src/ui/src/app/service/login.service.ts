@@ -1,8 +1,9 @@
 import {EventEmitter, Injectable, Output} from '@angular/core';
-import {User, UserRole} from "../domain/user";
-import {EMPTY, empty, Observable, of} from "rxjs";
+import {User} from "../domain/user";
+import {EMPTY, Observable, of, throwError} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../environments/environment";
+import {catchError, tap} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -17,16 +18,28 @@ export class LoginService {
 
   private loggedUserKey = "loggedUser";
 
-  public login(user: User): void {
-    //TODO: call backend
-    // this.http.post(environment.baseUrl + "/login")
-
-    window.localStorage.setItem(this.loggedUserKey, JSON.stringify(user));
-    this.userLogged.emit(user);
+  public login(user: User): Observable<User> {
+    return this.http.post<User>(environment.baseUrl + "/user/login", user).pipe(
+      catchError((err) => {
+        console.log("Login error");
+        return throwError(err);
+      }),
+      tap((loggedUser: User) => {
+        window.localStorage.setItem(this.loggedUserKey, JSON.stringify(loggedUser));
+        this.userLogged.emit(loggedUser);
+        return of(loggedUser);
+      })
+    );
   }
 
-  public signUp(user: User): void {
-    //TODO: call backend
+  public signUp(user: User): Observable<User> {
+    return this.http.post<User>(environment.baseUrl + "/user/signup", user).pipe(
+      catchError(
+        (err) => {
+          console.log("Signup error");
+          return throwError(err);
+        }
+      ));
   }
 
   public logOut(): void {
@@ -39,7 +52,7 @@ export class LoginService {
     let loggedUserJson = window.localStorage.getItem(this.loggedUserKey);
     if (loggedUserJson) {
       let parsedJson = <User>JSON.parse(loggedUserJson);
-      return of(new User(parsedJson.username, parsedJson.password, parsedJson.role));
+      return of(new User(parsedJson.username, parsedJson.password, parsedJson.isAdmin));
     } else {
       return EMPTY;
     }

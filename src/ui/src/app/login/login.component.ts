@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {LoginService} from "../service/login.service";
-import {User, UserRole} from "../domain/user";
+import {User} from "../domain/user";
 import {Router} from "@angular/router";
 
 @Component({
@@ -36,13 +36,15 @@ export class LoginComponent implements OnInit {
   }
 
   private login(loginData: any): void {
-    this.loginService.login(new User(loginData.username, loginData.password, UserRole.NORMAL));
-    //Go back to map view
-    this.router.navigateByUrl("/map")
+    this.loginService.login(new User(loginData.username, loginData.password, false))
+      .subscribe(
+      //Go back to map view
+      (loggedUser: User) => this.router.navigateByUrl("/map")
+    );
   }
 
   private signUp(signUpData: any): void {
-    this.loginService.signUp(new User(signUpData.username, signUpData.password, UserRole.NORMAL));
+    this.loginService.signUp(new User(signUpData.username, signUpData.password, false)).subscribe();
     this.selectedTabIndex = 0;
     //TODO: show user creation popup
     //Allow quick login after signUp and reset signUp form
