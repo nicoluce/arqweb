@@ -7,6 +7,7 @@ package mock
 import (
 	domain "github.com/fernetbalboa/arqweb/src/api/domain"
 	gomock "github.com/golang/mock/gomock"
+	mongo "go.mongodb.org/mongo-driver/mongo"
 	reflect "reflect"
 )
 
@@ -90,4 +91,19 @@ func (m *MockCategoryStorage) EditCategory(newVersionCategory *domain.Category) 
 func (mr *MockCategoryStorageMockRecorder) EditCategory(newVersionCategory interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EditCategory", reflect.TypeOf((*MockCategoryStorage)(nil).EditCategory), newVersionCategory)
+}
+
+// RemoveCategory mocks base method
+func (m *MockCategoryStorage) RemoveCategory(categoryId string) (*mongo.DeleteResult, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RemoveCategory", categoryId)
+	ret0, _ := ret[0].(*mongo.DeleteResult)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RemoveCategory indicates an expected call of RemoveCategory
+func (mr *MockCategoryStorageMockRecorder) RemoveCategory(categoryId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveCategory", reflect.TypeOf((*MockCategoryStorage)(nil).RemoveCategory), categoryId)
 }
