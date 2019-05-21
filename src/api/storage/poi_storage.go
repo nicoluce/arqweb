@@ -15,7 +15,7 @@ import (
 //go:generate mockgen -destination=../mock/mock_poi_storage.go -package=mock -source=poi_storage.go -imports geojson=github.com/paulmach/go.geojson
 type POIStorage interface {
 	SavePOI(POI *domain.PointOfInterest) (*domain.PointOfInterest, error)
-	EditPOI(newVersionPOI *domain.PointOfInterest) error
+	EditPOI(poiID primitive.ObjectID, newVersionPOI *domain.PointOfInterest) error
 	SaveFeature(feature *geojson.Feature) (*domain.PointOfInterest, error)
 	SearchPOI(filters *domain.POIFilter) ([]*domain.PointOfInterest, error)
 }
@@ -65,13 +65,13 @@ func (ps *POIStorageImpl) SavePOI(POI *domain.PointOfInterest) (*domain.PointOfI
 	return POI, nil
 }
 
-func (ps *POIStorageImpl) EditPOI(newVersionPOI *domain.PointOfInterest) error {
+func (ps *POIStorageImpl) EditPOI(poiID primitive.ObjectID, newVersionPOI *domain.PointOfInterest) error {
 	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
 
 	log.Infof("Updating POI '%s'", newVersionPOI.Id)
 
 	// set filters and updates
-	filter := bson.M{"_id": newVersionPOI.Id}
+	filter := bson.M{"_id": poiID}
 	update := bson.M{"$set": newVersionPOI}
 
 	// update document

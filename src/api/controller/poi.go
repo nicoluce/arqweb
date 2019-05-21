@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/paulmach/go.geojson"
 	log "github.com/sirupsen/logrus"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
 )
 
@@ -62,22 +63,18 @@ func (pc *POIController) AddPOI(c *gin.Context) {
 }
 
 func (pc *POIController) EditPOI(c *gin.Context) {
-	poiId := c.Param("id")
+	id := c.Param("id")
+	poiId, err := primitive.ObjectIDFromHex(id)
+
 	var poi domain.PointOfInterest
-	err := c.ShouldBindJSON(&poi)
+	err = c.ShouldBindJSON(&poi)
 
 	if err != nil {
 		_ = c.Error(err)
 		return
 	}
 
-	if poiId != poi.Id.String() {
-		apiError := apierror.BadRequest.New("POI ID can not be updated")
-		_ = c.Error(apiError)
-		return
-	}
-
-	err = pc.POIStorage.EditPOI(&poi)
+	err = pc.POIStorage.EditPOI(poiId, &poi)
 
 	c.JSON(http.StatusOK, gin.H{"id": poiId, "message": "POI successfully updated",
 		"status": "OK", "code": http.StatusOK})
