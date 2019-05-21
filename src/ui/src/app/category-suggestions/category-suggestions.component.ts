@@ -33,29 +33,25 @@ export class CategorySuggestionsComponent implements OnInit {
   approve() {
     this.selectedSuggestions.forEach(
       (suggestion: CategorySuggestion) => {
-        this.poiService.approveSuggestion(suggestion).subscribe();
-        /*const index: number = this.suggestions.indexOf(suggestion);
-        if (index !== -1) {
-          this.suggestions.splice(index, 1);
-        }*/
+        this.poiService.approveSuggestion(suggestion).subscribe(
+          () => this.getPendingSuggestions()
+        );
 
       }
     );
-    this.getPendingSuggestions();
 
   }
 
   reject() {
     this.selectedSuggestions.forEach(
       (suggestion: CategorySuggestion) => {
-        this.poiService.rejectSuggestion(suggestion).subscribe();
-        /*const index: number = this.suggestions.indexOf(suggestion);
-        if (index !== -1) {
-          this.suggestions.splice(index, 1);
-        }*/
+        this.poiService.rejectSuggestion(suggestion).subscribe(
+          () => this.getPendingSuggestions()
+
+        );
       }
     );
-    this.getPendingSuggestions();
+    // this.getPendingSuggestions();
 
   }
 

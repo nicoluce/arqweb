@@ -130,37 +130,13 @@ export class PoiService {
     return this.http.post<CategorySuggestion>(environment.baseUrl + "/suggestions/categories/new", suggestion);
   }
 
-  //TODO: remove
-  first = true;
   getPendingCategorySuggestions(): Observable<CategorySuggestion[]> {
-    //TODO
-    // if (this.first) {
-    //   let cat1 = new Category(null, "cat1", false, "fas fa-at");
-    //   let cat2 = new Category(null, "cat2", false, "far fa-money-bill-alt");
-    //   let suggestion1 = new CategorySuggestion(null, null);
-    //   suggestion1.category = cat1;
-    //   suggestion1.status = SuggestionStatus.WAITING_FOR_APPROVAL;
-    //   let suggestion2 = new CategorySuggestion(null, null);
-    //   suggestion2.category = cat2;
-    //   suggestion2.category.hidden = true;
-    //   suggestion2.status = SuggestionStatus.WAITING_FOR_APPROVAL;
-    //   this.first = false;
-    //   return of([suggestion1, suggestion2]);
-    // } else {
-    //   let cat3 = new Category(null, "cat3", false, "fas fa-at");
-    //   let suggestion3 = new CategorySuggestion(null, null);
-    //   suggestion3.category = cat3;
-    //   suggestion3.category.hidden = true;
-    //   suggestion3.status = SuggestionStatus.WAITING_FOR_APPROVAL;
-    //   return of([suggestion3]);
-    // }
-
     return this.http.get(environment.baseUrl + "/suggestions/categories/new").pipe(
       (take (10)),
       map((suggestionDtoList: any[]) =>{
         let suggestions: CategorySuggestion[] = [];
         suggestionDtoList.forEach((suggestionDto) => {
-          let category: Category = new Category(null, suggestionDto.name, suggestionDto.hiddem, suggestionDto.iconClass);
+          let category: Category = new Category(null, suggestionDto.name, suggestionDto.hidden, suggestionDto.iconClass);
           let newSuggestion: CategorySuggestion = new CategorySuggestion(category, suggestionDto.status);
           newSuggestion.id = suggestionDto.id;
           suggestions.push(newSuggestion);
@@ -171,15 +147,11 @@ export class PoiService {
   }
 
   approveSuggestion(suggestion: CategorySuggestion): Observable<any> {
-    //TODO: use back
-    // return of(null)
-    return this.http.put(environment.baseUrl + `/suggestions/categories/${suggestion.id}/approve`, null);
+    return this.http.put(environment.baseUrl + `/suggestions/categories/new/${suggestion.id}/approve`, null);
   }
 
   rejectSuggestion(suggestion: CategorySuggestion): Observable<any> {
-    //TODO: use back
-    // return of(null)
-    return this.http.put(environment.baseUrl + `/suggestions/categories/${suggestion.id}/reject`, null);
+    return this.http.put(environment.baseUrl + `/suggestions/categories/new/${suggestion.id}/reject`, null);
   }
 
 
