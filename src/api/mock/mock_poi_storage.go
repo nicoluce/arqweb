@@ -8,6 +8,7 @@ import (
 	domain "github.com/fernetbalboa/arqweb/src/api/domain"
 	gomock "github.com/golang/mock/gomock"
 	go_geojson "github.com/paulmach/go.geojson"
+	primitive "go.mongodb.org/mongo-driver/bson/primitive"
 	reflect "reflect"
 )
 
@@ -50,17 +51,17 @@ func (mr *MockPOIStorageMockRecorder) SavePOI(POI interface{}) *gomock.Call {
 }
 
 // EditPOI mocks base method
-func (m *MockPOIStorage) EditPOI(newVersionPOI *domain.PointOfInterest) error {
+func (m *MockPOIStorage) EditPOI(poiID primitive.ObjectID, newVersionPOI *domain.PointOfInterest) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "EditPOI", newVersionPOI)
+	ret := m.ctrl.Call(m, "EditPOI", poiID, newVersionPOI)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // EditPOI indicates an expected call of EditPOI
-func (mr *MockPOIStorageMockRecorder) EditPOI(newVersionPOI interface{}) *gomock.Call {
+func (mr *MockPOIStorageMockRecorder) EditPOI(poiID, newVersionPOI interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EditPOI", reflect.TypeOf((*MockPOIStorage)(nil).EditPOI), newVersionPOI)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EditPOI", reflect.TypeOf((*MockPOIStorage)(nil).EditPOI), poiID, newVersionPOI)
 }
 
 // SaveFeature mocks base method
