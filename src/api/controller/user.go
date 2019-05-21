@@ -6,6 +6,7 @@ import (
 	"github.com/fernetbalboa/arqweb/src/api/storage"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
+	"go.mongodb.org/mongo-driver/mongo"
 	"net/http"
 )
 
@@ -43,6 +44,9 @@ func (uc *UserController) Signup(c *gin.Context) {
 	user, err := uc.UserStorage.Search(userData.Username)
 
 	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			err = apierror.NotFound.New("User not found")
+		}
 		_ = c.Error(err)
 		return
 	}
