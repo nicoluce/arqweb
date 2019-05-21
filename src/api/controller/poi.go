@@ -125,6 +125,6 @@ func (pc *POIController) SearchPOI(c *gin.Context) {
 		result = append(result, poiDTO)
 	}
 
-	log.Infof("Search results: %v", POIs)
-	c.JSON(http.StatusOK, POIs)
+	log.Infof("Search results: %v", result)
+	c.JSON(http.StatusOK, result)
 }
