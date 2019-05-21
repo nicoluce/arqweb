@@ -11,21 +11,23 @@ var userController *controller.UserController
 var suggestionController *controller.SuggestionController
 
 func init() {
-	POIController, err := controller.NewPOIController()
-	if err != nil {
-		log.Fatalf("Could not create POI controller. Cause: %s", err.Error())
-	}
 	CategoryController, err := controller.NewCategoryController()
 	if err != nil {
+		log.Fatalf("Could not create Category controller. Cause: %s", err.Error())
+	}
+
+	POIController, err := controller.NewPOIController(CategoryController.CategoryStorage)
+	if err != nil {
 		log.Fatalf("Could not create POI controller. Cause: %s", err.Error())
 	}
+
 	UserController, err := controller.NewUserController()
 	if err != nil {
 		log.Fatalf("Could not create User controller. Cause: %s", err.Error())
 	}
 	SuggestionController, err := controller.NewSuggestionController(CategoryController.CategoryStorage)
 	if err != nil {
-		log.Fatalf("Could not create suggestion controller. Cause: %s", err.Error())
+		log.Fatalf("Could not create Suggestion controller. Cause: %s", err.Error())
 	}
 	poiController = POIController
 	userController = UserController
@@ -51,6 +53,7 @@ func LoadEndpoints() {
 	categoriesGroup.GET("", categoryController.GetCategories)
 	categoriesGroup.GET("/search", categoryController.SearchCategory)
 	categoriesGroup.POST("", categoryController.AddCategory)
+	categoriesGroup.DELETE("/:id", categoryController.RemoveCategory)
 	categoriesGroup.PUT("/:id", categoryController.EditCategory)
 
 	suggestionGroup := Router.Group("/suggestions/categories/new")

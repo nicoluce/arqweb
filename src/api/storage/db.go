@@ -31,6 +31,9 @@ type ICollection interface {
 
 	FindOneAndUpdate(ctx context.Context, filter interface{},
 		update interface{}, opts ...*options.FindOneAndUpdateOptions) *mongo.SingleResult
+
+	DeleteOne(ctx context.Context, filter interface{},
+		opts ...*options.DeleteOptions) (*mongo.DeleteResult, error)
 }
 
 func getMongoDBClient() (*mongo.Client, error) {

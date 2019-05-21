@@ -14,21 +14,23 @@ const DefaultSearchLimit int64 = 20
 
 type POIController struct {
 	POIStorage storage.POIStorage
+	CategoryStorage   storage.CategoryStorage
 }
 
-func CreatePOIController(POIStorage storage.POIStorage) *POIController {
+func CreatePOIController(POIStorage storage.POIStorage, CategoryStorage storage.CategoryStorage) *POIController {
 	return &POIController{
 		POIStorage: POIStorage,
+		CategoryStorage:   CategoryStorage,
 	}
 }
 
-func NewPOIController() (*POIController, error) {
+func NewPOIController(categoryStorage storage.CategoryStorage) (*POIController, error) {
 	POIStorage, err := storage.NewPOIStorage()
 	if err != nil {
 		return nil, apierror.Wrapf(err, "Could not create POI controller")
 	}
 
-	return CreatePOIController(POIStorage), nil
+	return CreatePOIController(POIStorage, categoryStorage), nil
 }
 
 func (pc *POIController) AddPOI(c *gin.Context) {
@@ -97,12 +99,33 @@ func (pc *POIController) SearchPOI(c *gin.Context) {
 	log.Infof("Searching POIs for request: %s", c.Request.URL)
 
 	POIs, err := pc.POIStorage.SearchPOI(&searchFilters)
-
 	if err != nil {
 		_ = c.Error(err)
 		return
 	}
 
-	log.Infof("Search results: %v", POIs)
-	c.JSON(http.StatusOK, POIs)
+	var result []*domain.PointOfInterestDTO
+	for _, poi := range POIs {
+		filters := &domain.CategoryFilter{Name:poi.Category}
+		category, err := pc.CategoryStorage.SearchCategory(filters)
+		if err != nil {
+			_ = c.Error(err)
+			return
+		}
+		poiDTO := &domain.PointOfInterestDTO{
+			Id: poi.Id,
+			Title: poi.Title,
+			Category: *category[0],
+			Picture: poi.Picture,
+			OwnerId: poi.OwnerId,
+			Description: poi.Description,
+			Lat: poi.Lat,
+			Long: poi.Long,
+			Hidden: poi.Hidden,
+		}
+		result = append(result, poiDTO)
+	}
+
+	log.Infof("Search results: %v", result)
+	c.JSON(http.StatusOK, result)
 }
