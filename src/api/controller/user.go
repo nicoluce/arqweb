@@ -79,7 +79,7 @@ func (uc *UserController) Login(c *gin.Context) {
 
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			err = apierror.NotFound.New("User not found")
+			err = apierror.Forbidden.New("Invalid username or password")
 		}
 		_ = c.Error(err)
 		return
