@@ -31,7 +31,7 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
       let isAdmin: boolean = false;
       this.loginService.getLoggedUser().subscribe(
         (loggedUser: User) => {
-          isAdmin = loggedUser.isAdmin();
+          isAdmin = loggedUser.isAdmin;
         }
       );
       if (!isAdmin) {
@@ -52,7 +52,7 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
       let isAdmin: boolean = false;
       this.loginService.getLoggedUser().subscribe(
         (loggedUser: User) => {
-          isAdmin = loggedUser.isAdmin();
+          isAdmin = loggedUser.isAdmin;
         }
       );
       if (!isAdmin) {

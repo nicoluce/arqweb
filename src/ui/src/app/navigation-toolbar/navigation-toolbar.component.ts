@@ -1,6 +1,6 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {LoginService} from "../service/login.service";
-import {User, UserRole} from "../domain/user";
+import {User} from "../domain/user";
 import {Router} from "@angular/router";
 
 @Component({
@@ -48,7 +48,13 @@ export class NavigationToolbarComponent implements OnInit {
 
   //TODO: delete
   private logAdmin() {
-    this.loginService.login(new User("Fernet", "pass", UserRole.ADMIN));
+    this.loginService.signUp(new User("Fernet", "pass", true)).subscribe(
+      () => {
+        this.loginService.login(new User("Fernet", "pass", null)).subscribe(
+          () => this.router.navigateByUrl("/")
+        );
+      }
+    );
   }
 
   private toggleSidenav() {
