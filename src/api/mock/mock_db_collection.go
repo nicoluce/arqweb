@@ -152,3 +152,23 @@ func (mr *MockICollectionMockRecorder) FindOneAndUpdate(ctx, filter, update inte
 	varargs := append([]interface{}{ctx, filter, update}, opts...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOneAndUpdate", reflect.TypeOf((*MockICollection)(nil).FindOneAndUpdate), varargs...)
 }
+
+// DeleteOne mocks base method
+func (m *MockICollection) DeleteOne(ctx context.Context, filter interface{}, opts ...*options.DeleteOptions) (*mongo.DeleteResult, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, filter}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeleteOne", varargs...)
+	ret0, _ := ret[0].(*mongo.DeleteResult)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteOne indicates an expected call of DeleteOne
+func (mr *MockICollectionMockRecorder) DeleteOne(ctx, filter interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, filter}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteOne", reflect.TypeOf((*MockICollection)(nil).DeleteOne), varargs...)
+}
