@@ -8,6 +8,7 @@ import (
 var poiController *controller.POIController
 var categoryController *controller.CategoryController
 var userController *controller.UserController
+var suggestionController *controller.SuggestionController
 
 func init() {
 	POIController, err := controller.NewPOIController()
@@ -22,9 +23,14 @@ func init() {
 	if err != nil {
 		log.Fatalf("Could not create User controller. Cause: %s", err.Error())
 	}
+	SuggestionController, err := controller.NewSuggestionController(CategoryController.CategoryStorage)
+	if err != nil {
+		log.Fatalf("Could not create suggestion controller. Cause: %s", err.Error())
+	}
 	poiController = POIController
 	userController = UserController
 	categoryController = CategoryController
+	suggestionController = SuggestionController
 }
 
 // LoadEndpoints is the base function to map endpoints.
@@ -46,4 +52,11 @@ func LoadEndpoints() {
 	categoriesGroup.GET("/search", categoryController.SearchCategory)
 	categoriesGroup.POST("", categoryController.AddCategory)
 	categoriesGroup.PUT("/:id", categoryController.EditCategory)
+
+	suggestionGroup := Router.Group("/suggestion")
+	suggestionGroup.POST("/new", suggestionController.AddSuggestion)
+	suggestionGroup.PUT("/categories/new/:id/approve", suggestionController.ApproveSuggestion)
+	suggestionGroup.PUT("/categories/new/:id/reject", suggestionController.RejectSuggestion)
+	suggestionGroup.GET("/categories", suggestionController.GetSuggestions)
+
 }
