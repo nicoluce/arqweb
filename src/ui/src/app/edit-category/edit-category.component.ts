@@ -22,8 +22,8 @@ export class EditCategoryComponent implements OnInit {
 
   private getCategory(): void {
     this.poiService.getCategory(this.searchCategoryName).subscribe(
-      (category: Category) => {
-        this.category = category;
+      (category: Category[]) => {
+        this.category = category[0];
       }
     );
     this.icon = this.category.iconClass;

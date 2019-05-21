@@ -33,7 +33,7 @@ func LoadEndpoints() {
 
 	userGroup := Router.Group("/user")
 	userGroup.POST("/signup", userController.Signup)
-	userGroup.GET("/login", userController.Login)
+	userGroup.POST("/login", userController.Login)
 
 	poiGroup := Router.Group("/poi")
 
