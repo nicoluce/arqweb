@@ -43,10 +43,7 @@ func (uc *UserController) Signup(c *gin.Context) {
 
 	user, err := uc.UserStorage.Search(userData.Username)
 
-	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			err = apierror.NotFound.New("User not found")
-		}
+	if err != nil && err != mongo.ErrNoDocuments {
 		_ = c.Error(err)
 		return
 	}
@@ -81,6 +78,9 @@ func (uc *UserController) Login(c *gin.Context) {
 	user, err := uc.UserStorage.Search(userData.Username)
 
 	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			err = apierror.NotFound.New("User not found")
+		}
 		_ = c.Error(err)
 		return
 	}
