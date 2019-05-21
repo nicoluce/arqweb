@@ -7,6 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"time"
 )
@@ -17,6 +18,7 @@ type CategoryStorage interface {
 	GetCategories() ([]domain.Category, error)
 	SearchCategory(filters *domain.CategoryFilter) ([]*domain.Category, error)
 	EditCategory(newVersionCategory *domain.Category) error
+	RemoveCategory(categoryId string) (*mongo.DeleteResult, error)
 }
 
 const (
@@ -26,7 +28,6 @@ const (
 func init() {
 	resetCategoryCollection() //Comment if data should be kept between program runs
 }
-
 
 type CategoryStorageImpl struct {
 	catCollection ICollection
@@ -73,6 +74,13 @@ func (cs *CategoryStorageImpl) SaveCategory(category *domain.Category) (*domain.
 	category.Id = res.InsertedID.(primitive.ObjectID)
 
 	return category, nil
+}
+
+func (cs *CategoryStorageImpl) RemoveCategory(categoryId string) (*mongo.DeleteResult, error) {
+	ctx, _ := context.WithTimeout(context.Background(), 1*time.Second)
+	id, _ := primitive.ObjectIDFromHex(categoryId)
+	res, err := cs.catCollection.DeleteOne(ctx, bson.M{"_id": id})
+	return res, err
 }
 
 func (cs *CategoryStorageImpl) GetCategories() ([]domain.Category, error) {
@@ -172,7 +180,6 @@ func NewCategory(name string, icon string) *domain.Category {
 		Icon:   icon,
 	}
 }
-
 
 func resetCategoryCollection() {
 	client, err := getMongoDBClient()

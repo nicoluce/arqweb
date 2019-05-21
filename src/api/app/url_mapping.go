@@ -51,6 +51,7 @@ func LoadEndpoints() {
 	categoriesGroup.GET("", categoryController.GetCategories)
 	categoriesGroup.GET("/search", categoryController.SearchCategory)
 	categoriesGroup.POST("", categoryController.AddCategory)
+	categoriesGroup.DELETE("/:id", categoryController.RemoveCategory)
 	categoriesGroup.PUT("/:id", categoryController.EditCategory)
 
 	suggestionGroup := Router.Group("/suggestion")

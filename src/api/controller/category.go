@@ -52,6 +52,18 @@ func (cc *CategoryController) AddCategory(c *gin.Context) {
 	c.JSON(http.StatusCreated, savedCategory)
 }
 
+func (cc *CategoryController) RemoveCategory(c *gin.Context) {
+	categoryId := c.Param("id")
+
+	res, err := cc.CategoryStorage.RemoveCategory(categoryId)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
+
 func (cc *CategoryController) GetCategories(c *gin.Context) {
 	categories, err := cc.CategoryStorage.GetCategories()
 
