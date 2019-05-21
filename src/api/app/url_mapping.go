@@ -53,10 +53,10 @@ func LoadEndpoints() {
 	categoriesGroup.POST("", categoryController.AddCategory)
 	categoriesGroup.PUT("/:id", categoryController.EditCategory)
 
-	suggestionGroup := Router.Group("/suggestion")
-	suggestionGroup.POST("/new", suggestionController.AddSuggestion)
-	suggestionGroup.PUT("/categories/new/:id/approve", suggestionController.ApproveSuggestion)
-	suggestionGroup.PUT("/categories/new/:id/reject", suggestionController.RejectSuggestion)
-	suggestionGroup.GET("/categories", suggestionController.GetSuggestions)
+	suggestionGroup := Router.Group("/suggestions/categories/new")
+	suggestionGroup.POST("", suggestionController.AddSuggestion)
+	suggestionGroup.PUT("/:id/approve", suggestionController.ApproveSuggestion)
+	suggestionGroup.PUT("/:id/reject", suggestionController.RejectSuggestion)
+	suggestionGroup.GET("", suggestionController.GetSuggestions)
 
 }

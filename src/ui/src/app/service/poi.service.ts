@@ -120,7 +120,13 @@ export class PoiService {
   }
 
   sendCategorySuggestion(categorySuggestion: CategorySuggestion): Observable<CategorySuggestion> {
-    return this.http.post<CategorySuggestion>(environment.baseUrl + "/suggestion/category/new", categorySuggestion);
+    let suggestion = {
+      name: categorySuggestion.category.name,
+      hidden: categorySuggestion.category.hidden,
+      iconClass: categorySuggestion.category.iconClass,
+      status: SuggestionStatus[categorySuggestion.status]
+    };
+    return this.http.post<CategorySuggestion>(environment.baseUrl + "/suggestions/categories/new", suggestion);
   }
 
   //TODO: remove

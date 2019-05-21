@@ -37,7 +37,7 @@ export class NewCategorySuggestionFormComponent implements OnInit {
       SuggestionStatus.WAITING_FOR_APPROVAL
     );
 
-    this.poiService.sendCategorySuggestion(newCategorySuggestion).subscribe();
+    this.poiService.sendCategorySuggestion(newCategorySuggestion).subscribe(()=>{});
   }
 
   cancelNewCategorySuggestion(): void {
