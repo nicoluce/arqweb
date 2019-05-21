@@ -71,6 +71,16 @@ export class MapComponent implements OnInit {
 
   onMapReady(map: Map) {
     this.map = map;
+    this.poiService.Search(null, null, 20,
+      this.map.getBounds(), false).subscribe(
+      (POIs: PointOfInterest[]) => {
+        let layers = [];
+        POIs.forEach((POI: PointOfInterest) => {
+          layers.push(MapComponent.POIToMarker(POI))
+        });
+        this.layers = layers;
+      }
+    );
   }
 
   showSavePOIPopup(latLong: LatLng) {

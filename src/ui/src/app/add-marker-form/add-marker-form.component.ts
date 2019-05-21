@@ -35,7 +35,7 @@ export class AddMarkerFormComponent implements OnInit {
       }
     );
   }
-a
+
   //Resets the form to track the newest marker
   public resetPOIForm() {
     //Subscribe to marker events to update form accordingly

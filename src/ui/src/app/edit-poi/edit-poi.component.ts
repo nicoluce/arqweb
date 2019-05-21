@@ -69,9 +69,7 @@ export class EditPoiComponent implements OnInit {
 
   updatePOI() {
     this.poiService.updatePOI(this.POI).subscribe(
-      (updatedPOI: PointOfInterest) => {
-        this.POI = updatedPOI;
-      }
+      () => this.getPOI
     );
   }
 
