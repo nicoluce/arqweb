@@ -28,10 +28,16 @@ func TestSaveUser(t *testing.T) {
 	defer ctrl.Finish()
 	userCollectionMock := mock.NewMockICollection(ctrl)
 
+	documentId := test.NewDocumentId()
+
+	userCollectionMock.EXPECT().InsertOne(gomock.Any(), gomock.Any()).Return(&mongo.InsertOneResult{
+		InsertedID: documentId,
+	}, nil)
+
 	UserStorage, _ := storage.CreateUserStorage(userCollectionMock)
 
 	user := test.DefaultUser()
-	documentId := test.NewDocumentId()
+	documentId = test.NewDocumentId()
 
 	userCollectionMock.EXPECT().InsertOne(gomock.Any(), gomock.Any()).Return(&mongo.InsertOneResult{
 		InsertedID: documentId,
