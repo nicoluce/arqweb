@@ -80,7 +80,12 @@ func (cs *CategoryStorageImpl) RemoveCategory(categoryId string) (*mongo.DeleteR
 	ctx, _ := context.WithTimeout(context.Background(), 1*time.Second)
 	id, _ := primitive.ObjectIDFromHex(categoryId)
 	res, err := cs.catCollection.DeleteOne(ctx, bson.M{"_id": id})
-	return res, err
+
+	if err != nil {
+		return nil, apierror.Wrapf(err, "Could not remove category from MongoDB. category: %s", categoryId)
+	}
+
+	return res, nil
 }
 
 func (cs *CategoryStorageImpl) GetCategories() ([]domain.Category, error) {
