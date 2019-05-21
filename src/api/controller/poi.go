@@ -113,6 +113,7 @@ func (pc *POIController) SearchPOI(c *gin.Context) {
 			return
 		}
 		poiDTO := &domain.PointOfInterestDTO{
+			Id: poi.Id,
 			Title: poi.Title,
 			Category: *category[0],
 			Picture: poi.Picture,
