@@ -115,7 +115,7 @@ func (ps *POIStorageImpl) featureToPOI(feature *geojson.Feature) (*domain.PointO
 	picture := domain.Picture{}
 	if pictureInfo, ok := feature.Properties["picture"].(map[string]interface{}); ok {
 		if data, ok2 := pictureInfo["data"].(string); ok2 {
-				picture.Data = data
+			picture.Data = data
 		}
 		if contentType, ok2 := pictureInfo["contentType"].(string); ok2 {
 			picture.ContentType = contentType
@@ -133,7 +133,7 @@ func (ps *POIStorageImpl) featureToPOI(feature *geojson.Feature) (*domain.PointO
 			Title:       title,
 			Category:    category,
 			Description: description,
-			Picture: 	 picture,
+			Picture:     picture,
 			Lat:         lat,
 			Long:        long,
 			Hidden:      hidden,

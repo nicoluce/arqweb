@@ -27,7 +27,6 @@ func init() {
 	resetCategoryCollection() //Comment if data should be kept between program runs
 }
 
-
 type CategoryStorageImpl struct {
 	catCollection ICollection
 }
@@ -172,7 +171,6 @@ func NewCategory(name string, icon string) *domain.Category {
 		Icon:   icon,
 	}
 }
-
 
 func resetCategoryCollection() {
 	client, err := getMongoDBClient()
