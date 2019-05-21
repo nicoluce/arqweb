@@ -11,11 +11,11 @@ var userController *controller.UserController
 var suggestionController *controller.SuggestionController
 
 func init() {
-	POIController, err := controller.NewPOIController()
+	CategoryController, err := controller.NewCategoryController()
 	if err != nil {
 		log.Fatalf("Could not create POI controller. Cause: %s", err.Error())
 	}
-	CategoryController, err := controller.NewCategoryController()
+	POIController, err := controller.NewPOIController(categoryController.CategoryStorage)
 	if err != nil {
 		log.Fatalf("Could not create POI controller. Cause: %s", err.Error())
 	}
