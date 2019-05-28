@@ -8,7 +8,7 @@ require (
 	github.com/gin-gonic/gin v1.3.0
 	github.com/go-stack/stack v1.8.0
 	github.com/golang/mock v1.3.0
-	github.com/golang/protobuf v0.0.0-20170601230230-5a0f697c9ed9
+	github.com/golang/protobuf v1.3.1
 	github.com/golang/snappy v0.0.1
 	github.com/json-iterator/go v1.1.6
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2
@@ -26,7 +26,7 @@ require (
 	go.mongodb.org/mongo-driver v1.0.1
 	golang.org/x/crypto v0.0.0-20190426145343-a29dc8fdc734
 	golang.org/x/sync v0.0.0-20190423024810-112230192c58
-	golang.org/x/sys v0.0.0-20190418153312-f0ce4c0180be
+	golang.org/x/sys v0.0.0-20190425145619-16072639606e
 	golang.org/x/text v0.3.2
 	gopkg.in/go-playground/validator.v8 v8.18.1
 	gopkg.in/yaml.v2 v2.0.0-20160928153709-a5b47d31c556
