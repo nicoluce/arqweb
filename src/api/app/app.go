@@ -7,6 +7,7 @@ package app
 import (
 	"github.com/nicoluce/arqweb/src/api/config"
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 	"os"
 )
 
@@ -19,5 +20,6 @@ func Start() {
 	LoadEndpoints()
 
 	port := os.Getenv("$PORT")
+	log.Infof("Port: %s", port)
 	_ = Router.Run(":" + port)
 }
