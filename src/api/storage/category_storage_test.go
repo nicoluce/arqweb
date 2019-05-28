@@ -2,9 +2,9 @@ package storage_test
 
 import (
 	"context"
-	"github.com/fernetbalboa/arqweb/src/api/domain"
-	"github.com/fernetbalboa/arqweb/src/api/storage"
-	"github.com/fernetbalboa/arqweb/src/api/test"
+	"github.com/nicoluce/arqweb/src/api/domain"
+	"github.com/nicoluce/arqweb/src/api/storage"
+	"github.com/nicoluce/arqweb/src/api/test"
 	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"

@@ -2,7 +2,7 @@ package test
 
 import (
 	"encoding/json"
-	"github.com/fernetbalboa/arqweb/src/api/domain"
+	"github.com/nicoluce/arqweb/src/api/domain"
 )
 
 func DefaultCategorySuggestion() *domain.CategorySuggestion {

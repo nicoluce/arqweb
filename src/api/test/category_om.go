@@ -1,7 +1,7 @@
 package test
 
 import (
-	"github.com/fernetbalboa/arqweb/src/api/domain"
+	"github.com/nicoluce/arqweb/src/api/domain"
 	"github.com/gin-gonic/gin/json"
 )
 

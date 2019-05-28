@@ -2,11 +2,11 @@ package controller_test
 
 import (
 	"encoding/json"
-	"github.com/fernetbalboa/arqweb/src/api/apierror"
-	"github.com/fernetbalboa/arqweb/src/api/config"
-	"github.com/fernetbalboa/arqweb/src/api/controller"
-	"github.com/fernetbalboa/arqweb/src/api/mock"
-	"github.com/fernetbalboa/arqweb/src/api/test"
+	"github.com/nicoluce/arqweb/src/api/apierror"
+	"github.com/nicoluce/arqweb/src/api/config"
+	"github.com/nicoluce/arqweb/src/api/controller"
+	"github.com/nicoluce/arqweb/src/api/mock"
+	"github.com/nicoluce/arqweb/src/api/test"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"net/http"

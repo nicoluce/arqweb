@@ -5,7 +5,7 @@
 package app
 
 import (
-	"github.com/fernetbalboa/arqweb/src/api/config"
+	"github.com/nicoluce/arqweb/src/api/config"
 	"github.com/gin-gonic/gin"
 )
 

@@ -1,7 +1,7 @@
 package app
 
 import (
-	"github.com/fernetbalboa/arqweb/src/api/controller"
+	"github.com/nicoluce/arqweb/src/api/controller"
 	log "github.com/sirupsen/logrus"
 )
 

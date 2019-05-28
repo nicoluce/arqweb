@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/fernetbalboa/arqweb/src/api/apierror"
+	"github.com/nicoluce/arqweb/src/api/apierror"
 	"github.com/gin-gonic/gin"
 )
 

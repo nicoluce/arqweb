@@ -5,7 +5,7 @@
 package mock
 
 import (
-	domain "github.com/fernetbalboa/arqweb/src/api/domain"
+	domain "github.com/nicoluce/arqweb/src/api/domain"
 	gomock "github.com/golang/mock/gomock"
 	go_geojson "github.com/paulmach/go.geojson"
 	primitive "go.mongodb.org/mongo-driver/bson/primitive"

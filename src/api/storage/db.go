@@ -2,7 +2,7 @@ package storage
 
 import (
 	"context"
-	"github.com/fernetbalboa/arqweb/src/api/apierror"
+	"github.com/nicoluce/arqweb/src/api/apierror"
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
