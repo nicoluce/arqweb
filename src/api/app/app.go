@@ -5,7 +5,6 @@
 package app
 
 import (
-	"fmt"
 	"github.com/nicoluce/arqweb/src/api/config"
 	"github.com/gin-gonic/gin"
 	"os"
